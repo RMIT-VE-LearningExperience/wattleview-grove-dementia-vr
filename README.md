@@ -2,8 +2,25 @@
 
 Unreal Engine VR experience targeting **PICO 4 Ultra Enterprise**.
 
-- **UE project name:** `WattleviewGroveVR` (code-safe; the full title above is the Project Display Name)
+- **UE project name:** `WattleviewGrove` (code-safe; the full title above is the Project Display Name)
+- **Location:** `D:\Unreal-Projects\WattleviewGrove`
+- **Engine build:** UE **5.7.4** (installed at `C:\Program Files\Epic Games\UE_5.7`)
 - **Android package:** `com.rmit.wattleviewgrove`
+- **Project type:** Blueprint — no C++, no Visual Studio toolchain required
+
+## Rendering configuration
+
+Created from the **Virtual Reality** template, Mobile + Scalable presets:
+
+| Setting | Value |
+|---|---|
+| `r.ForwardShading` | True |
+| `r.MobileHDR` | False |
+| `vr.InstancedStereo` | True |
+| `r.Mobile.AntiAliasing` | 3 (MSAA) |
+
+Forward + MSAA is the vendor-recommended VR path. **It conflicts with MetaHuman skin**, which needs
+Subsurface Profile -> mobile deferred -> which disables MSAA. See MetaHuman notes below.
 
 ## Platform decisions
 
