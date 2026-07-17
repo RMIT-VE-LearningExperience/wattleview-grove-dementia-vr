@@ -85,6 +85,37 @@ the mobile deferred shading MetaHuman skin requires. No valid combination with c
 XR2 Gen 1, firmware frozen at 5.13.7 (Oct 2025). Materially harder target; likely a non-starter for
 MetaHumans. Also excluded by Epic's 5.8 PICO Controller plugin by design.
 
+## MCP setup (optional, per-developer)
+
+The project can be driven from an MCP client (Claude Code) via **UnrealMCPython** by GenOrca.
+It is editor-only and Win64-only, so it never ships in the packaged build. It is deliberately
+**not committed** - install your own copy:
+
+1. Download from https://github.com/GenOrca/unreal-mcp/releases (v2.2.0):
+   - `UnrealMCPython_5.7_2.2.0.zip` - the precompiled plugin (must match the engine version)
+   - `UnrealMCPython_Source_2.2.0.zip` - contains the `mcp-server/` folder the plugin zip lacks
+2. Extract the plugin to `Plugins/UnrealMCPython/`
+3. Copy `mcp-server/` from the source zip into `Plugins/UnrealMCPython/mcp-server/`
+4. Pin Python and install deps (Python **3.14 fails** - `pydantic-core` has no wheels for it yet):
+   ```
+   cd Plugins/UnrealMCPython/mcp-server
+   uv python pin 3.12
+   uv sync
+   ```
+5. Create `.mcp.json` in the project root (gitignored - absolute paths are machine-specific):
+   ```json
+   {
+     "mcpServers": {
+       "unreal-mcpython": {
+         "command": "uv",
+         "args": ["--directory", "<abs>/Plugins/UnrealMCPython/mcp-server", "run", "src/unreal_mcp/main.py"]
+       }
+     }
+   }
+   ```
+6. Launch your MCP client from the project root. The `UnrealMCPython` and `PythonScriptPlugin`
+   plugins are already enabled in the `.uproject`.
+
 ## Repository
 
 Git LFS is required — see `.gitattributes`. Clone with LFS installed:

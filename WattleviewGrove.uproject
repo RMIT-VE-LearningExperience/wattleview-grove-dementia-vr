@@ -2,7 +2,7 @@
 	"FileVersion": 3,
 	"EngineAssociation": "{1861CA50-45A8-133D-BA7C-578C5BBACAF4}",
 	"Category": "",
-	"Description": "",
+	"Description": "SC&H - Wattleview Grove - Dementia VR Experience",
 	"Plugins": [
 		{
 			"Name": "OpenXR",
@@ -14,6 +14,14 @@
 		},
 		{
 			"Name": "OpenXRHandTracking",
+			"Enabled": true
+		},
+		{
+			"Name": "PythonScriptPlugin",
+			"Enabled": true
+		},
+		{
+			"Name": "UnrealMCPython",
 			"Enabled": true
 		}
 	],

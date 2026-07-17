@@ -67,3 +67,17 @@ desktop.ini
 .env
 .env.*
 *_credentials.json
+
+# --- MCP tooling (local dev tool, not a project dependency) ---
+# UnrealMCPython is editor-only and Win64-only. It ships precompiled binaries
+# which the Binaries/ rule above would strip anyway, leaving a broken plugin for
+# anyone who cloned it. Each developer installs their own - see README "MCP setup".
+Plugins/UnrealMCPython/
+
+# Python virtualenvs and caches (uv creates .venv for the MCP server)
+.venv/
+__pycache__/
+*.pyc
+
+# Local MCP client config - contains machine-specific absolute paths
+.mcp.json
