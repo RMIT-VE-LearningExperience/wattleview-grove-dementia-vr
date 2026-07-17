@@ -1,0 +1,69 @@
+# Unreal Engine .gitignore
+# Project: SC&H - Wattleview Grove - Dementia VR Experience
+
+# Build artefacts - regenerated, never commit
+Binaries/
+Plugins/*/Binaries/
+Intermediate/
+Plugins/*/Intermediate/
+DerivedDataCache/
+Saved/
+
+# Generated project files
+*.sln
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+*.xcodeproj
+*.xcworkspace
+.vs/
+.idea/
+
+# Compiled objects and libraries
+*.o
+*.obj
+*.slo
+*.lo
+*.gch
+*.pch
+*.so
+*.dylib
+*.dll
+*.lib
+*.a
+*.la
+*.lai
+*.exe
+*.out
+*.app
+*.ipa
+*.apk
+*.aab
+*.mod
+
+# Built lighting/map data - large, regenerated on build
+*_BuiltData.uasset
+
+# Build folder, but keep config that must be versioned
+Build/*
+!Build/*/
+!Build/**/*.ico
+!Build/*/PakBlacklist*.txt
+
+# Source art originals (keep these out of the runtime project)
+SourceArt/**/*.png
+SourceArt/**/*.tga
+
+# OS noise
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Secrets - never commit credentials or signing keys
+*.keystore
+*.jks
+.env
+.env.*
+*_credentials.json
