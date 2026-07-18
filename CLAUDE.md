@@ -213,6 +213,34 @@ Enable developer mode + USB debugging on the headset; `adb devices` should list 
   *not found*, because of Android 11+ scoped storage. That's expected; it doesn't mean the OBB is absent.
 - **Device timestamps look 30 min stale** — the headset may be on a different timezone to the PC
   (ACST vs AEST). Compare `adb shell date` against the PC clock before concluding anything is old.
+- **App disappears from `adb` / `adb devices` empty after it worked** — usually a half-seated USB
+  plug or the headset sleeping and dropping the link, not a driver fault. Check
+  `Get-PnpDevice | ? FriendlyName -match 'PICO'` in PowerShell — if Windows shows *PICO Composite ADB
+  Interface* as OK, the cable/driver are fine; reseat the plug and `adb kill-server; adb start-server`.
+
+---
+
+## PICO controller input (the non-obvious part)
+
+Head tracking and rendering can work perfectly while **controllers are invisible and dead** — no
+pose, no render model, no button/thumbstick input, no teleport. This is not a toolchain problem.
+
+**Cause.** UE only suggests an OpenXR interaction profile when a mapping context binds that
+profile's keys. PICO 4 controllers report **dedicated FKeys** — `PICOUltra_*` and `PICO4_*`
+(registered by the plugin's `PICOOpenXRInput` module, see `PICO_Controller.cpp`). They do **not**
+emulate Oculus Touch. The XRFramework template shipped bindings only for Oculus/Vive/Index/WMR, so
+the PICO controllers matched nothing.
+
+**Fix (already committed).** Every `OculusTouch_*` binding in the five
+`Content/XRFramework/Input/IMC_*` mapping contexts was mirrored to its `PICOUltra_*` and `PICO4_*`
+equivalent (PICO's button layout matches Oculus Touch: X/Y/A/B, thumbstick, grip, trigger, menu).
+A fresh clone of this repo already has these — nothing to redo. Only relevant if you build a *new*
+project or add new input actions: they need PICO key bindings too.
+
+> **Editor gotcha if you re-edit IMCs via Python/MCP:** `EditorAssetLibrary.save_asset(path)`
+> defaults to *save-only-if-dirty* and returns `True` without writing when a programmatic edit didn't
+> flag the package dirty. The cook then ships the **old** asset while every log says "success". Use
+> `save_asset(path, only_if_is_dirty=False)` and confirm the source `.uasset` mtime actually changed.
 
 ---
 
@@ -225,6 +253,8 @@ Enable developer mode + USB debugging on the headset; `adb devices` should list 
   hardware (that was the older 4 Enterprise). Don't re-enable it expecting ETFR.
 - Rendering is forward + MSAA (`r.Mobile.AntiAliasing=3`). See README for why this conflicts with
   MetaHuman skin.
+- PICO controller bindings live in `Content/XRFramework/Input/IMC_*` — see the controller section
+  above. Don't strip the `PICOUltra_*` / `PICO4_*` mappings.
 
 ## MCP tooling (optional, per-developer)
 
