@@ -81,3 +81,6 @@ __pycache__/
 
 # Local MCP client config - contains machine-specific absolute paths
 .mcp.json
+
+# Packaged build output (APK/OBB) - large binaries, reproducible from source
+Build/

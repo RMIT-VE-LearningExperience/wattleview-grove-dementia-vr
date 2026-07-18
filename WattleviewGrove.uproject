@@ -10,10 +10,14 @@
 		},
 		{
 			"Name": "OpenXREyeTracker",
-			"Enabled": true
+			"Enabled": false
 		},
 		{
 			"Name": "OpenXRHandTracking",
+			"Enabled": true
+		},
+		{
+			"Name": "PICOOpenXR",
 			"Enabled": true
 		},
 		{
@@ -27,16 +31,6 @@
 	],
 	"TargetPlatforms": [
 		"Android",
-		"IOS",
-		"Linux",
-		"Mac",
-		"PS4",
-		"PS5",
-		"Windows",
-		"WindowsNoEditor",
-		"Switch",
-		"XboxOne",
-		"XSX",
-		"VisionOS"
+		"Windows"
 	]
 }

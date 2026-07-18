@@ -27,7 +27,7 @@ Subsurface Profile -> mobile deferred -> which disables MSAA. See MetaHuman note
 | Decision | Choice | Rationale |
 |---|---|---|
 | Engine | **UE 5.7** | Newest version supported by PICO's actively-maintained Unreal path. |
-| PICO plugin | **PICO Unreal OpenXR Plugin v1.6.0** | Actively shipping (~monthly). Application SpaceWarp is stock on 5.7 — no engine fork needed. |
+| PICO plugin | **PICO Unreal OpenXR Plugin v1.6.1** | Actively shipping (~monthly). Application SpaceWarp is stock on 5.7 — no engine fork needed. |
 | Target device | **PICO 4 Ultra Enterprise** only | Requires device system version **5.14.0+**. |
 | Environment | Authored 3D meshes | Not Gaussian splats — see PICOSplat below. |
 | MCP server | GenOrca `UnrealMCPython_5.7` | Epic's first-party Unreal MCP requires UE 5.8, which PICO's docs do not support. |
