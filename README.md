@@ -8,6 +8,10 @@ Unreal Engine VR experience targeting **PICO 4 Ultra Enterprise**.
 - **Android package:** `com.rmit.wattleviewgrove`
 - **Project type:** Blueprint — no C++, no Visual Studio toolchain required
 
+Build outputs are tracked as separate profiles. See
+[Docs/BUILD_PROFILES.md](Docs/BUILD_PROFILES.md) for the current PICO-HQ
+build, the shared change ledger, and the guarded Android tablet plan.
+
 ## Rendering configuration
 
 Created from the **Virtual Reality** template, Mobile + Scalable presets:
@@ -28,7 +32,7 @@ Subsurface Profile -> mobile deferred -> which disables MSAA. See MetaHuman note
 |---|---|---|
 | Engine | **UE 5.7** | Newest version supported by PICO's actively-maintained Unreal path. |
 | PICO plugin | **PICO Unreal OpenXR Plugin v1.6.1** | Actively shipping (~monthly). Application SpaceWarp is stock on 5.7 — no engine fork needed. |
-| Target device | **PICO 4 Ultra Enterprise** only | Requires device system version **5.14.0+**. |
+| Target device | **PICO 4 Ultra Enterprise** primary; Android tablet profile planned | PICO requires device system version **5.14.0+**. The tablet shares scene content but needs separate touch/camera runtime assets. |
 | Environment | Authored 3D meshes | Not Gaussian splats — see PICOSplat below. |
 | MCP server | GenOrca `UnrealMCPython_5.7` | Epic's first-party Unreal MCP requires UE 5.8, which PICO's docs do not support. |
 
