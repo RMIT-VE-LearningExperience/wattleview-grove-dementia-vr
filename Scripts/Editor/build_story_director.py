@@ -363,7 +363,8 @@ def disable_locomotion():
         imc.unmap_all_keys_from_action(action)
         removed += before - count()
     if imc is not None:
-        eas.save_loaded_asset(imc)
+        # Scripted unmaps don't mark the package dirty; a save-if-dirty writes nothing.
+        eas.save_asset("/Game/XRFramework/Input/IMC_Default", only_if_is_dirty=False)
     log(f"locomotion disabled: {removed} thumbstick mappings removed from IMC_Default")
 
 
