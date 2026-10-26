@@ -102,6 +102,8 @@ PERCEPTION = {
     "Memory":   [(0, 0.0), (152, 0.0), (158, 1.0), (186, 1.0), (189, 0.0), (300, 0.0)],
     # Brush looming (1:40-2:30): scale boost on the brush in her view.
     "BrushLoom": [(0, 0.0), (102, 0.0), (110, 1.0), (140, 1.0), (148, 0.0), (300, 0.0)],
+    # TV (both views, not gated by MariaView): David turns it down, then off (~1:10).
+    "TVOn":     [(0, 1.0), (68, 1.0), (71, 0.4), (74, 0.4), (75, 0.0), (300, 0.0)],
 }
 
 
@@ -132,14 +134,20 @@ def ensure_mpc():
     else:
         mpc = tools.create_asset("MPC_Perception", MPC_PATH.rsplit("/", 1)[0],
                                  unreal.MaterialParameterCollection, unreal.MaterialParameterCollectionFactoryNew())
-    params = []
+    # Keep existing parameters (materials reference them by internal ID); only add missing.
+    params = list(mpc.get_editor_property("scalar_parameters"))
+    have = {str(p.get_editor_property("parameter_name")) for p in params}
+    added = False
     for name in ["MariaView"] + list(PERCEPTION.keys()):
-        p = unreal.CollectionScalarParameter()
-        p.set_editor_property("parameter_name", name)
-        p.set_editor_property("default_value", 0.0)
-        params.append(p)
-    mpc.set_editor_property("scalar_parameters", params)
-    eas.save_loaded_asset(mpc)
+        if name not in have:
+            p = unreal.CollectionScalarParameter()
+            p.set_editor_property("parameter_name", name)
+            p.set_editor_property("default_value", 0.0)
+            params.append(p)
+            added = True
+    if added:
+        mpc.set_editor_property("scalar_parameters", params)
+        eas.save_loaded_asset(mpc)
     return mpc
 
 
