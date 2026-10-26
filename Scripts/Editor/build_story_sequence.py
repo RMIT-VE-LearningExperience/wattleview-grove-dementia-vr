@@ -98,6 +98,8 @@ INTRO_FADE, OUTRO_FADE = 1.5, 2.0
 # facing_deg is the direction the character faces (0 = +X, toward the window). The UE5
 # mannequin mesh faces +Y, so MESH_YAW_OFFSET is added to get the actor yaw.
 MESH_YAW_OFFSET = -90.0
+# Ceiling fan speed: a gentle low setting (about 30 rpm); fast blades flicker in VR.
+FAN_DEG_PER_SECOND = 180.0
 BLOCKING = {
     "David_StandIn": [
         (0.0,   (105, 45, 0), 45, CONST),
@@ -143,10 +145,13 @@ ANIMS = {
 # Props that move: label of the root actor, the label prefix of parts to attach to it, and
 # keys (time_s, (x, y, z), yaw, interp) for the root. David pulls this chair in at 4:00.
 PROP_MOVES = {
-    "Chair_Second_Seat": ("Chair_Second_", [
-        (0.0,   (400, 268, 46), -90, CONST),
-        (236.0, (400, 268, 46), -90, LINEAR),
-        (240.0, (370, 272, 46), -113, CONST),
+    # Dressed room: one Chair_Second actor (pivot on the rug). Greybox fallback: the
+    # Chair_Second_Seat root with its parts. Key heights are shifted to the actor's real
+    # resting height at build time, so only relative z matters here.
+    "Chair_Second": ("__none__", [
+        (0.0,   (400, 268, 0), -90, CONST),
+        (236.0, (400, 268, 0), -90, LINEAR),
+        (240.0, (370, 272, 0), -113, CONST),
     ]),
     "Hairbrush": ("__none__", [
         (0.0,   (372, 182, 76.5), 20, CONST),
@@ -162,7 +167,7 @@ PROP_MOVES = {
     "Glass": ("__none__", [
         (0.0,   (378, 225, 80.5), 0, CONST),
         (158.0, (378, 225, 80.5), 0, LINEAR),
-        (161.0, (352, 210, 80.5), 0, CONST),      # 2:41 slid toward her
+        (161.0, (359, 208, 80.5), 0, CONST),      # 2:41 slid toward her (stays on the 47.5 cm top)
         (170.0, (352, 210, 80.5), 0, LINEAR),
         (171.0, (380, 236, 80.5), 0, CONST),      # 2:51 pushed away
     ]),
@@ -194,6 +199,14 @@ PERCEPTION = {
 
 
 # ------------------------------------------------------------------ helpers
+def mh_clip(path, label):
+    """Retargeted clip for a MetaHuman body (build_characters.py), falling back to the original."""
+    body = "Maria" if label.startswith("Maria") else "David"     # Enzo shares David's body
+    name = path.split("/")[-1].split(".")[0]
+    candidate = f"/Game/Wattleview/Animations/MH/{body}/{name}_{body}"
+    return candidate if unreal.EditorAssetLibrary.does_asset_exist(candidate) else path
+
+
 def find_actor(label):
     for a in actors.get_all_level_actors():
         if a.get_actor_label() == label:
@@ -444,21 +457,39 @@ def build():
             log(f"missing {label}; skipped")
             continue
         actor.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
-        tags = [unreal.Name("Body_" + label.split("_")[0])]
+        is_mh = "MetaHuman" in [str(t) for t in actor.tags]
+        tags = [unreal.Name("Body_" + label.split("_")[0])] + ([unreal.Name("MetaHuman")] if is_mh else [])
         actor.set_editor_property("tags", tags)
         binding = seq.add_possessable(actor)
         chs = transform_channels(binding)
         for t, loc, facing, interp in unwrap_yaws(keys, 2):
             key_transform(chs, t, loc, facing + MESH_YAW_OFFSET, interp)
-        n_anim = add_anim_sections(binding, ANIMS.get(label, []), seq)
-        log(f"{label}: {len(keys)} blocking keys, {n_anim} anim sections")
+        anim_binding, sections = binding, ANIMS.get(label, [])
+        if is_mh:
+            # MetaHuman Blueprint (build_characters.py): the root is a scene component, so the
+            # animation goes on the Body skeletal mesh, using the clips retargeted to that body.
+            body = next((c for c in actor.get_components_by_class(unreal.SkeletalMeshComponent)
+                         if c.get_name().startswith("Body")), None)
+            if body is not None:
+                anim_binding = seq.add_possessable(body)
+                sections = [(s0, s1, mh_clip(path, label), rate) for s0, s1, path, rate in sections]
+        n_anim = add_anim_sections(anim_binding, sections, seq)
+        log(f"{label}: {len(keys)} blocking keys, {n_anim} anim sections{' (MetaHuman body)' if is_mh else ''}")
 
     # Moving props (parts attached to a root so the whole chair moves).
     for root_label, (prefix, keys) in PROP_MOVES.items():
         root = find_actor(root_label)
+        if root is None and find_actor(root_label + "_Seat") is not None:
+            # greybox room: the chair is a seat root plus loose parts
+            root, prefix = find_actor(root_label + "_Seat"), root_label + "_"
+            root_label = root_label + "_Seat"
         if root is None:
             log(f"missing {root_label}; skipped")
             continue
+        # Key heights follow the actor's real resting height (dressed meshes sit on the rug or
+        # the table top computed by the placement tools, not on the greybox heights).
+        dz = root.get_actor_location().z - keys[0][1][2]
+        keys = [(t, (l[0], l[1], l[2] + dz), yaw, i) for t, l, yaw, i in keys]
         root.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
         for part in actors.get_all_level_actors():
             lbl = part.get_actor_label()
@@ -472,6 +503,17 @@ def build():
         for t, loc, yaw, interp in unwrap_yaws(keys, 2):
             key_transform(chs, t, loc, yaw, interp, (scale.x, scale.y, scale.z))
         log(f"{root_label}: {len(keys)} prop keys")
+
+    # Ceiling fan turning slowly for the whole piece (movable in the dressed room).
+    fan = find_actor("CeilingFan")
+    if fan is not None:
+        fan.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+        chs = transform_channels(seq.add_possessable(fan))
+        l = fan.get_actor_location()
+        y0 = fan.get_actor_rotation().yaw
+        key_transform(chs, 0.0, (l.x, l.y, l.z), y0, LINEAR)
+        key_transform(chs, DURATION, (l.x, l.y, l.z), y0 + FAN_DEG_PER_SECOND * DURATION, LINEAR)
+        log(f"CeilingFan: {FAN_DEG_PER_SECOND:.0f} deg/s")
 
     # Perception parameters.
     res = seq.get_tick_resolution()

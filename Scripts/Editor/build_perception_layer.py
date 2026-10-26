@@ -18,6 +18,9 @@ PICO 4 Ultra before adding more.
 Run in the open editor:  exec(open(r"<this file>").read())
 Re-runnable: rebuilds materials and replaces the layer actors.
 """
+import json
+import os
+
 import unreal
 
 MAP_PATH = "/Game/Wattleview/Maps/L_ResidentRoom"
@@ -238,6 +241,46 @@ def mesh_actor(label, mesh, loc, scale, mat, parent=None, yaw=0.0, pitch=0.0):
     return a
 
 
+MEMORY_MESH_DIR = "/Game/Wattleview/Environment/Meshes/Memory"
+ROOM_SRC = os.path.join(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")),
+                        "SourceArt", "Room")
+
+
+def memory_from_meshes(slot_mats, fallback_mat, hose_mat):
+    """Place Memory_* entries from placement.json with the imported meshes. False if none exist."""
+    cfg_path = os.path.join(ROOM_SRC, "placement.json")
+    if not os.path.exists(cfg_path):
+        return False
+    entries = [p for p in json.load(open(cfg_path))["pieces"] if p["label"].startswith("Memory_")]
+    if not entries or not all(eas.does_asset_exist(f"{MEMORY_MESH_DIR}/{p['mesh']}") for p in entries):
+        return False
+    rep = os.path.join(ROOM_SRC, "Previews", "Assembly", "report.json")
+    rest_z = json.load(open(rep)).get("rest_on_z", {}) if os.path.exists(rep) else {}
+    table = find("Table")
+    for p in entries:
+        mesh = unreal.load_asset(f"{MEMORY_MESH_DIR}/{p['mesh']}")
+        x, y, z = p["loc"]
+        if p.get("rest_on"):
+            if p["label"] in rest_z:
+                z = rest_z[p["label"]]
+            elif p["rest_on"] == "Table" and table is not None:
+                o, e = table.get_actor_bounds(False)
+                z = o.z + e.z + 0.2 - mesh.get_bounding_box().min.z
+        a = acts.spawn_actor_from_object(mesh, unreal.Vector(x, y, z), unreal.Rotator(roll=0.0, pitch=0.0, yaw=float(p.get("yaw", 0))))
+        a.set_actor_label(p["label"])
+        a.set_folder_path(FOLDER)
+        c = a.static_mesh_component
+        c.set_mobility(unreal.ComponentMobility.MOVABLE)
+        c.set_cast_shadow(False)
+        c.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+        for i, sm in enumerate(mesh.get_editor_property("static_materials")):
+            slot = str(sm.get_editor_property("material_slot_name")).split(".")[0]
+            mat = hose_mat if p["mesh"] == "SM_GardenHose" else slot_mats.get(slot, fallback_mat)
+            c.set_material(i, mat)
+    log(f"memory set: {len(entries)} Blender meshes from placement.json")
+    return True
+
+
 def ensure_mpc_param(name):
     mpc = unreal.load_asset(MPC_PATH)
     params = list(mpc.get_editor_property("scalar_parameters"))
@@ -287,21 +330,29 @@ def build():
     g = gardener.get_actor_location()
     mesh_actor("GardenerHalo", SPHERE, (g.x, g.y, g.z + 95), (1.3, 1.3, 2.3), m_halo, parent=gardener)
 
-    # Backyard memory (2:30-3:15): slim tomato vines on stakes set back by the window,
-    # basil pots at the table edge, a hose lying across the table, a fig tree outside.
-    for i, y in enumerate((125, 215, 305)):
-        x = 482
-        mesh_actor(f"Memory_Stake{i}", CYL, (x, y, 150), (0.025, 0.025, 1.5), m_stake)
-        mesh_actor(f"Memory_TomatoVine{i}", SPHERE, (x - 3, y, 145), (0.16, 0.16, 0.85), m_leaf)
-        for j, z in enumerate((120, 145, 170)):
-            mesh_actor(f"Memory_Tomato{i}_{j}", SPHERE, (x - 10, y + (5 if j % 2 else -5), z),
-                       (0.06, 0.06, 0.06), m_tomato)
-    for i, (x, y) in enumerate([(425, 178), (425, 232)]):        # on the tabletop (r 47.5)
-        mesh_actor(f"Memory_Basil{i}", SPHERE, (x, y, 81), (0.16, 0.16, 0.12), m_leaf)
-    mesh_actor("Memory_FigTrunk", CYL, (620, 380, 120), (0.15, 0.15, 2.4), m_stake)
-    mesh_actor("Memory_FigCanopy", SPHERE, (620, 380, 250), (2.2, 2.2, 1.6), m_leaf)
-    mesh_actor("Memory_Hose", CYL, (395, 200, 77), (0.03, 0.03, 1.1), m_hose, yaw=0.0).set_actor_rotation(
-        unreal.Rotator(0.0, 90.0, 75.0), False)
+    # Backyard memory (2:30-3:15): tomato vines on stakes by the window, basil pots and a hose
+    # on the table, a fig tree outside. Uses the Blender meshes and their placement.json
+    # entries (Memory_*) when imported; otherwise falls back to primitive stand-ins.
+    m_pot = memory_material("M_Memory_Pot", (0.65, 0.33, 0.20))
+    m_soil = memory_material("M_Memory_Soil", (0.25, 0.17, 0.10))
+    slot_mats = {"M_Plant": m_leaf, "M_PlantDark": m_leaf, "M_Flower": m_leaf, "M_FlowerRed": m_tomato,
+                 "M_Bark": m_stake, "M_Timber": m_stake, "M_TimberDark": m_stake, "M_Terracotta": m_pot,
+                 "M_Soil": m_soil, "M_Rubber": m_hose, "M_Metal": m_hose, "M_PlasticBlack": m_hose}
+    if not memory_from_meshes(slot_mats, m_leaf, m_hose):
+        for i, y in enumerate((125, 215, 305)):
+            x = 482
+            mesh_actor(f"Memory_Stake{i}", CYL, (x, y, 150), (0.025, 0.025, 1.5), m_stake)
+            mesh_actor(f"Memory_TomatoVine{i}", SPHERE, (x - 3, y, 145), (0.16, 0.16, 0.85), m_leaf)
+            for j, z in enumerate((120, 145, 170)):
+                mesh_actor(f"Memory_Tomato{i}_{j}", SPHERE, (x - 10, y + (5 if j % 2 else -5), z),
+                           (0.06, 0.06, 0.06), m_tomato)
+        for i, (x, y) in enumerate([(425, 178), (425, 232)]):        # on the tabletop (r 47.5)
+            mesh_actor(f"Memory_Basil{i}", SPHERE, (x, y, 81), (0.16, 0.16, 0.12), m_leaf)
+        mesh_actor("Memory_FigTrunk", CYL, (620, 380, 120), (0.15, 0.15, 2.4), m_stake)
+        mesh_actor("Memory_FigCanopy", SPHERE, (620, 380, 250), (2.2, 2.2, 1.6), m_leaf)
+        mesh_actor("Memory_Hose", CYL, (395, 200, 77), (0.03, 0.03, 1.1), m_hose, yaw=0.0).set_actor_rotation(
+            unreal.Rotator(0.0, 90.0, 75.0), False)
+        log("memory set: primitive stand-ins (Blender meshes not imported)")
 
     # TV screen reads TVOn / MariaView.
     tv = find("TV_Screen")

@@ -86,3 +86,12 @@ __pycache__/
 
 # Packaged build output (APK/OBB) - large binaries, reproducible from source
 /Build/
+
+# Blender asset pipeline: agent scratch renders and re-downloadable sources
+SourceArt/Room/Previews/Assembly_*/
+SourceArt/Room/Items/sky_src/
+SourceArt/Room/Items/*.blend1
+SourceArt/Room/*.blend1
+
+# MetaHuman desktop-only photo build (EnzoYoung, Cinematic): regenerate with assemble_metahumans.py
+Content/MetaHumans/Photo/

@@ -41,6 +41,10 @@ def capture():
         comp.set_editor_property("texture_target", rt)
         comp.set_editor_property("fov_angle", 100.0)
         comp.set_editor_property("capture_source", unreal.SceneCaptureSource.SCS_FINAL_COLOR_LDR)
+        try:   # wait for shader compilation and texture streaming (FunctionalTesting helper)
+            unreal.AutomationLibrary.finish_loading_before_screenshot()
+        except Exception:
+            pass
         comp.capture_scene()
         unreal.RenderingLibrary.export_render_target(world, rt, OUT_DIR, label + ".png")
         actors.destroy_actor(cap)
@@ -50,7 +54,9 @@ def capture():
 # Shaders for freshly loaded materials compile/load asynchronously, so capturing straight
 # after loading renders the default checker material. Load on an early tick, then let the
 # editor run for WAIT_SECONDS of wall-clock time before capturing.
-WAIT_SECONDS = 30.0
+# Override with the WG_CAPTURE_WAIT environment variable (seconds); new master materials can
+# take several minutes to compile on the first run.
+WAIT_SECONDS = float(os.environ.get("WG_CAPTURE_WAIT", "30"))
 _state = {"ticks": 0, "loaded_at": None, "done": False, "handle": None}
 
 

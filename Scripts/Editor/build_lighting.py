@@ -3,7 +3,9 @@
 Target look (reference from Lawrence, 2026-10-26): sun streaming through the
 window onto the floor, light spreading by bounce, soft shadows, clear blue sky. After the first
 headset test: "very bright inside, not very cinematic" -> less sky fill and darker walls, so the
-sun patch and window read against softer shade.
+sun patch and window read against softer shade. Second test: "the light is too bright, the
+highlight is very strong" -> sun 2.3 -> 1.5 with a wider source angle, sky 0.55 -> 0.45, pendant
+3.0 -> 1.5, dimmer sky outside the window.
 
   * Static sun (morning, from the north-east through the north window) -> crisp sun patch.
   * Static sky light from a daylight cubemap + a Lightmass portal on the window -> soft fill.
@@ -45,7 +47,8 @@ PALETTE = {
     "Curtain": (0.90, 0.88, 0.84),
 }
 
-# Lightmap resolution by actor label prefix (first match wins); everything else 32.
+# Greybox only: lightmap resolution by actor label prefix (first match wins); everything else 32.
+# Dressed meshes (outliner folder Env/*) use the per-mesh values from import_room_assets.py.
 LIGHTMAP_RES = [
     ("Floor", 512), ("Ceiling", 256), ("Wall_", 256), ("Rug", 128), ("Bed_", 128),
     ("Wardrobe", 128), ("Table_Top", 64), ("Recliner", 64), ("Curtain", 64),
@@ -89,6 +92,11 @@ def set_lightmaps():
         if comp.mobility != unreal.ComponentMobility.STATIC:
             continue
         label = a.get_actor_label()
+        if str(a.get_folder_path()).startswith("Env"):
+            # Dressed Blender meshes carry their own lightmap resolution and UV1 lightmap
+            # (set per mesh in import_room_assets.py); clear any old override.
+            comp.set_editor_property("override_light_map_res", False)
+            continue
         res = next((r for prefix, r in LIGHTMAP_RES if label.startswith(prefix)), 32)
         comp.set_editor_property("override_light_map_res", True)
         comp.set_editor_property("overridden_light_map_res", res)
@@ -120,9 +128,9 @@ def sky_gradient():
     sat = mel.create_material_expression(mat, unreal.MaterialExpressionSaturate, -450, 0)
     mel.connect_material_expressions(div, "", sat, "")
     horizon = mel.create_material_expression(mat, unreal.MaterialExpressionConstant3Vector, -450, 150)
-    horizon.set_editor_property("constant", unreal.LinearColor(0.62, 0.78, 0.95, 1))
+    horizon.set_editor_property("constant", unreal.LinearColor(0.52, 0.66, 0.82, 1))
     zenith = mel.create_material_expression(mat, unreal.MaterialExpressionConstant3Vector, -450, 280)
-    zenith.set_editor_property("constant", unreal.LinearColor(0.16, 0.42, 0.88, 1))
+    zenith.set_editor_property("constant", unreal.LinearColor(0.14, 0.36, 0.76, 1))
     lerp = mel.create_material_expression(mat, unreal.MaterialExpressionLinearInterpolate, -250, 100)
     mel.connect_material_expressions(horizon, "", lerp, "A")
     mel.connect_material_expressions(zenith, "", lerp, "B")
@@ -157,11 +165,11 @@ def build():
     sun = spawn(unreal.DirectionalLight, "Sun_Morning", (ROOM_X + 200, 225, 400), (0.0, -38.0, 215.0))
     lc = sun.light_component
     lc.set_mobility(unreal.ComponentMobility.STATIC)
-    lc.set_intensity(2.3)
+    lc.set_intensity(1.5)            # 2.3 read too bright with a hard highlight on device (2026-10-26)
     lc.set_light_color(unreal.LinearColor(1.0, 0.92, 0.80, 1.0))
-    lc.set_editor_property("light_source_angle", 0.7)          # defined but soft sun-patch edges
+    lc.set_editor_property("light_source_angle", 1.2)          # softer sun-patch edge
     lms = lc.get_editor_property("lightmass_settings")
-    lms.set_editor_property("light_source_angle", 0.7)
+    lms.set_editor_property("light_source_angle", 1.2)
     lms.set_editor_property("indirect_lighting_saturation", 1.0)
     lc.set_editor_property("lightmass_settings", lms)
 
@@ -172,7 +180,7 @@ def build():
     slc.set_editor_property("source_type", unreal.SkyLightSourceType.SLS_SPECIFIED_CUBEMAP)
     slc.set_editor_property("cubemap", unreal.load_asset(
         "/Engine/MapTemplates/Sky/DaylightAmbientCubemap.DaylightAmbientCubemap"))
-    slc.set_intensity(0.55)        # less flat fill: contrast between sun and shade
+    slc.set_intensity(0.45)        # less flat fill: contrast between sun and shade
 
     # Portal over the window opening (Y 100..350, Z 80..220) focuses sky light into the room.
     portal = spawn(unreal.LightmassPortal, "WindowPortal", (ROOM_X + 7, 225, 150))
@@ -182,7 +190,7 @@ def build():
     pend = spawn(unreal.PointLight, "PendantWarm", (250, 225, 235))
     plc = pend.light_component
     plc.set_mobility(unreal.ComponentMobility.STATIC)
-    plc.set_intensity(3.0)
+    plc.set_intensity(1.5)
     plc.set_attenuation_radius(450.0)
     plc.set_light_color(unreal.LinearColor(1.0, 0.85, 0.65, 1.0))
     plc.set_editor_property("source_radius", 20.0)
