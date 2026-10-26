@@ -1,0 +1,298 @@
+{
+ "DayDateClock": {
+  "bottom_verts": 48,
+  "on_support_<0.5cm": 28,
+  "no_support_below": 0,
+  "max_gap_cm": 0.69
+ },
+ "Rosary": {
+  "bottom_verts": 657,
+  "on_support_<0.5cm": 511,
+  "no_support_below": 0,
+  "max_gap_cm": 0.63
+ },
+ "Clipboard": {
+  "bottom_verts": 318,
+  "on_support_<0.5cm": 60,
+  "no_support_below": 0,
+  "max_gap_cm": 0.7
+ },
+ "MemoryBox": {
+  "bottom_verts": 48,
+  "on_support_<0.5cm": 32,
+  "no_support_below": 0,
+  "max_gap_cm": 0.55
+ },
+ "Madonna": {
+  "bottom_verts": 41,
+  "on_support_<0.5cm": 21,
+  "no_support_below": 0,
+  "max_gap_cm": 0.51
+ },
+ "Table": {
+  "bottom_verts": 33,
+  "on_support_<0.5cm": 33,
+  "no_support_below": 0,
+  "max_gap_cm": 0.2
+ },
+ "Chair_Maria": {
+  "bottom_verts": 40,
+  "on_support_<0.5cm": 40,
+  "no_support_below": 0,
+  "max_gap_cm": 0.44
+ },
+ "Chair_Second": {
+  "bottom_verts": 40,
+  "on_support_<0.5cm": 40,
+  "no_support_below": 0,
+  "max_gap_cm": 0.44
+ },
+ "Chair_Third": {
+  "bottom_verts": 40,
+  "on_support_<0.5cm": 40,
+  "no_support_below": 0,
+  "max_gap_cm": 0.44
+ },
+ "Vase": {
+  "bottom_verts": 33,
+  "on_support_<0.5cm": 33,
+  "no_support_below": 0,
+  "max_gap_cm": 0.2
+ },
+ "Jug": {
+  "bottom_verts": 49,
+  "on_support_<0.5cm": 17,
+  "no_support_below": 0,
+  "max_gap_cm": 0.61
+ },
+ "Glass": {
+  "bottom_verts": 65,
+  "on_support_<0.5cm": 65,
+  "no_support_below": 0,
+  "max_gap_cm": 0.45
+ },
+ "Hairbrush": {
+  "bottom_verts": 90,
+  "on_support_<0.5cm": 46,
+  "no_support_below": 0,
+  "max_gap_cm": 0.68
+ },
+ "CallBell": {
+  "bottom_verts": 198,
+  "on_support_<0.5cm": 128,
+  "no_support_below": 0,
+  "max_gap_cm": 0.7
+ },
+ "TV": {
+  "bottom_verts": 40,
+  "on_support_<0.5cm": 40,
+  "no_support_below": 0,
+  "max_gap_cm": 0.35
+ },
+ "SillPlant_0": {
+  "bottom_verts": 21,
+  "on_support_<0.5cm": 21,
+  "no_support_below": 0,
+  "max_gap_cm": 0.2
+ },
+ "SillPlant_1": {
+  "bottom_verts": 21,
+  "on_support_<0.5cm": 21,
+  "no_support_below": 0,
+  "max_gap_cm": 0.2
+ },
+ "Memory_Basil_0": {
+  "bottom_verts": 74,
+  "on_support_<0.5cm": 49,
+  "no_support_below": 0,
+  "max_gap_cm": 0.65
+ },
+ "Memory_Basil_1": {
+  "bottom_verts": 74,
+  "on_support_<0.5cm": 46,
+  "no_support_below": 0,
+  "max_gap_cm": 0.95
+ },
+ "Memory_Hose": {
+  "bottom_verts": 110,
+  "on_support_<0.5cm": 67,
+  "no_support_below": 0,
+  "max_gap_cm": 0.69
+ },
+ "Garden_Bed_0": {
+  "n": 80,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Bed_1": {
+  "n": 80,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Bed_2": {
+  "n": 80,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Bed_3": {
+  "n": 80,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Bed_4": {
+  "n": 80,
+  "no_lawn_below": 0,
+  "max_float_cm": -0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Bed_5": {
+  "n": 80,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Bed_6": {
+  "n": 80,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Tree_0": {
+  "n": 5,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.3,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Tree_1": {
+  "n": 8,
+  "no_lawn_below": 0,
+  "max_float_cm": -0.6,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Tree_2": {
+  "n": 5,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.3,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Tree_3": {
+  "n": 8,
+  "no_lawn_below": 0,
+  "max_float_cm": -0.6,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Shrub_0": {
+  "n": 8,
+  "no_lawn_below": 0,
+  "max_float_cm": -0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Shrub_1": {
+  "n": 8,
+  "no_lawn_below": 0,
+  "max_float_cm": -0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Shrub_2": {
+  "n": 8,
+  "no_lawn_below": 0,
+  "max_float_cm": -0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Shrub_3": {
+  "n": 8,
+  "no_lawn_below": 0,
+  "max_float_cm": -0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Bench": {
+  "n": 48,
+  "no_lawn_below": 0,
+  "max_float_cm": -0.1,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Fence_0": {
+  "n": 28,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Fence_1": {
+  "n": 28,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Fence_2": {
+  "n": 28,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Fence_3": {
+  "n": 28,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Fence_4": {
+  "n": 28,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Fence_5": {
+  "n": 28,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Fence_6": {
+  "n": 28,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Fence_7": {
+  "n": 28,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Fence_8": {
+  "n": 28,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Fence_9": {
+  "n": 28,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Fence_10": {
+  "n": 28,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "Garden_Fence_11": {
+  "n": 28,
+  "no_lawn_below": 0,
+  "max_float_cm": 0.0,
+  "max_sink_cm": 0.6
+ },
+ "floor|Bed": 0.02,
+ "floor|Bedside": 0.0,
+ "floor|Wardrobe": 0.0,
+ "floor|Recliner": 0.0,
+ "floor|Rug": 0.0,
+ "floor|TV_Cabinet": 0.0,
+ "floor|FloorLamp": 0.0,
+ "floor|Curtains": 1.0
+}

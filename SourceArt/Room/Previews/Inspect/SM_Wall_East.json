@@ -1,0 +1,60 @@
+{
+ "name": "SM_Wall_East",
+ "objects": [
+  "SM_Wall_East"
+ ],
+ "triangles": 12,
+ "vertices": 8,
+ "islands": 1,
+ "bounds_min_ue": [
+  -15.0,
+  450.0,
+  0.0
+ ],
+ "bounds_max_ue": [
+  515.0,
+  465.0,
+  270.0
+ ],
+ "size_ue": [
+  530.0,
+  15.0,
+  270.0
+ ],
+ "pivot_offset_from_bottom_centre": [
+  250.0,
+  457.5,
+  0.0
+ ],
+ "pivot_offset_from_centre": [
+  250.0,
+  457.5,
+  135.0
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_WallPaint"
+ ],
+ "materials_used": [
+  "M_WallPaint"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.666,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 36
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_Wall_East_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

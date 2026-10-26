@@ -1,0 +1,64 @@
+{
+ "name": "SM_FlowerBed_Daisy",
+ "objects": [
+  "SM_FlowerBed_Daisy"
+ ],
+ "triangles": 2272,
+ "vertices": 1364,
+ "islands": 114,
+ "bounds_min_ue": [
+  -36.07,
+  -142.02,
+  25.02
+ ],
+ "bounds_max_ue": [
+  -7.34,
+  139.03,
+  53.24
+ ],
+ "size_ue": [
+  28.73,
+  281.05,
+  28.22
+ ],
+ "pivot_offset_from_bottom_centre": [
+  -21.7,
+  -1.5,
+  25.02
+ ],
+ "pivot_offset_from_centre": [
+  -21.7,
+  -1.5,
+  39.13
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Flower",
+  "M_Plant",
+  "M_Soil"
+ ],
+ "materials_used": [
+  "M_Flower",
+  "M_Plant",
+  "M_Soil"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.026,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 6816
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_FlowerBed_Daisy_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

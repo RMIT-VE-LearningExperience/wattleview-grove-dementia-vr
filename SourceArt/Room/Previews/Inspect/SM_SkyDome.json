@@ -1,0 +1,60 @@
+{
+ "name": "SM_SkyDome",
+ "objects": [
+  "SM_SkyDome"
+ ],
+ "triangles": 2208,
+ "vertices": 1106,
+ "islands": 1,
+ "bounds_min_ue": [
+  -2497.22,
+  -2497.22,
+  -2500.0
+ ],
+ "bounds_max_ue": [
+  2497.22,
+  2497.22,
+  2500.0
+ ],
+ "size_ue": [
+  4994.44,
+  4994.44,
+  5000.0
+ ],
+ "pivot_offset_from_bottom_centre": [
+  0.0,
+  0.0,
+  -2500.0
+ ],
+ "pivot_offset_from_centre": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Sky"
+ ],
+ "materials_used": [
+  "M_Sky"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.783,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 6624
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_SkyDome_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

@@ -28,6 +28,7 @@ import unreal
 PROJECT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 SRC_ROOM = os.path.join(PROJECT, "SourceArt", "Room", "Export")
 SRC_TEX = os.path.join(PROJECT, "SourceArt", "Textures")
+SRC_PHOTOS = os.path.join(PROJECT, "SourceArt", "Photos")
 ENV = "/Game/Wattleview/Environment"
 TEX_DIR = ENV + "/Textures"
 MAT_DIR = ENV + "/Materials"
@@ -89,6 +90,10 @@ SLOTS = {
 GARDEN = {"SM_Lawn", "SM_FlowerBed", "SM_GardenTree_A", "SM_GardenTree_B", "SM_Shrub", "SM_Fence", "SM_GardenBench"}
 MEMORY = {"SM_TomatoPlant", "SM_BasilPot", "SM_FigTree", "SM_GardenHose"}
 SKY = {"SM_SkyDome"}
+# Mesh-specific slot materials: the wall photograph is a real picture (graded by
+# Scripts/Tools/grade_wall_photo.py); the gallery frames keep the plain M_Photo tint.
+# mesh -> {slot: (instance name, image in SourceArt/Photos)}
+PHOTOS = {"SM_PhotoFrame_MariaEnzo": {"M_Photo": ("MI_Photo_MariaEnzo", "T_Photo_MariaEnzo.jpg")}}
 
 LIGHTMAP_RES = {
     "SM_Floor": 1024, "SM_Ceiling": 512, "SM_Wall_North": 512, "SM_Wall_South": 512,
@@ -306,6 +311,39 @@ def build_instances(master, textures):
     return mis
 
 
+def build_photo_instances(master):
+    """Colour-mode instances showing a photograph 1:1 on a picture slot's own 0..1 UV map."""
+    out = {}
+    for mesh, slots in PHOTOS.items():
+        for slot, (mi_name, image) in slots.items():
+            f = os.path.join(SRC_PHOTOS, image)
+            if not os.path.exists(f):
+                log(f"photo {image} missing, {mesh} keeps {slot}")
+                continue
+            tex = import_file(f, TEX_DIR + "/Photos", os.path.splitext(image)[0])
+            tex.set_editor_property("lod_group", unreal.TextureGroup.TEXTUREGROUP_WORLD)
+            tex.set_editor_property("max_texture_size", 1024)
+            tex.set_editor_property("address_x", unreal.TextureAddress.TA_CLAMP)
+            tex.set_editor_property("address_y", unreal.TextureAddress.TA_CLAMP)
+            eas.save_loaded_asset(tex, False)
+            full = f"{MAT_DIR}/{mi_name}"
+            mi = unreal.load_asset(full) if eas.does_asset_exist(full) else tools.create_asset(
+                mi_name, MAT_DIR, unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
+            mi.set_editor_property("parent", master)
+            mel.clear_all_material_instance_parameters(mi)
+            mel.set_material_instance_static_switch_parameter_value(mi, "UseTextures", True)
+            mel.set_material_instance_texture_parameter_value(mi, "BaseTex", tex)
+            mel.set_material_instance_vector_parameter_value(mi, "Tint", unreal.LinearColor(1, 1, 1, 1))
+            for name, val in (("ColourMode", 1.0), ("Lift", 0.0), ("Tiling", 1.0), ("Roughness", 0.5),
+                              ("NormalStrength", 0.0), ("ARMRoughnessWeight", 0.0)):
+                mel.set_material_instance_scalar_parameter_value(mi, name, val)
+            mel.update_material_instance(mi)
+            eas.save_loaded_asset(mi, False)
+            out.setdefault(mesh, {})[slot] = mi
+            log(f"photo {image} -> {mi_name} on {mesh}.{slot}")
+    return out
+
+
 # ------------------------------------------------------------------ meshes
 def mesh_folder(name):
     if name in GARDEN:
@@ -343,7 +381,7 @@ def assign_slot_materials(mesh, mis, override=None):
     return unknown
 
 
-def import_meshes(mis, sky_mat):
+def import_meshes(mis, sky_mat, photo_mis=None):
     files = sorted(f for f in os.listdir(SRC_ROOM) if f.startswith("SM_") and f.lower().endswith(".fbx"))
     report = []
     for f in files:
@@ -388,7 +426,8 @@ def import_meshes(mis, sky_mat):
             mesh.set_editor_property("nanite_settings", ns)
         except Exception:
             pass
-        unknown = assign_slot_materials(mesh, mis, sky_mat if name in SKY else None)
+        slot_mis = {**mis, **(photo_mis or {}).get(name, {})}
+        unknown = assign_slot_materials(mesh, slot_mis, sky_mat if name in SKY else None)
         if name in SKY:
             mesh.set_editor_property("light_map_resolution", 4)
         eas.save_loaded_asset(mesh, False)
@@ -408,7 +447,7 @@ def main():
     master = build_master(textures)
     sky_mat = build_sky_material(textures["__sky__"]) if "__sky__" in textures else None
     mis = build_instances(master, textures)
-    import_meshes(mis, sky_mat)
+    import_meshes(mis, sky_mat, build_photo_instances(master))
     log("done")
 
 

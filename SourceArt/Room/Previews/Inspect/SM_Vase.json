@@ -1,0 +1,66 @@
+{
+ "name": "SM_Vase",
+ "objects": [
+  "SM_Vase"
+ ],
+ "triangles": 1184,
+ "vertices": 622,
+ "islands": 15,
+ "bounds_min_ue": [
+  -7.08,
+  -6.12,
+  0.0
+ ],
+ "bounds_max_ue": [
+  8.34,
+  5.46,
+  31.43
+ ],
+ "size_ue": [
+  15.42,
+  11.58,
+  31.43
+ ],
+ "pivot_offset_from_bottom_centre": [
+  0.63,
+  -0.33,
+  0.0
+ ],
+ "pivot_offset_from_centre": [
+  0.63,
+  -0.33,
+  15.71
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Ceramic",
+  "M_Flower",
+  "M_Plant",
+  "M_PlantDark"
+ ],
+ "materials_used": [
+  "M_Ceramic",
+  "M_Flower",
+  "M_Plant",
+  "M_PlantDark"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.21,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 3552
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_Vase_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

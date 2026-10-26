@@ -1,0 +1,1906 @@
+{
+ "uv": {
+  "SM_Armchair": [
+   {
+    "obj": "SM_Armchair",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Timber",
+     "M_UpholsteryCream"
+    ]
+   }
+  ],
+  "SM_BasilPot": [
+   {
+    "obj": "SM_BasilPot",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Terracotta",
+     "M_Soil",
+     "M_Plant"
+    ]
+   }
+  ],
+  "SM_Bed": [
+   {
+    "obj": "SM_Bed",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Metal",
+     "M_PlasticBlack",
+     "M_Linen",
+     "M_Timber.001"
+    ]
+   }
+  ],
+  "SM_BedLinen": [
+   {
+    "obj": "SM_BedLinen",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Linen.001",
+     "M_FloralCover",
+     "M_Crochet"
+    ]
+   }
+  ],
+  "SM_Bedside": [
+   {
+    "obj": "SM_Bedside",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Timber.002",
+     "M_TimberDark",
+     "M_Metal.001"
+    ]
+   }
+  ],
+  "SM_Calendar": [
+   {
+    "obj": "SM_Calendar",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Paper",
+     "M_Photo",
+     "M_Flower",
+     "M_Metal.002"
+    ]
+   }
+  ],
+  "SM_CallBell": [
+   {
+    "obj": "SM_CallBell",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_PlasticWhite",
+     "M_FlowerRed"
+    ]
+   }
+  ],
+  "SM_Ceiling": [
+   {
+    "obj": "SM_Ceiling",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Ceiling"
+    ]
+   }
+  ],
+  "SM_CeilingFan": [
+   {
+    "obj": "SM_CeilingFan",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_PlasticWhite.001",
+     "M_Glass",
+     "M_Timber.003",
+     "M_Metal.003"
+    ]
+   }
+  ],
+  "SM_Clipboard": [
+   {
+    "obj": "SM_Clipboard",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_TimberDark.001",
+     "M_Paper.001",
+     "M_Metal.004"
+    ]
+   }
+  ],
+  "SM_Cornice": [
+   {
+    "obj": "SM_Cornice",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Ceiling.001"
+    ]
+   }
+  ],
+  "SM_CurtainRod": [
+   {
+    "obj": "SM_CurtainRod",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Metal.005"
+    ]
+   }
+  ],
+  "SM_Curtains": [
+   {
+    "obj": "SM_Curtains",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Curtain",
+     "M_Metal.006"
+    ]
+   }
+  ],
+  "SM_DayDateClock": [
+   {
+    "obj": "SM_DayDateClock",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_PlasticWhite.002",
+     "M_Screen",
+     "M_PlasticBlack.001"
+    ]
+   }
+  ],
+  "SM_Door": [
+   {
+    "obj": "SM_Door",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_DoorTimber",
+     "M_Metal.007"
+    ]
+   }
+  ],
+  "SM_DoorFrame": [
+   {
+    "obj": "SM_DoorFrame",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_PaintedTimber"
+    ]
+   }
+  ],
+  "SM_DoorHandle": [
+   {
+    "obj": "SM_DoorHandle",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Metal.008"
+    ]
+   }
+  ],
+  "SM_Fence": [
+   {
+    "obj": "SM_Fence",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Timber.004"
+    ]
+   }
+  ],
+  "SM_FigTree": [
+   {
+    "obj": "SM_FigTree",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Bark",
+     "M_Soil.001",
+     "M_Plant.001",
+     "M_PlantDark"
+    ]
+   }
+  ],
+  "SM_Floor": [
+   {
+    "obj": "SM_Floor",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Carpet"
+    ]
+   }
+  ],
+  "SM_FloorLamp": [
+   {
+    "obj": "SM_FloorLamp",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Brass",
+     "M_PlasticBlack.002",
+     "M_PlasticWhite.003",
+     "M_LampShade"
+    ]
+   }
+  ],
+  "SM_FlowerBed": [
+   {
+    "obj": "SM_FlowerBed",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Timber.005",
+     "M_Soil.002",
+     "M_Plant.002",
+     "M_FlowerRed.001"
+    ]
+   }
+  ],
+  "SM_GardenBench": [
+   {
+    "obj": "SM_GardenBench",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Timber.006"
+    ]
+   }
+  ],
+  "SM_GardenHose": [
+   {
+    "obj": "SM_GardenHose",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Plant.003",
+     "M_Brass.001",
+     "M_PlasticBlack.003"
+    ]
+   }
+  ],
+  "SM_GardenTree_A": [
+   {
+    "obj": "SM_GardenTree_A",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Bark.001",
+     "M_PlantDark.001"
+    ]
+   }
+  ],
+  "SM_GardenTree_B": [
+   {
+    "obj": "SM_GardenTree_B",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Bark.002",
+     "M_Plant.004"
+    ]
+   }
+  ],
+  "SM_Glass": [
+   {
+    "obj": "SM_Glass",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Glass.001"
+    ]
+   }
+  ],
+  "SM_Hairbrush": [
+   {
+    "obj": "SM_Hairbrush",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_TimberDark.002",
+     "M_Rubber",
+     "M_Metal.009"
+    ]
+   }
+  ],
+  "SM_Jug": [
+   {
+    "obj": "SM_Jug",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Glass.002"
+    ]
+   }
+  ],
+  "SM_Lawn": [
+   {
+    "obj": "SM_Lawn",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Grass"
+    ]
+   }
+  ],
+  "SM_Madonna": [
+   {
+    "obj": "SM_Madonna",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Ceramic",
+     "M_Gold"
+    ]
+   }
+  ],
+  "SM_MemoryBox": [
+   {
+    "obj": "SM_MemoryBox",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_TimberDark.003",
+     "M_Brass.002"
+    ]
+   }
+  ],
+  "SM_PhotoFrame_MariaEnzo": [
+   {
+    "obj": "SM_PhotoFrame_MariaEnzo",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_TimberDark.004",
+     "M_Gold.001",
+     "M_Paper.002",
+     "M_Photo.001"
+    ]
+   }
+  ],
+  "SM_PhotoFrame_Small": [
+   {
+    "obj": "SM_PhotoFrame_Small",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Timber.007",
+     "M_Photo.002",
+     "M_TimberDark.005"
+    ]
+   }
+  ],
+  "SM_PhotoFrame_Wide": [
+   {
+    "obj": "SM_PhotoFrame_Wide",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_TimberDark.006",
+     "M_Paper.003",
+     "M_Photo.003"
+    ]
+   }
+  ],
+  "SM_PlantPot": [
+   {
+    "obj": "SM_PlantPot",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Ceramic.001",
+     "M_Soil.003",
+     "M_Plant.005",
+     "M_FlowerRed.002"
+    ]
+   }
+  ],
+  "SM_Recliner": [
+   {
+    "obj": "SM_Recliner",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_UpholsteryPink",
+     "M_TimberDark.007",
+     "M_Crochet.001"
+    ]
+   }
+  ],
+  "SM_Rosary": [
+   {
+    "obj": "SM_Rosary",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_TimberDark.008",
+     "M_Metal.010"
+    ]
+   }
+  ],
+  "SM_RoundTable": [
+   {
+    "obj": "SM_RoundTable",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Timber.008"
+    ]
+   }
+  ],
+  "SM_Rug": [
+   {
+    "obj": "SM_Rug",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Rug"
+    ]
+   }
+  ],
+  "SM_Shelf": [
+   {
+    "obj": "SM_Shelf",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Timber.009"
+    ]
+   }
+  ],
+  "SM_Shrub": [
+   {
+    "obj": "SM_Shrub",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Bark.003",
+     "M_Plant.006"
+    ]
+   }
+  ],
+  "SM_Skirting": [
+   {
+    "obj": "SM_Skirting",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_PaintedTimber.001"
+    ]
+   }
+  ],
+  "SM_SkyDome": [
+   {
+    "obj": "SM_SkyDome",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Sky"
+    ]
+   }
+  ],
+  "SM_TV": [
+   {
+    "obj": "SM_TV",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_PlasticBlack.004"
+    ]
+   }
+  ],
+  "SM_TVCabinet": [
+   {
+    "obj": "SM_TVCabinet",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Timber.010",
+     "M_Metal.011"
+    ]
+   }
+  ],
+  "SM_TVScreen": [
+   {
+    "obj": "SM_TVScreen",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Screen.001"
+    ]
+   }
+  ],
+  "SM_TomatoPlant": [
+   {
+    "obj": "SM_TomatoPlant",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Soil.004",
+     "M_Timber.011",
+     "M_Plant.007",
+     "M_FlowerRed.003"
+    ]
+   }
+  ],
+  "SM_Vase": [
+   {
+    "obj": "SM_Vase",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Ceramic.002",
+     "M_Plant.008",
+     "M_Flower.001",
+     "M_PlantDark.002"
+    ]
+   }
+  ],
+  "SM_Wall_East": [
+   {
+    "obj": "SM_Wall_East",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_WallPaint"
+    ]
+   }
+  ],
+  "SM_Wall_North": [
+   {
+    "obj": "SM_Wall_North",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_WallPaint.001"
+    ]
+   }
+  ],
+  "SM_Wall_South": [
+   {
+    "obj": "SM_Wall_South",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_WallPaint.002"
+    ]
+   }
+  ],
+  "SM_Wall_West": [
+   {
+    "obj": "SM_Wall_West",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_WallPaint.003"
+    ]
+   }
+  ],
+  "SM_Wardrobe": [
+   {
+    "obj": "SM_Wardrobe",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_Timber.012",
+     "M_TimberDark.009",
+     "M_Metal.012"
+    ]
+   }
+  ],
+  "SM_WindowFrame": [
+   {
+    "obj": "SM_WindowFrame",
+    "uv": [
+     "UVMap",
+     "Lightmap"
+    ],
+    "slots": [
+     "M_PaintedTimber.002"
+    ]
+   }
+  ]
+ },
+ "unplaced": [],
+ "bad_slots": {},
+ "overlay_contacts": [],
+ "near_pairs_lt3cm": [
+  {
+   "a": "Floor",
+   "b": "Bedside",
+   "cm": 0.0,
+   "at": [
+    288.8,
+    404.2,
+    0.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "Wardrobe",
+   "cm": 0.0,
+   "at": [
+    5.3,
+    146.3,
+    0.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "Recliner",
+   "cm": 0.0,
+   "at": [
+    253.4,
+    90.3,
+    0.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "Rug",
+   "cm": 0.0,
+   "at": [
+    492.7,
+    109.0,
+    0.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "TV_Cabinet",
+   "cm": 0.0,
+   "at": [
+    377.0,
+    443.0,
+    0.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "FloorLamp",
+   "cm": 0.0,
+   "at": [
+    28.0,
+    440.3,
+    0.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Ceiling",
+   "b": "CeilingFan",
+   "cm": 0.0,
+   "at": [
+    250.0,
+    225.0,
+    270.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "Bed",
+   "cm": 0.02,
+   "at": [
+    140.8,
+    256.0,
+    0.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_North",
+   "b": "CurtainRod",
+   "cm": 0.2,
+   "at": [
+    499.8,
+    38.0,
+    242.3
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_South",
+   "b": "Shelf",
+   "cm": 0.2,
+   "at": [
+    0.2,
+    320.3,
+    125.3
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_East",
+   "b": "Gallery_0",
+   "cm": 0.2,
+   "at": [
+    135.0,
+    449.8,
+    190.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_East",
+   "b": "Gallery_1",
+   "cm": 0.2,
+   "at": [
+    175.0,
+    449.8,
+    192.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_East",
+   "b": "Gallery_2",
+   "cm": 0.2,
+   "at": [
+    229.0,
+    449.8,
+    189.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_East",
+   "b": "Gallery_3",
+   "cm": 0.2,
+   "at": [
+    145.0,
+    449.8,
+    230.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_East",
+   "b": "Gallery_4",
+   "cm": 0.2,
+   "at": [
+    200.0,
+    449.8,
+    234.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_West",
+   "b": "Photo_Frame",
+   "cm": 0.2,
+   "at": [
+    330.0,
+    0.2,
+    170.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_West",
+   "b": "Calendar",
+   "cm": 0.2,
+   "at": [
+    175.0,
+    0.2,
+    115.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "WindowFrame",
+   "b": "SillPlant_0",
+   "cm": 0.2,
+   "at": [
+    499.0,
+    130.0,
+    80.2
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "WindowFrame",
+   "b": "SillPlant_1",
+   "cm": 0.2,
+   "at": [
+    490.2,
+    323.2,
+    80.2
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Curtains",
+   "b": "CurtainRod",
+   "cm": 0.2,
+   "at": [
+    479.0,
+    44.5,
+    244.3
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Bedside",
+   "b": "DayDateClock",
+   "cm": 0.2,
+   "at": [
+    257.1,
+    434.8,
+    62.2
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Bedside",
+   "b": "Rosary",
+   "cm": 0.2,
+   "at": [
+    280.0,
+    412.9,
+    62.2
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Shelf",
+   "b": "Clipboard",
+   "cm": 0.2,
+   "at": [
+    24.3,
+    352.9,
+    127.7
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Shelf",
+   "b": "MemoryBox",
+   "cm": 0.2,
+   "at": [
+    4.6,
+    386.9,
+    127.7
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Shelf",
+   "b": "Madonna",
+   "cm": 0.2,
+   "at": [
+    14.0,
+    397.0,
+    127.7
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Rug",
+   "b": "Table",
+   "cm": 0.2,
+   "at": [
+    395.0,
+    202.5,
+    0.5
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Rug",
+   "b": "Chair_Maria",
+   "cm": 0.2,
+   "at": [
+    356.3,
+    222.2,
+    0.7
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Rug",
+   "b": "Chair_Second",
+   "cm": 0.2,
+   "at": [
+    422.2,
+    246.7,
+    0.7
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Rug",
+   "b": "Chair_Third",
+   "cm": 0.2,
+   "at": [
+    428.7,
+    162.1,
+    0.7
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Rug",
+   "b": "Memory_Tomato_0",
+   "cm": 0.2,
+   "at": [
+    451.5,
+    138.5,
+    0.7
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Rug",
+   "b": "Memory_Tomato_1",
+   "cm": 0.2,
+   "at": [
+    468.0,
+    203.0,
+    0.7
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Rug",
+   "b": "Memory_Tomato_2",
+   "cm": 0.2,
+   "at": [
+    477.5,
+    294.5,
+    0.7
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Table",
+   "b": "Vase",
+   "cm": 0.2,
+   "at": [
+    418.0,
+    196.0,
+    75.9
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Table",
+   "b": "Jug",
+   "cm": 0.2,
+   "at": [
+    406.0,
+    163.0,
+    75.9
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Table",
+   "b": "Glass",
+   "cm": 0.2,
+   "at": [
+    378.0,
+    225.0,
+    75.9
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Table",
+   "b": "Hairbrush",
+   "cm": 0.2,
+   "at": [
+    373.3,
+    182.5,
+    75.9
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Table",
+   "b": "CallBell",
+   "cm": 0.2,
+   "at": [
+    379.2,
+    160.3,
+    75.9
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Table",
+   "b": "Memory_Basil_0",
+   "cm": 0.2,
+   "at": [
+    425.0,
+    178.0,
+    75.9
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Table",
+   "b": "Memory_Basil_1",
+   "cm": 0.2,
+   "at": [
+    427.8,
+    236.3,
+    75.7
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Table",
+   "b": "Memory_Hose",
+   "cm": 0.2,
+   "at": [
+    391.6,
+    215.2,
+    75.9
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "TV_Cabinet",
+   "b": "TV",
+   "cm": 0.2,
+   "at": [
+    434.5,
+    437.4,
+    60.2
+   ],
+   "rest_pair": true
+  },
+  {
+   "a": "Curtains",
+   "b": "Memory_Tomato_0",
+   "cm": 0.36,
+   "at": [
+    475.7,
+    112.6,
+    1.2
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Bed",
+   "b": "Bed_Linen",
+   "cm": 0.36,
+   "at": [
+    177.5,
+    241.5,
+    56.9
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Curtains",
+   "b": "Rug",
+   "cm": 0.56,
+   "at": [
+    473.8,
+    105.7,
+    1.2
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Skirting",
+   "b": "Rug",
+   "cm": 0.6,
+   "at": [
+    497.6,
+    288.9,
+    0.1
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "Table",
+   "cm": 0.73,
+   "at": [
+    400.0,
+    200.0,
+    0.7
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "Chair_Maria",
+   "cm": 0.73,
+   "at": [
+    356.3,
+    222.2,
+    0.7
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "Chair_Second",
+   "cm": 0.73,
+   "at": [
+    422.2,
+    246.7,
+    0.7
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "Chair_Third",
+   "cm": 0.73,
+   "at": [
+    428.7,
+    162.1,
+    0.7
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "Memory_Tomato_0",
+   "cm": 0.73,
+   "at": [
+    451.5,
+    138.5,
+    0.7
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "Memory_Tomato_1",
+   "cm": 0.73,
+   "at": [
+    468.0,
+    203.0,
+    0.7
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "Memory_Tomato_2",
+   "cm": 0.73,
+   "at": [
+    477.5,
+    294.5,
+    0.7
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Floor",
+   "b": "Curtains",
+   "cm": 1.0,
+   "at": [
+    479.2,
+    359.2,
+    1.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Skirting",
+   "b": "Memory_Tomato_1",
+   "cm": 1.58,
+   "at": [
+    496.7,
+    218.1,
+    6.7
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Chair_Third",
+   "b": "Memory_Tomato_0",
+   "cm": 1.85,
+   "at": [
+    470.5,
+    149.5,
+    0.9
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Skirting",
+   "b": "Wardrobe",
+   "cm": 1.91,
+   "at": [
+    3.0,
+    145.9,
+    8.1
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_East",
+   "b": "TV_Cabinet",
+   "cm": 2.0,
+   "at": [
+    480.2,
+    448.0,
+    58.3
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Clipboard",
+   "b": "MemoryBox",
+   "cm": 2.0,
+   "at": [
+    18.9,
+    353.0,
+    128.1
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Gallery_1",
+   "b": "Gallery_4",
+   "cm": 2.0,
+   "at": [
+    220.0,
+    449.8,
+    192.0
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_North",
+   "b": "SillPlant_0",
+   "cm": 2.14,
+   "at": [
+    500.3,
+    130.0,
+    81.3
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_North",
+   "b": "SillPlant_1",
+   "cm": 2.18,
+   "at": [
+    500.2,
+    319.2,
+    81.3
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_North",
+   "b": "Rug",
+   "cm": 2.4,
+   "at": [
+    497.6,
+    288.9,
+    0.1
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_South",
+   "b": "Clipboard",
+   "cm": 2.5,
+   "at": [
+    2.5,
+    351.8,
+    127.8
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "WindowFrame",
+   "b": "Memory_Tomato_2",
+   "cm": 2.64,
+   "at": [
+    483.4,
+    276.1,
+    78.6
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Curtains",
+   "b": "TV_Cabinet",
+   "cm": 2.65,
+   "at": [
+    475.9,
+    402.8,
+    33.4
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_North",
+   "b": "Memory_Tomato_0",
+   "cm": 2.66,
+   "at": [
+    497.3,
+    133.4,
+    30.7
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Skirting",
+   "b": "TV_Cabinet",
+   "cm": 2.7,
+   "at": [
+    400.0,
+    449.5,
+    9.9
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "SillPlant_0",
+   "b": "Memory_Tomato_0",
+   "cm": 2.8,
+   "at": [
+    484.4,
+    126.1,
+    90.2
+   ],
+   "rest_pair": false
+  },
+  {
+   "a": "Wall_South",
+   "b": "MemoryBox",
+   "cm": 2.95,
+   "at": [
+    2.9,
+    385.4,
+    139.7
+   ],
+   "rest_pair": false
+  }
+ ],
+ "support": [
+  {
+   "label": "DayDateClock",
+   "support": "Bedside",
+   "bottom_verts": 28,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.46
+  },
+  {
+   "label": "Rosary",
+   "support": "Bedside",
+   "bottom_verts": 421,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.5
+  },
+  {
+   "label": "Clipboard",
+   "support": "Shelf",
+   "bottom_verts": 60,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.42
+  },
+  {
+   "label": "MemoryBox",
+   "support": "Shelf",
+   "bottom_verts": 32,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.35
+  },
+  {
+   "label": "Madonna",
+   "support": "Shelf",
+   "bottom_verts": 17,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.2
+  },
+  {
+   "label": "Table",
+   "support": "Rug",
+   "bottom_verts": 33,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.2
+  },
+  {
+   "label": "Chair_Maria",
+   "support": "Rug",
+   "bottom_verts": 40,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.44
+  },
+  {
+   "label": "Chair_Second",
+   "support": "Rug",
+   "bottom_verts": 40,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.44
+  },
+  {
+   "label": "Chair_Third",
+   "support": "Rug",
+   "bottom_verts": 40,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.44
+  },
+  {
+   "label": "Vase",
+   "support": "Table",
+   "bottom_verts": 19,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.2
+  },
+  {
+   "label": "Jug",
+   "support": "Table",
+   "bottom_verts": 13,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.2
+  },
+  {
+   "label": "Glass",
+   "support": "Table",
+   "bottom_verts": 65,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.45
+  },
+  {
+   "label": "Hairbrush",
+   "support": "Table",
+   "bottom_verts": 45,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.5
+  },
+  {
+   "label": "CallBell",
+   "support": "Table",
+   "bottom_verts": 70,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.49
+  },
+  {
+   "label": "TV",
+   "support": "TV_Cabinet",
+   "bottom_verts": 40,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.35
+  },
+  {
+   "label": "SillPlant_0",
+   "support": "WindowFrame",
+   "bottom_verts": 22,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.2
+  },
+  {
+   "label": "SillPlant_1",
+   "support": "WindowFrame",
+   "bottom_verts": 22,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.2
+  },
+  {
+   "label": "Memory_Tomato_0",
+   "support": "Rug",
+   "bottom_verts": 60,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.32
+  },
+  {
+   "label": "Memory_Tomato_1",
+   "support": "Rug",
+   "bottom_verts": 60,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.32
+  },
+  {
+   "label": "Memory_Tomato_2",
+   "support": "Rug",
+   "bottom_verts": 60,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.32
+  },
+  {
+   "label": "Memory_Basil_0",
+   "support": "Table",
+   "bottom_verts": 21,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.2
+  },
+  {
+   "label": "Memory_Basil_1",
+   "support": "Table",
+   "bottom_verts": 21,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.36
+  },
+  {
+   "label": "Memory_Hose",
+   "support": "Table",
+   "bottom_verts": 39,
+   "no_support": 0,
+   "gap_gt_1cm": 0,
+   "max_gap_cm": 0.5
+  }
+ ],
+ "exterior_support": [
+  {
+   "label": "Memory_Fig",
+   "bottom_verts": 30,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.25,
+   "max_sink_cm": -0.13
+  },
+  {
+   "label": "Garden_Bed_0",
+   "bottom_verts": 128,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.2,
+   "max_sink_cm": 0.8
+  },
+  {
+   "label": "Garden_Bed_1",
+   "bottom_verts": 128,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.2,
+   "max_sink_cm": 0.8
+  },
+  {
+   "label": "Garden_Bed_2",
+   "bottom_verts": 128,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.2,
+   "max_sink_cm": 0.8
+  },
+  {
+   "label": "Garden_Bed_3",
+   "bottom_verts": 128,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.2,
+   "max_sink_cm": 0.8
+  },
+  {
+   "label": "Garden_Bed_4",
+   "bottom_verts": 128,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.2,
+   "max_sink_cm": 0.8
+  },
+  {
+   "label": "Garden_Bed_5",
+   "bottom_verts": 128,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.2,
+   "max_sink_cm": 0.8
+  },
+  {
+   "label": "Garden_Bed_6",
+   "bottom_verts": 128,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.2,
+   "max_sink_cm": 0.8
+  },
+  {
+   "label": "Garden_Tree_0",
+   "bottom_verts": 5,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.04,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Tree_1",
+   "bottom_verts": 8,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.56,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Tree_2",
+   "bottom_verts": 5,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.04,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Tree_3",
+   "bottom_verts": 8,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.56,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Shrub_0",
+   "bottom_verts": 10,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.64,
+   "max_sink_cm": 1.68
+  },
+  {
+   "label": "Garden_Shrub_1",
+   "bottom_verts": 10,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.3,
+   "max_sink_cm": 1.3
+  },
+  {
+   "label": "Garden_Shrub_2",
+   "bottom_verts": 10,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.66,
+   "max_sink_cm": 1.68
+  },
+  {
+   "label": "Garden_Shrub_3",
+   "bottom_verts": 10,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.4,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Bench",
+   "bottom_verts": 48,
+   "no_lawn_below": 0,
+   "max_float_cm": -0.3,
+   "max_sink_cm": 0.8
+  },
+  {
+   "label": "Garden_Fence_0",
+   "bottom_verts": 28,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.0,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Fence_1",
+   "bottom_verts": 28,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.0,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Fence_2",
+   "bottom_verts": 28,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.0,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Fence_3",
+   "bottom_verts": 28,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.0,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Fence_4",
+   "bottom_verts": 28,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.0,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Fence_5",
+   "bottom_verts": 28,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.0,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Fence_6",
+   "bottom_verts": 28,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.0,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Fence_7",
+   "bottom_verts": 28,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.0,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Fence_8",
+   "bottom_verts": 28,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.0,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Fence_9",
+   "bottom_verts": 28,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.0,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Fence_10",
+   "bottom_verts": 28,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.0,
+   "max_sink_cm": 0.6
+  },
+  {
+   "label": "Garden_Fence_11",
+   "bottom_verts": 28,
+   "no_lawn_below": 0,
+   "max_float_cm": 0.0,
+   "max_sink_cm": 0.6
+  }
+ ],
+ "containment": [
+  {
+   "a_vertices_inside": "Chair_Third",
+   "of": "Memory_Tomato_0",
+   "n": 12,
+   "sampled": 45
+  },
+  {
+   "a_vertices_inside": "SillPlant_0",
+   "of": "Memory_Tomato_0",
+   "n": 1,
+   "sampled": 155
+  }
+ ],
+ "tri_totals": {
+  "shell": 6562,
+  "soft": 9436,
+  "furniture": 29452,
+  "prop": 13412,
+  "wall": 3158,
+  "overlay": 16168,
+  "exterior": 62285,
+  "sky": 2208
+ }
+}

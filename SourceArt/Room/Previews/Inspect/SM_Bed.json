@@ -1,0 +1,66 @@
+{
+ "name": "SM_Bed",
+ "objects": [
+  "SM_Bed"
+ ],
+ "triangles": 4286,
+ "vertices": 2149,
+ "islands": 18,
+ "bounds_min_ue": [
+  -104.9,
+  -51.9,
+  0.02
+ ],
+ "bounds_max_ue": [
+  104.9,
+  51.9,
+  105.0
+ ],
+ "size_ue": [
+  209.8,
+  103.8,
+  104.98
+ ],
+ "pivot_offset_from_bottom_centre": [
+  0.0,
+  0.0,
+  0.02
+ ],
+ "pivot_offset_from_centre": [
+  0.0,
+  0.0,
+  52.51
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Linen",
+  "M_Metal",
+  "M_PlasticBlack",
+  "M_Timber"
+ ],
+ "materials_used": [
+  "M_Linen",
+  "M_Metal",
+  "M_PlasticBlack",
+  "M_Timber"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.238,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 12858
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_Bed_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

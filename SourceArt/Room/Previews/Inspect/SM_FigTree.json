@@ -1,0 +1,66 @@
+{
+ "name": "SM_FigTree",
+ "objects": [
+  "SM_FigTree"
+ ],
+ "triangles": 2896,
+ "vertices": 2325,
+ "islands": 125,
+ "bounds_min_ue": [
+  -96.78,
+  -105.84,
+  0.0
+ ],
+ "bounds_max_ue": [
+  100.05,
+  111.35,
+  232.05
+ ],
+ "size_ue": [
+  196.83,
+  217.19,
+  232.05
+ ],
+ "pivot_offset_from_bottom_centre": [
+  1.63,
+  2.75,
+  0.0
+ ],
+ "pivot_offset_from_centre": [
+  1.63,
+  2.75,
+  116.03
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Bark",
+  "M_Plant",
+  "M_PlantDark",
+  "M_Soil"
+ ],
+ "materials_used": [
+  "M_Bark",
+  "M_Plant",
+  "M_PlantDark",
+  "M_Soil"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 1482,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.251,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 8688
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_FigTree_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

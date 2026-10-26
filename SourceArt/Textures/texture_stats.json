@@ -1,0 +1,122 @@
+{
+ "ash_veneer": {
+  "mean_lum_linear": 0.3228,
+  "mean_rgb_linear": [
+   0.4135,
+   0.2986,
+   0.2061
+  ]
+ },
+ "bark_bluegum": {
+  "mean_lum_linear": 0.084,
+  "mean_rgb_linear": [
+   0.1069,
+   0.0778,
+   0.0546
+  ]
+ },
+ "beige_wall_001": {
+  "mean_lum_linear": 0.2775,
+  "mean_rgb_linear": [
+   0.3423,
+   0.2637,
+   0.1875
+  ]
+ },
+ "beige_wall_002": {
+  "mean_lum_linear": 0.1716,
+  "mean_rgb_linear": [
+   0.2269,
+   0.1582,
+   0.0922
+  ]
+ },
+ "brown_leather": {
+  "mean_lum_linear": 0.0418,
+  "mean_rgb_linear": [
+   0.0833,
+   0.0274,
+   0.0056
+  ]
+ },
+ "caban": {
+  "mean_lum_linear": 0.2631,
+  "mean_rgb_linear": [
+   0.6168,
+   0.1323,
+   0.0013
+  ]
+ },
+ "cotton_jersey": {
+  "mean_lum_linear": 0.4383,
+  "mean_rgb_linear": [
+   0.5397,
+   0.4053,
+   0.3369
+  ]
+ },
+ "crepe_georgette": {
+  "mean_lum_linear": 0.568,
+  "mean_rgb_linear": [
+   0.241,
+   0.7338,
+   0.5858
+  ]
+ },
+ "dirty_carpet": {
+  "mean_lum_linear": 0.0328,
+  "mean_rgb_linear": [
+   0.0394,
+   0.0316,
+   0.0208
+  ]
+ },
+ "farm_soil": {
+  "mean_lum_linear": 0.0623,
+  "mean_rgb_linear": [
+   0.0986,
+   0.0514,
+   0.0217
+  ]
+ },
+ "floral_jacquard": {
+  "mean_lum_linear": 0.0555,
+  "mean_rgb_linear": [
+   0.0557,
+   0.0542,
+   0.0619
+  ]
+ },
+ "hessian_380": {
+  "mean_lum_linear": 0.3146,
+  "mean_rgb_linear": [
+   0.4372,
+   0.2833,
+   0.149
+  ]
+ },
+ "leafy_grass": {
+  "mean_lum_linear": 0.2467,
+  "mean_rgb_linear": [
+   0.3199,
+   0.236,
+   0.1062
+  ]
+ },
+ "rough_linen": {
+  "mean_lum_linear": 0.3956,
+  "mean_rgb_linear": [
+   0.2871,
+   0.4099,
+   0.6157
+  ]
+ },
+ "wool_boucle": {
+  "mean_lum_linear": 0.2126,
+  "mean_rgb_linear": [
+   0.2437,
+   0.2056,
+   0.1654
+  ]
+ }
+}

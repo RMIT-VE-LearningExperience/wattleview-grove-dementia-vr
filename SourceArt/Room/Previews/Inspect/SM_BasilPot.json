@@ -1,0 +1,64 @@
+{
+ "name": "SM_BasilPot",
+ "objects": [
+  "SM_BasilPot"
+ ],
+ "triangles": 2966,
+ "vertices": 2352,
+ "islands": 106,
+ "bounds_min_ue": [
+  -9.82,
+  -10.01,
+  0.0
+ ],
+ "bounds_max_ue": [
+  8.22,
+  10.33,
+  22.74
+ ],
+ "size_ue": [
+  18.04,
+  20.34,
+  22.74
+ ],
+ "pivot_offset_from_bottom_centre": [
+  -0.8,
+  0.16,
+  0.0
+ ],
+ "pivot_offset_from_centre": [
+  -0.8,
+  0.16,
+  11.37
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Plant",
+  "M_Soil",
+  "M_Terracotta"
+ ],
+ "materials_used": [
+  "M_Plant",
+  "M_Soil",
+  "M_Terracotta"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 1552,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.388,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 8898
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_BasilPot_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

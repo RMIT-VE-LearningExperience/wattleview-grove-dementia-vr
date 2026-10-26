@@ -1,0 +1,64 @@
+{
+ "name": "SM_PhotoFrame_Wide",
+ "objects": [
+  "SM_PhotoFrame_Wide"
+ ],
+ "triangles": 174,
+ "vertices": 92,
+ "islands": 4,
+ "bounds_min_ue": [
+  0.0,
+  -22.5,
+  -16.0
+ ],
+ "bounds_max_ue": [
+  2.6,
+  22.5,
+  16.0
+ ],
+ "size_ue": [
+  2.6,
+  45.0,
+  32.0
+ ],
+ "pivot_offset_from_bottom_centre": [
+  1.3,
+  0.0,
+  -16.0
+ ],
+ "pivot_offset_from_centre": [
+  1.3,
+  0.0,
+  0.0
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Paper",
+  "M_Photo",
+  "M_TimberDark"
+ ],
+ "materials_used": [
+  "M_Paper",
+  "M_Photo",
+  "M_TimberDark"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 4,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.376,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 522
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_PhotoFrame_Wide_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

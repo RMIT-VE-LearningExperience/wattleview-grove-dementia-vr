@@ -1,0 +1,62 @@
+{
+ "name": "SM_Curtains",
+ "objects": [
+  "SM_Curtains"
+ ],
+ "triangles": 6360,
+ "vertices": 3326,
+ "islands": 16,
+ "bounds_min_ue": [
+  469.09,
+  44.2,
+  1.0
+ ],
+ "bounds_max_ue": [
+  481.42,
+  405.8,
+  244.6
+ ],
+ "size_ue": [
+  12.33,
+  361.6,
+  243.6
+ ],
+ "pivot_offset_from_bottom_centre": [
+  475.25,
+  225.0,
+  1.0
+ ],
+ "pivot_offset_from_centre": [
+  475.25,
+  225.0,
+  122.8
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Curtain",
+  "M_Metal"
+ ],
+ "materials_used": [
+  "M_Curtain",
+  "M_Metal"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 288,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.8,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 19080
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_Curtains_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

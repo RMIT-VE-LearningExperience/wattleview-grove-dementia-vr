@@ -1,0 +1,66 @@
+{
+ "name": "SM_TomatoPlant",
+ "objects": [
+  "SM_TomatoPlant"
+ ],
+ "triangles": 2970,
+ "vertices": 2229,
+ "islands": 171,
+ "bounds_min_ue": [
+  -19.0,
+  -26.91,
+  0.0
+ ],
+ "bounds_max_ue": [
+  28.28,
+  25.0,
+  140.0
+ ],
+ "size_ue": [
+  47.28,
+  51.91,
+  140.0
+ ],
+ "pivot_offset_from_bottom_centre": [
+  4.64,
+  -0.96,
+  0.0
+ ],
+ "pivot_offset_from_centre": [
+  4.64,
+  -0.96,
+  70.0
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_FlowerRed",
+  "M_Plant",
+  "M_Soil",
+  "M_Timber"
+ ],
+ "materials_used": [
+  "M_FlowerRed",
+  "M_Plant",
+  "M_Soil",
+  "M_Timber"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 1202,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.145,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 8910
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_TomatoPlant_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

@@ -1,0 +1,64 @@
+{
+ "name": "SM_Hairbrush",
+ "objects": [
+  "SM_Hairbrush"
+ ],
+ "triangles": 1178,
+ "vertices": 709,
+ "islands": 60,
+ "bounds_min_ue": [
+  -11.0,
+  -3.88,
+  -1.66
+ ],
+ "bounds_max_ue": [
+  11.0,
+  3.88,
+  1.67
+ ],
+ "size_ue": [
+  22.0,
+  7.76,
+  3.33
+ ],
+ "pivot_offset_from_bottom_centre": [
+  0.0,
+  0.0,
+  -1.66
+ ],
+ "pivot_offset_from_centre": [
+  0.0,
+  0.0,
+  0.01
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Metal",
+  "M_Rubber",
+  "M_TimberDark"
+ ],
+ "materials_used": [
+  "M_Metal",
+  "M_Rubber",
+  "M_TimberDark"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.335,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 3534
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_Hairbrush_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

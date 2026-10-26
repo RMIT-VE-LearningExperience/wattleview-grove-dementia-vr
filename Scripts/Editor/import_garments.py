@@ -21,6 +21,7 @@ MAT_DIR = "/Game/Wattleview/Characters/Garments/Materials"
 SKELETON = "/Game/MetaHumans/Common/Female/Medium/NormalWeight/Body/metahuman_base_skel"
 TEX = "/Game/Wattleview/Environment/Textures"
 MASTER = "/Game/Wattleview/Environment/Materials/M_RoomMaster"
+TWO_SIDED = {"M_Skirt", "M_Cardigan"}
 # Per-character remaps: the FBX slot names are shared; these pick a different instance.
 REMAP = {"David": {"M_Shoes": "M_ShoesBlack"}, "Enzo": {"M_Trousers": "M_TrousersBrown"}}
 # label of the actor in L_ResidentRoom -> garment name
@@ -118,6 +119,12 @@ def build_materials():
             else:
                 mel.set_material_instance_scalar_parameter_value(mi, "TexMean", max(0.02, (stats.get(tid) or {}).get("mean_lum_linear", 0.3)))
                 mel.set_material_instance_scalar_parameter_value(mi, "TexStrength", s)
+        if slot in TWO_SIDED:
+            # skirt hem and cardigan opening show their inside from a seated viewer
+            bpo = mi.get_editor_property("base_property_overrides")
+            bpo.set_editor_property("override_two_sided", True)
+            bpo.set_editor_property("two_sided", True)
+            mi.set_editor_property("base_property_overrides", bpo)
         mel.update_material_instance(mi)
         eas.save_loaded_asset(mi, False)
         mis[slot] = mi

@@ -1,0 +1,60 @@
+{
+ "name": "SM_TV",
+ "objects": [
+  "SM_TV"
+ ],
+ "triangles": 728,
+ "vertices": 372,
+ "islands": 4,
+ "bounds_min_ue": [
+  -9.5,
+  -45.4,
+  0.0
+ ],
+ "bounds_max_ue": [
+  9.5,
+  45.4,
+  60.9
+ ],
+ "size_ue": [
+  19.0,
+  90.8,
+  60.9
+ ],
+ "pivot_offset_from_bottom_centre": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "pivot_offset_from_centre": [
+  0.0,
+  0.0,
+  30.45
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_PlasticBlack"
+ ],
+ "materials_used": [
+  "M_PlasticBlack"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.502,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 2184
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_TV_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

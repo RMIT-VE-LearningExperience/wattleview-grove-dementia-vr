@@ -1,0 +1,62 @@
+{
+ "name": "SM_MemoryBox",
+ "objects": [
+  "SM_MemoryBox"
+ ],
+ "triangles": 1128,
+ "vertices": 590,
+ "islands": 13,
+ "bounds_min_ue": [
+  -16.05,
+  -11.05,
+  0.0
+ ],
+ "bounds_max_ue": [
+  16.05,
+  11.05,
+  16.0
+ ],
+ "size_ue": [
+  32.1,
+  22.1,
+  16.0
+ ],
+ "pivot_offset_from_bottom_centre": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "pivot_offset_from_centre": [
+  0.0,
+  0.0,
+  8.0
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Brass",
+  "M_TimberDark"
+ ],
+ "materials_used": [
+  "M_Brass",
+  "M_TimberDark"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.247,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 3384
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_MemoryBox_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

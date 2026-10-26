@@ -1,0 +1,64 @@
+{
+ "name": "SM_BedLinen",
+ "objects": [
+  "SM_BedLinen"
+ ],
+ "triangles": 3636,
+ "vertices": 1826,
+ "islands": 4,
+ "bounds_min_ue": [
+  -101.73,
+  -57.91,
+  24.05
+ ],
+ "bounds_max_ue": [
+  100.29,
+  57.73,
+  90.86
+ ],
+ "size_ue": [
+  202.02,
+  115.64,
+  66.81
+ ],
+ "pivot_offset_from_bottom_centre": [
+  -0.72,
+  -0.09,
+  24.05
+ ],
+ "pivot_offset_from_centre": [
+  -0.72,
+  -0.09,
+  57.45
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Crochet",
+  "M_FloralCover",
+  "M_Linen"
+ ],
+ "materials_used": [
+  "M_Crochet",
+  "M_FloralCover",
+  "M_Linen"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.415,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 10908
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_BedLinen_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

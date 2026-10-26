@@ -56,10 +56,13 @@ def rig_and_textures(ch):
 def build(ch, name, cinematic):
     bp = unreal.MetaHumanCharacterEditorBuildParameters()
     if cinematic:
-        bp.pipeline_type = unreal.MetaHumanDefaultPipelineType.CINEMATIC
-        bp.pipeline_quality = unreal.MetaHumanQualityLevel.CINEMATIC
-        bp.absolute_build_path = "/Game/MetaHumans/Photo"
-        bp.common_folder_path = "/Game/MetaHumans/Photo/Common"
+        # Photo characters: Optimized/Medium is plenty for a ~1K print. Both Cinematic and
+        # Optimized young builds render glowing white eyes (cause unknown);
+        # Scripts/Tools/grade_wall_photo.py repaints them in the print.
+        bp.pipeline_type = unreal.MetaHumanDefaultPipelineType.OPTIMIZED
+        bp.pipeline_quality = unreal.MetaHumanQualityLevel.MEDIUM
+        bp.absolute_build_path = "/Game/MetaHumans/PhotoM"
+        bp.common_folder_path = "/Game/MetaHumans/PhotoM/Common"
     else:
         bp.pipeline_type = unreal.MetaHumanDefaultPipelineType.OPTIMIZED
         bp.pipeline_quality = unreal.MetaHumanQualityLevel.MEDIUM
@@ -139,6 +142,9 @@ def main():
             harden(folder)
     if eas.does_directory_exist("/Game/MetaHumans/Common"):
         harden("/Game/MetaHumans/Common")
+    # The build creates many new packages (meshes, textures, Blueprint); a headless editor exits
+    # without saving them, so save everything that is dirty.
+    unreal.EditorLoadingAndSavingUtils.save_dirty_packages(True, True)
     log("done")
 
 

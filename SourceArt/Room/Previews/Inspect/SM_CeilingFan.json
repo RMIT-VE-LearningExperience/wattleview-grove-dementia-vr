@@ -1,0 +1,66 @@
+{
+ "name": "SM_CeilingFan",
+ "objects": [
+  "SM_CeilingFan"
+ ],
+ "triangles": 1400,
+ "vertices": 714,
+ "islands": 7,
+ "bounds_min_ue": [
+  -59.76,
+  -37.24,
+  -45.0
+ ],
+ "bounds_max_ue": [
+  59.76,
+  68.0,
+  0.0
+ ],
+ "size_ue": [
+  119.52,
+  105.24,
+  45.0
+ ],
+ "pivot_offset_from_bottom_centre": [
+  0.0,
+  15.38,
+  -45.0
+ ],
+ "pivot_offset_from_centre": [
+  0.0,
+  15.38,
+  -22.5
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Glass",
+  "M_Metal",
+  "M_PlasticWhite",
+  "M_Timber"
+ ],
+ "materials_used": [
+  "M_Glass",
+  "M_Metal",
+  "M_PlasticWhite",
+  "M_Timber"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.403,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 4200
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_CeilingFan_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

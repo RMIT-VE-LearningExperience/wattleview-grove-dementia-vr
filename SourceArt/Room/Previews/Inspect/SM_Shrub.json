@@ -1,0 +1,62 @@
+{
+ "name": "SM_Shrub",
+ "objects": [
+  "SM_Shrub"
+ ],
+ "triangles": 2864,
+ "vertices": 1436,
+ "islands": 2,
+ "bounds_min_ue": [
+  -56.45,
+  -51.75,
+  0.0
+ ],
+ "bounds_max_ue": [
+  53.19,
+  53.25,
+  95.47
+ ],
+ "size_ue": [
+  109.64,
+  105.0,
+  95.47
+ ],
+ "pivot_offset_from_bottom_centre": [
+  -1.63,
+  0.75,
+  0.0
+ ],
+ "pivot_offset_from_centre": [
+  -1.63,
+  0.75,
+  47.73
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Bark",
+  "M_Plant"
+ ],
+ "materials_used": [
+  "M_Bark",
+  "M_Plant"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.467,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 8592
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_Shrub_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

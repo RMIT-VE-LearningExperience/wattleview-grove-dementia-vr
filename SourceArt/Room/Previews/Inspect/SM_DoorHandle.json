@@ -1,0 +1,60 @@
+{
+ "name": "SM_DoorHandle",
+ "objects": [
+  "SM_DoorHandle"
+ ],
+ "triangles": 1314,
+ "vertices": 661,
+ "islands": 2,
+ "bounds_min_ue": [
+  121.22,
+  -4.4,
+  91.8
+ ],
+ "bounds_max_ue": [
+  139.6,
+  1.98,
+  104.6
+ ],
+ "size_ue": [
+  18.38,
+  6.38,
+  12.8
+ ],
+ "pivot_offset_from_bottom_centre": [
+  130.41,
+  -1.21,
+  91.8
+ ],
+ "pivot_offset_from_centre": [
+  130.41,
+  -1.21,
+  98.2
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Metal"
+ ],
+ "materials_used": [
+  "M_Metal"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.285,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 3942
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_DoorHandle_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

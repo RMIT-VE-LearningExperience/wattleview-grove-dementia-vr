@@ -1,0 +1,64 @@
+{
+ "name": "SM_Clipboard",
+ "objects": [
+  "SM_Clipboard"
+ ],
+ "triangles": 1000,
+ "vertices": 508,
+ "islands": 5,
+ "bounds_min_ue": [
+  -16.0,
+  -11.5,
+  0.0
+ ],
+ "bounds_max_ue": [
+  16.0,
+  11.5,
+  1.75
+ ],
+ "size_ue": [
+  32.0,
+  23.0,
+  1.75
+ ],
+ "pivot_offset_from_bottom_centre": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "pivot_offset_from_centre": [
+  0.0,
+  0.0,
+  0.88
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Metal",
+  "M_Paper",
+  "M_TimberDark"
+ ],
+ "materials_used": [
+  "M_Metal",
+  "M_Paper",
+  "M_TimberDark"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.664,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 3000
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_Clipboard_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

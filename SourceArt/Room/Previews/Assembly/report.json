@@ -1,0 +1,1575 @@
+{
+ "missing_meshes": [],
+ "placement_notes": [],
+ "rule_violations": [],
+ "clashes": [],
+ "contacts_info": [
+  {
+   "a": "Bedside",
+   "b": "Floor",
+   "mesh_a": "SM_Bedside",
+   "mesh_b": "SM_Floor",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 12,
+   "region": null
+  },
+  {
+   "a": "Ceiling",
+   "b": "CeilingFan",
+   "mesh_a": "SM_Ceiling",
+   "mesh_b": "SM_CeilingFan",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 42,
+   "region": null
+  },
+  {
+   "a": "Floor",
+   "b": "FloorLamp",
+   "mesh_a": "SM_Floor",
+   "mesh_b": "SM_FloorLamp",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 90,
+   "region": null
+  },
+  {
+   "a": "Floor",
+   "b": "Recliner",
+   "mesh_a": "SM_Floor",
+   "mesh_b": "SM_Recliner",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 64,
+   "region": null
+  },
+  {
+   "a": "Floor",
+   "b": "Rug",
+   "mesh_a": "SM_Floor",
+   "mesh_b": "SM_Rug",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 40,
+   "region": null
+  },
+  {
+   "a": "Floor",
+   "b": "TV_Cabinet",
+   "mesh_a": "SM_Floor",
+   "mesh_b": "SM_TVCabinet",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 80,
+   "region": null
+  },
+  {
+   "a": "Floor",
+   "b": "Wardrobe",
+   "mesh_a": "SM_Floor",
+   "mesh_b": "SM_Wardrobe",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 12,
+   "region": null
+  },
+  {
+   "a": "Garden_Bed_0",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_FlowerBed",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 248,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     695.8,
+     36.0,
+     -21.0
+    ],
+    "max": [
+     794.0,
+     343.7,
+     3.3
+    ]
+   }
+  },
+  {
+   "a": "Garden_Bed_1",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_FlowerBed",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 242,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     695.8,
+     346.0,
+     -21.0
+    ],
+    "max": [
+     794.0,
+     653.7,
+     3.3
+    ]
+   }
+  },
+  {
+   "a": "Garden_Bed_2",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_FlowerBed",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 248,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     695.8,
+     656.0,
+     -21.0
+    ],
+    "max": [
+     794.0,
+     963.7,
+     3.3
+    ]
+   }
+  },
+  {
+   "a": "Garden_Bed_3",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_FlowerBed",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 238,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     895.8,
+     -124.0,
+     -21.0
+    ],
+    "max": [
+     994.0,
+     183.7,
+     3.3
+    ]
+   }
+  },
+  {
+   "a": "Garden_Bed_4",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_FlowerBed",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 244,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     895.8,
+     186.0,
+     -21.0
+    ],
+    "max": [
+     994.0,
+     493.7,
+     3.3
+    ]
+   }
+  },
+  {
+   "a": "Garden_Bed_5",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_FlowerBed",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 230,
+   "touching_tri_pairs": 20,
+   "region": {
+    "min": [
+     1095.8,
+     96.0,
+     -21.0
+    ],
+    "max": [
+     1194.0,
+     403.7,
+     3.3
+    ]
+   }
+  },
+  {
+   "a": "Garden_Bed_6",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_FlowerBed",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 248,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     1095.8,
+     406.0,
+     -21.0
+    ],
+    "max": [
+     1194.0,
+     713.7,
+     3.3
+    ]
+   }
+  },
+  {
+   "a": "Garden_Bench",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_GardenBench",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 112,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     972.2,
+     625.5,
+     -20.5
+    ],
+    "max": [
+     1024.2,
+     774.5,
+     41.1
+    ]
+   }
+  },
+  {
+   "a": "Garden_Fence_0",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_Fence",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 25,
+   "region": null
+  },
+  {
+   "a": "Garden_Fence_1",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_Fence",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 25,
+   "region": null
+  },
+  {
+   "a": "Garden_Fence_10",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_Fence",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 25,
+   "region": null
+  },
+  {
+   "a": "Garden_Fence_11",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_Fence",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 25,
+   "region": null
+  },
+  {
+   "a": "Garden_Fence_2",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_Fence",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 25,
+   "region": null
+  },
+  {
+   "a": "Garden_Fence_3",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_Fence",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 25,
+   "region": null
+  },
+  {
+   "a": "Garden_Fence_4",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_Fence",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 25,
+   "region": null
+  },
+  {
+   "a": "Garden_Fence_5",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_Fence",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 25,
+   "region": null
+  },
+  {
+   "a": "Garden_Fence_6",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_Fence",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 25,
+   "region": null
+  },
+  {
+   "a": "Garden_Fence_7",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_Fence",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 25,
+   "region": null
+  },
+  {
+   "a": "Garden_Fence_8",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_Fence",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 26,
+   "region": null
+  },
+  {
+   "a": "Garden_Fence_9",
+   "b": "Garden_Lawn",
+   "mesh_a": "SM_Fence",
+   "mesh_b": "SM_Lawn",
+   "penetrating_tri_pairs": 0,
+   "touching_tri_pairs": 26,
+   "region": null
+  },
+  {
+   "a": "Garden_Lawn",
+   "b": "Garden_Shrub_0",
+   "mesh_a": "SM_Lawn",
+   "mesh_b": "SM_Shrub",
+   "penetrating_tri_pairs": 24,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     596.4,
+     -143.3,
+     -21.5
+    ],
+    "max": [
+     606.3,
+     -137.6,
+     -16.8
+    ]
+   }
+  },
+  {
+   "a": "Garden_Lawn",
+   "b": "Garden_Shrub_1",
+   "mesh_a": "SM_Lawn",
+   "mesh_b": "SM_Shrub",
+   "penetrating_tri_pairs": 24,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     617.6,
+     976.4,
+     -21.5
+    ],
+    "max": [
+     623.3,
+     986.3,
+     -16.8
+    ]
+   }
+  },
+  {
+   "a": "Garden_Lawn",
+   "b": "Garden_Shrub_2",
+   "mesh_a": "SM_Lawn",
+   "mesh_b": "SM_Shrub",
+   "penetrating_tri_pairs": 26,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     1366.6,
+     293.6,
+     -21.5
+    ],
+    "max": [
+     1375.1,
+     301.4,
+     -16.8
+    ]
+   }
+  },
+  {
+   "a": "Garden_Lawn",
+   "b": "Garden_Shrub_3",
+   "mesh_a": "SM_Lawn",
+   "mesh_b": "SM_Shrub",
+   "penetrating_tri_pairs": 22,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     1875.3,
+     144.5,
+     -20.0
+    ],
+    "max": [
+     1882.8,
+     153.2,
+     -15.3
+    ]
+   }
+  },
+  {
+   "a": "Garden_Lawn",
+   "b": "Garden_Tree_0",
+   "mesh_a": "SM_Lawn",
+   "mesh_b": "SM_GardenTree_A",
+   "penetrating_tri_pairs": 14,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     1499.9,
+     -319.1,
+     -20.0
+    ],
+    "max": [
+     1519.0,
+     -281.0,
+     9.6
+    ]
+   }
+  },
+  {
+   "a": "Garden_Lawn",
+   "b": "Garden_Tree_1",
+   "mesh_a": "SM_Lawn",
+   "mesh_b": "SM_GardenTree_B",
+   "penetrating_tri_pairs": 22,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     1683.0,
+     583.0,
+     -20.0
+    ],
+    "max": [
+     1716.9,
+     616.9,
+     2.3
+    ]
+   }
+  },
+  {
+   "a": "Garden_Lawn",
+   "b": "Garden_Tree_2",
+   "mesh_a": "SM_Lawn",
+   "mesh_b": "SM_GardenTree_A",
+   "penetrating_tri_pairs": 10,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     1281.1,
+     1085.4,
+     -20.0
+    ],
+    "max": [
+     1312.3,
+     1118.9,
+     9.6
+    ]
+   }
+  },
+  {
+   "a": "Garden_Lawn",
+   "b": "Garden_Tree_3",
+   "mesh_a": "SM_Lawn",
+   "mesh_b": "SM_GardenTree_B",
+   "penetrating_tri_pairs": 22,
+   "touching_tri_pairs": 0,
+   "region": {
+    "min": [
+     2083.1,
+     -916.9,
+     -20.0
+    ],
+    "max": [
+     2117.0,
+     -883.0,
+     2.3
+    ]
+   }
+  }
+ ],
+ "rest_on_z": {
+  "DayDateClock": 62.2,
+  "Rosary": 62.2,
+  "Clipboard": 127.7,
+  "MemoryBox": 127.7,
+  "Madonna": 127.7,
+  "Table": 0.73,
+  "Chair_Maria": 0.73,
+  "Chair_Second": 0.73,
+  "Chair_Third": 0.73,
+  "Vase": 75.93,
+  "Jug": 75.93,
+  "Glass": 81.43,
+  "Hairbrush": 77.6,
+  "CallBell": 75.93,
+  "TV": 60.2,
+  "SillPlant_0": 80.2,
+  "SillPlant_1": 80.2,
+  "Memory_Tomato_0": 0.73,
+  "Memory_Tomato_1": 0.73,
+  "Memory_Tomato_2": 0.73,
+  "Memory_Basil_0": 75.93,
+  "Memory_Basil_1": 75.93,
+  "Memory_Hose": 75.93
+ },
+ "bounds": {
+  "Floor": {
+   "min": [
+    -15.0,
+    -15.0,
+    -10.0
+   ],
+   "max": [
+    515.0,
+    465.0,
+    0.0
+   ]
+  },
+  "Ceiling": {
+   "min": [
+    -15.0,
+    -15.0,
+    270.0
+   ],
+   "max": [
+    515.0,
+    465.0,
+    280.0
+   ]
+  },
+  "Wall_North": {
+   "min": [
+    500.0,
+    -15.0,
+    0.0
+   ],
+   "max": [
+    515.0,
+    465.0,
+    270.0
+   ]
+  },
+  "Wall_South": {
+   "min": [
+    -15.0,
+    -0.0,
+    0.0
+   ],
+   "max": [
+    0.0,
+    450.0,
+    270.0
+   ]
+  },
+  "Wall_East": {
+   "min": [
+    -15.0,
+    450.0,
+    0.0
+   ],
+   "max": [
+    515.0,
+    465.0,
+    270.0
+   ]
+  },
+  "Wall_West": {
+   "min": [
+    -15.0,
+    -15.0,
+    0.0
+   ],
+   "max": [
+    515.0,
+    -0.0,
+    270.0
+   ]
+  },
+  "Skirting": {
+   "min": [
+    0.0,
+    -0.0,
+    0.0
+   ],
+   "max": [
+    500.0,
+    450.0,
+    10.0
+   ]
+  },
+  "Cornice": {
+   "min": [
+    0.0,
+    -0.0,
+    264.0
+   ],
+   "max": [
+    500.0,
+    450.0,
+    270.0
+   ]
+  },
+  "WindowFrame": {
+   "min": [
+    486.0,
+    94.0,
+    72.3
+   ],
+   "max": [
+    514.5,
+    356.0,
+    224.6
+   ]
+  },
+  "Door": {
+   "min": [
+    61.0,
+    -9.0,
+    1.0
+   ],
+   "max": [
+    149.0,
+    -3.02,
+    209.0
+   ]
+  },
+  "DoorFrame": {
+   "min": [
+    53.4,
+    -15.0,
+    0.0
+   ],
+   "max": [
+    156.6,
+    2.3,
+    216.6
+   ]
+  },
+  "Door_Handle": {
+   "min": [
+    121.22,
+    -4.4,
+    91.8
+   ],
+   "max": [
+    139.6,
+    1.98,
+    104.6
+   ]
+  },
+  "Curtains": {
+   "min": [
+    469.09,
+    44.2,
+    1.0
+   ],
+   "max": [
+    481.42,
+    405.8,
+    244.6
+   ]
+  },
+  "CurtainRod": {
+   "min": [
+    476.8,
+    30.0,
+    235.9
+   ],
+   "max": [
+    499.8,
+    420.0,
+    245.2
+   ]
+  },
+  "Bed": {
+   "min": [
+    125.6,
+    234.1,
+    0.02
+   ],
+   "max": [
+    229.4,
+    443.9,
+    105.0
+   ]
+  },
+  "Bed_Linen": {
+   "min": [
+    119.59,
+    238.71,
+    24.05
+   ],
+   "max": [
+    235.23,
+    440.73,
+    90.86
+   ]
+  },
+  "Bedside": {
+   "min": [
+    240.0,
+    396.5,
+    0.0
+   ],
+   "max": [
+    292.0,
+    444.5,
+    62.0
+   ]
+  },
+  "DayDateClock": {
+   "min": [
+    246.0,
+    425.02,
+    62.2
+   ],
+   "max": [
+    266.0,
+    434.98,
+    76.3
+   ]
+  },
+  "Rosary": {
+   "min": [
+    268.64,
+    402.57,
+    62.2
+   ],
+   "max": [
+    283.16,
+    422.73,
+    63.04
+   ]
+  },
+  "Wardrobe": {
+   "min": [
+    3.0,
+    140.0,
+    0.0
+   ],
+   "max": [
+    64.7,
+    300.0,
+    205.0
+   ]
+  },
+  "Shelf": {
+   "min": [
+    0.2,
+    320.0,
+    109.08
+   ],
+   "max": [
+    28.2,
+    410.0,
+    127.5
+   ]
+  },
+  "Clipboard": {
+   "min": [
+    2.5,
+    321.0,
+    127.7
+   ],
+   "max": [
+    25.5,
+    353.0,
+    129.45
+   ]
+  },
+  "MemoryBox": {
+   "min": [
+    2.95,
+    354.95,
+    127.7
+   ],
+   "max": [
+    25.05,
+    387.05,
+    143.7
+   ]
+  },
+  "Madonna": {
+   "min": [
+    9.4,
+    392.52,
+    127.7
+   ],
+   "max": [
+    18.6,
+    401.48,
+    148.47
+   ]
+  },
+  "Recliner": {
+   "min": [
+    243.2,
+    3.26,
+    0.0
+   ],
+   "max": [
+    326.8,
+    98.74,
+    104.87
+   ]
+  },
+  "Rug": {
+   "min": [
+    292.4,
+    105.0,
+    0.0
+   ],
+   "max": [
+    497.6,
+    300.0,
+    0.6
+   ]
+  },
+  "Table": {
+   "min": [
+    352.5,
+    152.5,
+    0.73
+   ],
+   "max": [
+    447.5,
+    247.5,
+    75.73
+   ]
+  },
+  "Chair_Maria": {
+   "min": [
+    311.1,
+    174.1,
+    0.73
+   ],
+   "max": [
+    358.9,
+    225.9,
+    88.14
+   ]
+  },
+  "Chair_Second": {
+   "min": [
+    374.1,
+    244.1,
+    0.73
+   ],
+   "max": [
+    425.9,
+    291.9,
+    88.14
+   ]
+  },
+  "Chair_Third": {
+   "min": [
+    426.09,
+    149.53,
+    0.73
+   ],
+   "max": [
+    483.58,
+    207.23,
+    88.14
+   ]
+  },
+  "Vase": {
+   "min": [
+    410.92,
+    189.88,
+    75.93
+   ],
+   "max": [
+    426.34,
+    201.46,
+    107.36
+   ]
+  },
+  "Jug": {
+   "min": [
+    398.09,
+    157.02,
+    75.93
+   ],
+   "max": [
+    416.01,
+    168.98,
+    98.48
+   ]
+  },
+  "Glass": {
+   "min": [
+    374.2,
+    221.2,
+    75.93
+   ],
+   "max": [
+    381.8,
+    228.8,
+    86.93
+   ]
+  },
+  "Hairbrush": {
+   "min": [
+    361.52,
+    177.38,
+    75.93
+   ],
+   "max": [
+    382.6,
+    188.11,
+    79.26
+   ]
+  },
+  "CallBell": {
+   "min": [
+    378.29,
+    159.45,
+    75.93
+   ],
+   "max": [
+    389.82,
+    172.45,
+    79.11
+   ]
+  },
+  "TV_Cabinet": {
+   "min": [
+    371.0,
+    403.36,
+    0.0
+   ],
+   "max": [
+    481.0,
+    448.0,
+    60.0
+   ]
+  },
+  "TV": {
+   "min": [
+    380.6,
+    418.5,
+    60.2
+   ],
+   "max": [
+    471.4,
+    437.5,
+    121.1
+   ]
+  },
+  "TV_Screen": {
+   "min": [
+    381.8,
+    425.09,
+    70.2
+   ],
+   "max": [
+    470.2,
+    425.09,
+    119.9
+   ]
+  },
+  "FloorLamp": {
+   "min": [
+    11.05,
+    407.05,
+    0.0
+   ],
+   "max": [
+    48.95,
+    444.95,
+    178.0
+   ]
+  },
+  "CeilingFan": {
+   "min": [
+    190.24,
+    187.76,
+    225.0
+   ],
+   "max": [
+    309.76,
+    293.0,
+    270.0
+   ]
+  },
+  "SillPlant_0": {
+   "min": [
+    483.63,
+    121.46,
+    80.2
+   ],
+   "max": [
+    504.81,
+    141.07,
+    104.76
+   ]
+  },
+  "SillPlant_1": {
+   "min": [
+    483.25,
+    308.55,
+    80.2
+   ],
+   "max": [
+    504.99,
+    329.57,
+    104.76
+   ]
+  },
+  "Photo_Frame": {
+   "min": [
+    330.0,
+    0.2,
+    125.0
+   ],
+   "max": [
+    380.0,
+    3.2,
+    170.0
+   ]
+  },
+  "Calendar": {
+   "min": [
+    175.0,
+    0.2,
+    115.0
+   ],
+   "max": [
+    235.0,
+    2.9,
+    195.0
+   ]
+  },
+  "Gallery_0": {
+   "min": [
+    135.0,
+    447.6,
+    150.0
+   ],
+   "max": [
+    165.0,
+    449.8,
+    190.0
+   ]
+  },
+  "Gallery_1": {
+   "min": [
+    175.0,
+    447.2,
+    160.0
+   ],
+   "max": [
+    220.0,
+    449.8,
+    192.0
+   ]
+  },
+  "Gallery_2": {
+   "min": [
+    230.0,
+    447.6,
+    150.0
+   ],
+   "max": [
+    260.0,
+    449.8,
+    190.0
+   ]
+  },
+  "Gallery_3": {
+   "min": [
+    145.0,
+    447.2,
+    198.0
+   ],
+   "max": [
+    190.0,
+    449.8,
+    230.0
+   ]
+  },
+  "Gallery_4": {
+   "min": [
+    200.0,
+    447.6,
+    198.0
+   ],
+   "max": [
+    230.0,
+    449.8,
+    238.0
+   ]
+  },
+  "Memory_Tomato_0": {
+   "min": [
+    445.0,
+    102.09,
+    0.73
+   ],
+   "max": [
+    492.28,
+    154.0,
+    140.73
+   ]
+  },
+  "Memory_Tomato_1": {
+   "min": [
+    442.03,
+    200.27,
+    0.73
+   ],
+   "max": [
+    496.13,
+    251.31,
+    140.73
+   ]
+  },
+  "Memory_Tomato_2": {
+   "min": [
+    441.09,
+    249.72,
+    0.73
+   ],
+   "max": [
+    493.0,
+    297.0,
+    140.73
+   ]
+  },
+  "Memory_Basil_0": {
+   "min": [
+    415.18,
+    167.99,
+    75.93
+   ],
+   "max": [
+    433.22,
+    188.33,
+    98.67
+   ]
+  },
+  "Memory_Basil_1": {
+   "min": [
+    414.67,
+    222.18,
+    75.93
+   ],
+   "max": [
+    435.01,
+    240.22,
+    98.67
+   ]
+  },
+  "Memory_Fig": {
+   "min": [
+    523.22,
+    274.16,
+    -20.0
+   ],
+   "max": [
+    720.05,
+    491.35,
+    212.05
+   ]
+  },
+  "Memory_Hose": {
+   "min": [
+    384.98,
+    176.9,
+    75.93
+   ],
+   "max": [
+    408.46,
+    220.69,
+    86.14
+   ]
+  },
+  "Garden_Lawn": {
+   "min": [
+    515.0,
+    -1500.0,
+    -27.5
+   ],
+   "max": [
+    3015.0,
+    2000.0,
+    -12.5
+   ]
+  },
+  "Garden_Bed_0": {
+   "min": [
+    695.81,
+    35.99,
+    -21.0
+   ],
+   "max": [
+    794.02,
+    343.66,
+    36.81
+   ]
+  },
+  "Garden_Bed_1": {
+   "min": [
+    695.81,
+    345.99,
+    -21.0
+   ],
+   "max": [
+    794.02,
+    653.66,
+    36.81
+   ]
+  },
+  "Garden_Bed_2": {
+   "min": [
+    695.81,
+    655.99,
+    -21.0
+   ],
+   "max": [
+    794.02,
+    963.66,
+    36.81
+   ]
+  },
+  "Garden_Bed_3": {
+   "min": [
+    895.81,
+    -124.01,
+    -21.0
+   ],
+   "max": [
+    994.02,
+    183.66,
+    36.81
+   ]
+  },
+  "Garden_Bed_4": {
+   "min": [
+    895.81,
+    185.99,
+    -21.0
+   ],
+   "max": [
+    994.02,
+    493.66,
+    36.81
+   ]
+  },
+  "Garden_Bed_5": {
+   "min": [
+    1095.81,
+    95.99,
+    -21.0
+   ],
+   "max": [
+    1194.02,
+    403.66,
+    36.81
+   ]
+  },
+  "Garden_Bed_6": {
+   "min": [
+    1095.81,
+    405.99,
+    -21.0
+   ],
+   "max": [
+    1194.02,
+    713.66,
+    36.81
+   ]
+  },
+  "Garden_Tree_0": {
+   "min": [
+    1388.39,
+    -485.32,
+    -20.0
+   ],
+   "max": [
+    1654.77,
+    -167.14,
+    520.08
+   ]
+  },
+  "Garden_Tree_1": {
+   "min": [
+    1585.94,
+    498.02,
+    -20.0
+   ],
+   "max": [
+    1795.36,
+    727.46,
+    454.38
+   ]
+  },
+  "Garden_Tree_2": {
+   "min": [
+    1203.37,
+    945.8,
+    -20.0
+   ],
+   "max": [
+    1443.17,
+    1267.96,
+    520.08
+   ]
+  },
+  "Garden_Tree_3": {
+   "min": [
+    1993.02,
+    -1024.13,
+    -20.0
+   ],
+   "max": [
+    2202.6,
+    -783.6,
+    454.38
+   ]
+  },
+  "Garden_Shrub_0": {
+   "min": [
+    563.55,
+    -201.75,
+    -21.5
+   ],
+   "max": [
+    673.19,
+    -96.75,
+    73.97
+   ]
+  },
+  "Garden_Shrub_1": {
+   "min": [
+    576.75,
+    943.55,
+    -21.5
+   ],
+   "max": [
+    681.75,
+    1053.19,
+    73.97
+   ]
+  },
+  "Garden_Shrub_2": {
+   "min": [
+    1295.13,
+    248.76,
+    -21.5
+   ],
+   "max": [
+    1407.16,
+    354.01,
+    73.97
+   ]
+  },
+  "Garden_Shrub_3": {
+   "min": [
+    1843.79,
+    96.58,
+    -20.0
+   ],
+   "max": [
+    1953.2,
+    202.22,
+    75.47
+   ]
+  },
+  "Garden_Bench": {
+   "min": [
+    969.0,
+    625.25,
+    -21.0
+   ],
+   "max": [
+    1033.6,
+    774.75,
+    69.43
+   ]
+  },
+  "Garden_Fence_0": {
+   "min": [
+    2505.0,
+    -1499.91,
+    -20.0
+   ],
+   "max": [
+    2517.02,
+    -1200.1,
+    139.97
+   ]
+  },
+  "Garden_Fence_1": {
+   "min": [
+    2505.0,
+    -1199.91,
+    -20.0
+   ],
+   "max": [
+    2517.02,
+    -900.1,
+    139.97
+   ]
+  },
+  "Garden_Fence_2": {
+   "min": [
+    2505.0,
+    -899.91,
+    -20.0
+   ],
+   "max": [
+    2517.02,
+    -600.1,
+    139.97
+   ]
+  },
+  "Garden_Fence_3": {
+   "min": [
+    2505.0,
+    -599.91,
+    -20.0
+   ],
+   "max": [
+    2517.02,
+    -300.1,
+    139.97
+   ]
+  },
+  "Garden_Fence_4": {
+   "min": [
+    2505.0,
+    -299.91,
+    -20.0
+   ],
+   "max": [
+    2517.02,
+    -0.1,
+    139.97
+   ]
+  },
+  "Garden_Fence_5": {
+   "min": [
+    2505.0,
+    0.09,
+    -20.0
+   ],
+   "max": [
+    2517.02,
+    299.9,
+    139.97
+   ]
+  },
+  "Garden_Fence_6": {
+   "min": [
+    2505.0,
+    300.09,
+    -20.0
+   ],
+   "max": [
+    2517.02,
+    599.9,
+    139.97
+   ]
+  },
+  "Garden_Fence_7": {
+   "min": [
+    2505.0,
+    600.09,
+    -20.0
+   ],
+   "max": [
+    2517.02,
+    899.9,
+    139.97
+   ]
+  },
+  "Garden_Fence_8": {
+   "min": [
+    2505.0,
+    900.09,
+    -20.0
+   ],
+   "max": [
+    2517.02,
+    1199.9,
+    139.97
+   ]
+  },
+  "Garden_Fence_9": {
+   "min": [
+    2505.0,
+    1200.09,
+    -20.0
+   ],
+   "max": [
+    2517.02,
+    1499.9,
+    139.97
+   ]
+  },
+  "Garden_Fence_10": {
+   "min": [
+    2505.0,
+    1500.09,
+    -20.0
+   ],
+   "max": [
+    2517.02,
+    1799.9,
+    139.97
+   ]
+  },
+  "Garden_Fence_11": {
+   "min": [
+    2505.0,
+    1800.09,
+    -20.0
+   ],
+   "max": [
+    2517.02,
+    2099.9,
+    139.97
+   ]
+  },
+  "SkyDome": {
+   "min": [
+    -997.22,
+    -2247.22,
+    -2520.0
+   ],
+   "max": [
+    3997.22,
+    2747.22,
+    2480.0
+   ]
+  }
+ },
+ "renders": [
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\plan.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\david_door.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\maria_seated.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\corner.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\bed_from_table.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\window_to_door.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\table_props.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\curtain_sill_left.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\curtain_sill_right.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\bedside.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\shelf_wardrobe.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\door_handle.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\recliner.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\tv.png",
+  "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Assembly\\window_view_out.png"
+ ]
+}

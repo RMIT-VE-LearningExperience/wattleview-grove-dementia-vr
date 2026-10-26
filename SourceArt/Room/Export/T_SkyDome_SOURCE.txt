@@ -1,0 +1,13 @@
+T_SkyDome.jpg - source
+HDRI id:      noon_grass  ("Noon Grass")
+Author:       Greg Zaal (Poly Haven)
+License:      CC0 1.0 Universal (public domain) - https://polyhaven.com/license
+Page:         https://polyhaven.com/a/noon_grass
+File:         https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/noon_grass_2k.hdr
+              (2048x1024 Radiance .hdr, md5 1e0908b14d868fccc9b024f87587cee4; local copy Items/sky_src/noon_grass_2k.hdr)
+Location:     -26.153, 27.991 (Johannesburg, southern hemisphere; clear midday, sun near zenith)
+Tonemap:      Blender 5.0 Image.save_render, view transform 'Standard', look None, exposure 0.00,
+              gamma 1.00, display sRGB -> JPEG q92, 2048x1024 equirectangular.
+Dome mapping: SM_SkyDome UV0 is equirectangular; image horizon (v=0.5) on the dome equator,
+              image u=0.32 faces Unreal +X (north/window), u increases toward Unreal +Y.
+Built by:     SourceArt/Room/Items/sky.py

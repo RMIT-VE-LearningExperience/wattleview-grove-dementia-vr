@@ -1,0 +1,721 @@
+{
+ "uv_order_bad": {},
+ "overlay_clashes": [
+  {
+   "a": "Garden_Lawn",
+   "b": "Memory_Fig",
+   "pen": 25,
+   "touch": 0,
+   "region": {
+    "min": [
+     588.3,
+     348.0,
+     -20.0
+    ],
+    "max": [
+     652.6,
+     412.1,
+     -14.1
+    ]
+   }
+  },
+  {
+   "a": "Memory_Tomato_0",
+   "b": "Rug",
+   "pen": 64,
+   "touch": 97,
+   "region": {
+    "min": [
+     452.0,
+     109.0,
+     0.2
+    ],
+    "max": [
+     484.0,
+     141.0,
+     0.6
+    ]
+   }
+  },
+  {
+   "a": "Memory_Tomato_1",
+   "b": "Rug",
+   "pen": 64,
+   "touch": 96,
+   "region": {
+    "min": [
+     452.0,
+     199.0,
+     0.2
+    ],
+    "max": [
+     484.0,
+     231.0,
+     0.6
+    ]
+   }
+  },
+  {
+   "a": "Memory_Tomato_2",
+   "b": "Rug",
+   "pen": 75,
+   "touch": 44,
+   "region": {
+    "min": [
+     299.0,
+     289.0,
+     0.0
+    ],
+    "max": [
+     491.0,
+     302.9,
+     1.4
+    ]
+   }
+  }
+ ],
+ "near": [
+  {
+   "a": "Ceiling",
+   "b": "CeilingFan",
+   "dist_cm": 0.0,
+   "at": [
+    250.0,
+    225.0,
+    270.0
+   ]
+  },
+  {
+   "a": "Bedside",
+   "b": "DayDateClock",
+   "dist_cm": 0.2,
+   "at": [
+    257.1,
+    434.8,
+    62.0
+   ]
+  },
+  {
+   "a": "Bedside",
+   "b": "Rosary",
+   "dist_cm": 0.2,
+   "at": [
+    279.4,
+    414.1,
+    62.0
+   ]
+  },
+  {
+   "a": "Calendar",
+   "b": "Wall_West",
+   "dist_cm": 0.2,
+   "at": [
+    175.0,
+    -0.0,
+    115.0
+   ]
+  },
+  {
+   "a": "CallBell",
+   "b": "Table",
+   "dist_cm": 0.2,
+   "at": [
+    378.0,
+    161.3,
+    75.7
+   ]
+  },
+  {
+   "a": "Chair_Maria",
+   "b": "Rug",
+   "dist_cm": 0.2,
+   "at": [
+    356.3,
+    222.2,
+    0.5
+   ]
+  },
+  {
+   "a": "Chair_Second",
+   "b": "Rug",
+   "dist_cm": 0.2,
+   "at": [
+    422.2,
+    246.7,
+    0.5
+   ]
+  },
+  {
+   "a": "Chair_Third",
+   "b": "Rug",
+   "dist_cm": 0.2,
+   "at": [
+    428.7,
+    162.1,
+    0.5
+   ]
+  },
+  {
+   "a": "Clipboard",
+   "b": "Shelf",
+   "dist_cm": 0.2,
+   "at": [
+    24.3,
+    352.9,
+    127.5
+   ]
+  },
+  {
+   "a": "CurtainRod",
+   "b": "Wall_North",
+   "dist_cm": 0.2,
+   "at": [
+    500.0,
+    38.0,
+    241.2
+   ]
+  },
+  {
+   "a": "Gallery_0",
+   "b": "Wall_East",
+   "dist_cm": 0.2,
+   "at": [
+    135.0,
+    450.0,
+    190.0
+   ]
+  },
+  {
+   "a": "Gallery_1",
+   "b": "Wall_East",
+   "dist_cm": 0.2,
+   "at": [
+    175.0,
+    450.0,
+    192.0
+   ]
+  },
+  {
+   "a": "Gallery_2",
+   "b": "Wall_East",
+   "dist_cm": 0.2,
+   "at": [
+    229.0,
+    450.0,
+    189.0
+   ]
+  },
+  {
+   "a": "Gallery_3",
+   "b": "Wall_East",
+   "dist_cm": 0.2,
+   "at": [
+    145.0,
+    450.0,
+    230.0
+   ]
+  },
+  {
+   "a": "Gallery_4",
+   "b": "Wall_East",
+   "dist_cm": 0.2,
+   "at": [
+    200.0,
+    450.0,
+    234.0
+   ]
+  },
+  {
+   "a": "Glass",
+   "b": "Table",
+   "dist_cm": 0.2,
+   "at": [
+    378.0,
+    225.0,
+    75.7
+   ]
+  },
+  {
+   "a": "Hairbrush",
+   "b": "Table",
+   "dist_cm": 0.2,
+   "at": [
+    373.3,
+    182.5,
+    75.7
+   ]
+  },
+  {
+   "a": "Jug",
+   "b": "Table",
+   "dist_cm": 0.2,
+   "at": [
+    406.0,
+    163.0,
+    75.7
+   ]
+  },
+  {
+   "a": "Madonna",
+   "b": "Shelf",
+   "dist_cm": 0.2,
+   "at": [
+    14.0,
+    397.0,
+    127.5
+   ]
+  },
+  {
+   "a": "MemoryBox",
+   "b": "Shelf",
+   "dist_cm": 0.2,
+   "at": [
+    4.4,
+    386.2,
+    127.5
+   ]
+  },
+  {
+   "a": "Photo_Frame",
+   "b": "Wall_West",
+   "dist_cm": 0.2,
+   "at": [
+    330.0,
+    -0.0,
+    170.0
+   ]
+  },
+  {
+   "a": "Rug",
+   "b": "Table",
+   "dist_cm": 0.2,
+   "at": [
+    400.0,
+    200.0,
+    0.5
+   ]
+  },
+  {
+   "a": "Shelf",
+   "b": "Wall_South",
+   "dist_cm": 0.2,
+   "at": [
+    0.0,
+    320.3,
+    125.3
+   ]
+  },
+  {
+   "a": "SillPlant_0",
+   "b": "WindowFrame",
+   "dist_cm": 0.2,
+   "at": [
+    494.0,
+    130.0,
+    80.0
+   ]
+  },
+  {
+   "a": "SillPlant_1",
+   "b": "WindowFrame",
+   "dist_cm": 0.2,
+   "at": [
+    494.0,
+    320.0,
+    80.0
+   ]
+  },
+  {
+   "a": "TV",
+   "b": "TV_Cabinet",
+   "dist_cm": 0.2,
+   "at": [
+    434.5,
+    437.4,
+    60.0
+   ]
+  },
+  {
+   "a": "Table",
+   "b": "Vase",
+   "dist_cm": 0.2,
+   "at": [
+    418.0,
+    196.0,
+    75.7
+   ]
+  },
+  {
+   "a": "Bed",
+   "b": "Bed_Linen",
+   "dist_cm": 0.26,
+   "at": [
+    131.0,
+    367.1,
+    55.8
+   ]
+  },
+  {
+   "a": "CurtainRod",
+   "b": "Curtains",
+   "dist_cm": 0.27,
+   "at": [
+    478.6,
+    44.4,
+    244.0
+   ]
+  },
+  {
+   "a": "Rug",
+   "b": "Skirting",
+   "dist_cm": 0.5,
+   "at": [
+    498.2,
+    130.0,
+    0.0
+   ]
+  },
+  {
+   "a": "Curtains",
+   "b": "Rug",
+   "dist_cm": 0.65,
+   "at": [
+    474.8,
+    105.7,
+    0.6
+   ]
+  }
+ ],
+ "named": {
+  "Curtains|CurtainRod": [
+   0.27,
+   [
+    478.6,
+    44.4,
+    244.0
+   ]
+  ],
+  "Curtains|TV_Cabinet": [
+   2.31,
+   [
+    478.8,
+    403.2,
+    59.4
+   ]
+  ],
+  "Curtains|WindowFrame": [
+   6.54,
+   [
+    486.0,
+    338.3,
+    79.0
+   ]
+  ],
+  "Curtains|Rug": [
+   0.65,
+   [
+    474.8,
+    105.7,
+    0.6
+   ]
+  ],
+  "Curtains|Skirting": [
+   17.89,
+   [
+    498.2,
+    111.4,
+    1.4
+   ]
+  ],
+  "Chair_Maria|Table": [
+   8.04,
+   [
+    357.6,
+    179.7,
+    73.1
+   ]
+  ],
+  "Chair_Second|Table": [
+   8.95,
+   [
+    380.4,
+    242.8,
+    73.1
+   ]
+  ],
+  "Chair_Third|Table": [
+   6.98,
+   [
+    447.0,
+    202.0,
+    73.1
+   ]
+  ],
+  "FloorLamp|Madonna": [
+   12.78,
+   [
+    20.4,
+    409.8,
+    147.6
+   ]
+  ],
+  "FloorLamp|Shelf": [
+   15.02,
+   [
+    29.8,
+    424.9,
+    125.6
+   ]
+  ],
+  "Bed|Bedside": [
+   11.05,
+   [
+    240.0,
+    434.3,
+    61.2
+   ]
+  ],
+  "Bed_Linen|Bedside": [
+   25.63,
+   [
+    240.0,
+    436.5,
+    61.0
+   ]
+  ],
+  "SillPlant_0|WindowFrame": [
+   0.2,
+   [
+    494.0,
+    130.0,
+    80.0
+   ]
+  ],
+  "SillPlant_1|WindowFrame": [
+   0.2,
+   [
+    494.0,
+    320.0,
+    80.0
+   ]
+  ],
+  "SillPlant_0|Curtains": [
+   13.99,
+   [
+    479.0,
+    111.4,
+    92.2
+   ]
+  ],
+  "SillPlant_1|Curtains": [
+   12.66,
+   [
+    479.8,
+    338.1,
+    91.3
+   ]
+  ],
+  "Chair_Third|Curtains": [
+   39.09,
+   [
+    479.2,
+    111.4,
+    86.1
+   ]
+  ],
+  "CurtainRod|Cornice": [
+   20.44,
+   [
+    499.8,
+    412.0,
+    264.0
+   ]
+  ],
+  "CurtainRod|Wall_North": [
+   0.2,
+   [
+    500.0,
+    38.0,
+    241.2
+   ]
+  ],
+  "Wardrobe|Skirting": [
+   1.98,
+   [
+    1.0,
+    144.3,
+    8.3
+   ]
+  ],
+  "Recliner|Skirting": [
+   11.78,
+   [
+    274.0,
+    1.8,
+    6.0
+   ]
+  ],
+  "TV_Cabinet|Skirting": [
+   2.9,
+   [
+    372.3,
+    449.5,
+    9.9
+   ]
+  ],
+  "Bedside|Skirting": [
+   3.8,
+   [
+    241.3,
+    448.2,
+    6.3
+   ]
+  ],
+  "Bed|Wall_East": [
+   6.1,
+   [
+    128.3,
+    450.0,
+    32.3
+   ]
+  ],
+  "Bed|Skirting": [
+   18.81,
+   [
+    207.8,
+    449.3,
+    9.7
+   ]
+  ],
+  "Bed_Linen|Bed": [
+   0.26,
+   [
+    131.0,
+    367.1,
+    55.8
+   ]
+  ],
+  "Vase|Memory_Hose": [
+   7.84,
+   [
+    406.9,
+    203.4,
+    82.9
+   ]
+  ],
+  "Chair_Third|Memory_Tomato_1": [
+   1.73,
+   [
+    462.2,
+    202.5,
+    64.8
+   ]
+  ],
+  "Chair_Third|Memory_Tomato_0": [
+   5.82,
+   [
+    469.9,
+    143.8,
+    0.0
+   ]
+  ],
+  "Curtains|Memory_Tomato_0": [
+   1.06,
+   [
+    478.5,
+    110.6,
+    32.6
+   ]
+  ],
+  "SillPlant_0|Memory_Tomato_0": [
+   0.43,
+   [
+    491.6,
+    128.4,
+    107.6
+   ]
+  ],
+  "Memory_Fig|Garden_Bed_0": [
+   100000000000.0,
+   null
+  ],
+  "Memory_Fig|Garden_Bed_1": [
+   47.41,
+   [
+    700.0,
+    374.4,
+    -19.5
+   ]
+  ],
+  "Memory_Fig|Wall_North": [
+   12.37,
+   [
+    515.0,
+    350.0,
+    112.6
+   ]
+  ],
+  "Calendar|DoorFrame": [
+   18.4,
+   [
+    156.6,
+    0.4,
+    115.0
+   ]
+  ],
+  "Photo_Frame|Recliner": [
+   27.65,
+   [
+    313.5,
+    7.7,
+    103.5
+   ]
+  ],
+  "Gallery_1|Gallery_4": [
+   2.0,
+   [
+    220.0,
+    449.8,
+    194.0
+   ]
+  ],
+  "Gallery_0|Gallery_3": [
+   8.0,
+   [
+    165.0,
+    449.8,
+    198.0
+   ]
+  ],
+  "CeilingFan|Ceiling": [
+   0.0,
+   [
+    250.0,
+    225.0,
+    270.0
+   ]
+  ],
+  "vclear|Chair_Maria": {
+   "chair_top_under_table_cm": 65.7,
+   "min_gap_up_to_table_cm": 8.72
+  },
+  "vclear|Chair_Second": {
+   "chair_top_under_table_cm": 65.4,
+   "min_gap_up_to_table_cm": null
+  },
+  "vclear|Chair_Third": {
+   "chair_top_under_table_cm": 66.8,
+   "min_gap_up_to_table_cm": 7.4
+  }
+ },
+ "tris": {
+  "shell": 6562,
+  "soft": 9902,
+  "furniture": 29794,
+  "prop": 13264,
+  "wall": 3102,
+  "overlay": 19894,
+  "exterior": 60798,
+  "sky": 2208
+ }
+}

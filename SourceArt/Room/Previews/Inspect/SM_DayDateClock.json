@@ -1,0 +1,64 @@
+{
+ "name": "SM_DayDateClock",
+ "objects": [
+  "SM_DayDateClock"
+ ],
+ "triangles": 728,
+ "vertices": 366,
+ "islands": 1,
+ "bounds_min_ue": [
+  -4.98,
+  -10.0,
+  0.0
+ ],
+ "bounds_max_ue": [
+  4.98,
+  10.0,
+  14.1
+ ],
+ "size_ue": [
+  9.96,
+  20.0,
+  14.1
+ ],
+ "pivot_offset_from_bottom_centre": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "pivot_offset_from_centre": [
+  0.0,
+  0.0,
+  7.05
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_PlasticBlack",
+  "M_PlasticWhite",
+  "M_Screen"
+ ],
+ "materials_used": [
+  "M_PlasticBlack",
+  "M_PlasticWhite",
+  "M_Screen"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.592,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 2184
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_DayDateClock_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}

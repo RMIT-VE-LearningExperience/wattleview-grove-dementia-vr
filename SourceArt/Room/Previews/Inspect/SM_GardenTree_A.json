@@ -1,0 +1,64 @@
+{
+ "name": "SM_GardenTree_A",
+ "objects": [
+  "SM_GardenTree_A"
+ ],
+ "triangles": 2454,
+ "vertices": 1217,
+ "islands": 1,
+ "bounds_min_ue": [
+  -111.61,
+  -185.32,
+  0.0
+ ],
+ "bounds_max_ue": [
+  154.77,
+  132.86,
+  540.08
+ ],
+ "size_ue": [
+  266.38,
+  318.18,
+  540.08
+ ],
+ "pivot_offset_from_bottom_centre": [
+  21.58,
+  -26.23,
+  0.0
+ ],
+ "pivot_offset_from_centre": [
+  21.58,
+  -26.23,
+  270.04
+ ],
+ "uv_layers": [
+  "Lightmap",
+  "UVMap"
+ ],
+ "material_slots": [
+  "M_Bark",
+  "M_Plant",
+  "M_PlantDark"
+ ],
+ "materials_used": [
+  "M_Bark",
+  "M_Plant",
+  "M_PlantDark"
+ ],
+ "mesh": {
+  "non_manifold_edges": 0,
+  "boundary_edges": 0,
+  "loose_verts": 0,
+  "loose_edges": 0,
+  "degenerate_faces": 0
+ },
+ "intersecting_parts": [],
+ "lightmap_uv": {
+  "coverage": 0.286,
+  "overlap_fraction": 0.0,
+  "out_of_range_loops": 0,
+  "loops": 7362
+ },
+ "sheet": "D:\\Unreal-Projects\\WattleviewGrove-ue58\\SourceArt\\Room\\Previews\\Inspect\\SM_GardenTree_A_sheet.png",
+ "sheet_views": "row1: front(+X), three-quarter, side(from -Y in Unreal); row2: back three-quarter, top, front-left low"
+}
