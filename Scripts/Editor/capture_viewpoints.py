@@ -14,6 +14,9 @@ import unreal
 MAP_PATH = "/Game/Wattleview/Maps/L_ResidentRoom"
 OUT_DIR = os.path.join(unreal.Paths.project_saved_dir(), "Captures")
 W, H = 1600, 900
+# At runtime the director hides the body the viewer is inside and places the start marker per
+# view, so captures hide them too (else the viewer's own head fills VP_David_* / VP_Maria_*).
+HIDE_FOR = {"VP_David": ("David_StandIn", "Enzo_Overlay"), "VP_Maria": ("Maria_StandIn",)}
 
 
 def log(msg):
@@ -32,7 +35,10 @@ def capture():
     os.makedirs(OUT_DIR, exist_ok=True)
 
     rt = unreal.RenderingLibrary.create_render_target2d(world, W, H, unreal.TextureRenderTargetFormat.RTF_RGBA8_SRGB)
-    cams = [a for a in actors.get_all_level_actors() if isinstance(a, unreal.CineCameraActor)]
+    all_actors = actors.get_all_level_actors()
+    by_label = {a.get_actor_label(): a for a in all_actors}
+    markers = [a for a in all_actors if a.get_actor_label().startswith("StartTarget")]
+    cams = [a for a in all_actors if isinstance(a, unreal.CineCameraActor)]
     log(f"{len(cams)} cameras in {world.get_name()}")
     for cam in cams:
         label = cam.get_actor_label()
@@ -41,6 +47,10 @@ def capture():
         comp.set_editor_property("texture_target", rt)
         comp.set_editor_property("fov_angle", 100.0)
         comp.set_editor_property("capture_source", unreal.SceneCaptureSource.SCS_FINAL_COLOR_LDR)
+        hidden = [by_label[n] for prefix, names in HIDE_FOR.items() if label.startswith(prefix)
+                  for n in names if n in by_label] + markers
+        for a in hidden:
+            comp.hide_actor_components(a, True)
         try:   # wait for shader compilation and texture streaming (FunctionalTesting helper)
             unreal.AutomationLibrary.finish_loading_before_screenshot()
         except Exception:

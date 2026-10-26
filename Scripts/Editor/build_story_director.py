@@ -14,7 +14,8 @@ On BeginPlay the director:
      viewer through the viewpoint cuts. Each tick keeps the eyes on the anchor (see SNAP_CM),
      and 0.75 s after the story starts the headset yaw is recentred.
   6. Hides the body the viewer is "inside" and creates a player for LS_Story, but waits:
-     the StartTarget marker is placed GAZE_DISTANCE in front of the viewpoint, and the story
+     the StartTarget marker is placed in front of the viewpoint (GAZE_VIEW: per-view distance
+     and yaw offset), and the story
      plays once the student has looked at it for GAZE_SECONDS (head gaze; the PICO 4 Ultra
      Enterprise has no eye tracking). No controller is needed. Without a StartTarget the
      story starts immediately.
@@ -44,6 +45,12 @@ SNAP_CM = 40.0   # camera further than this from the anchor gets snapped back on
 GAZE_SECONDS = 2.0      # look at the start marker this long to begin (head gaze; no eye tracking)
 GAZE_COS = 0.993        # ~7 degree cone around the marker counts as looking at it
 GAZE_DISTANCE = 160.0   # marker distance in front of the viewpoint (cm)
+# Per view: (marker distance cm, yaw offset deg from the anchor's forward; negative turns left).
+# Maria's anchor is 60 cm from the photo wall, so a 160 cm marker landed behind it (invisible,
+# yet looking straight ahead still started the story); 50 cm puts it just in front of the photo.
+# David's marker turns left off the bright window and the white gardener onto the plain wall
+# between Maria and her photograph (chosen from candidate renders at 0/-12/-20/-28/-36 deg).
+GAZE_VIEW = {"David": (GAZE_DISTANCE, -32.0), "Maria": (50.0, 0.0), "Corner": (GAZE_DISTANCE, 0.0)}
 
 bel = unreal.BlueprintEditorLibrary
 eas = unreal.EditorAssetLibrary
@@ -112,17 +119,23 @@ def build_graph(bp):
         N(id="setAnchorM", type="VariableSet", variable_name="Anchor"),
         N(id="setBodyM", type="VariableSet", variable_name="HiddenBody"),
         N(id="setViewM", type="VariableSet", variable_name="MariaView", pin_defaults={"MariaView": "1.0"}),
+        N(id="setDistM", type="VariableSet", variable_name="GazeDistance", pin_defaults={"GazeDistance": str(GAZE_VIEW["Maria"][0])}),
+        N(id="setYawM", type="VariableSet", variable_name="GazeYaw", pin_defaults={"GazeYaw": str(GAZE_VIEW["Maria"][1])}),
         # Corner (no hidden body)
         N(id="getAnchorCorner", type="VariableGet", variable_name="AnchorCorner"),
         N(id="setAnchorC", type="VariableSet", variable_name="Anchor"),
         N(id="setBodyC", type="VariableSet", variable_name="HiddenBody"),
         N(id="setViewC", type="VariableSet", variable_name="MariaView", pin_defaults={"MariaView": "0.0"}),
+        N(id="setDistC", type="VariableSet", variable_name="GazeDistance", pin_defaults={"GazeDistance": str(GAZE_VIEW["Corner"][0])}),
+        N(id="setYawC", type="VariableSet", variable_name="GazeYaw", pin_defaults={"GazeYaw": str(GAZE_VIEW["Corner"][1])}),
         # David (default)
         N(id="getAnchorDavid", type="VariableGet", variable_name="AnchorDavid"),
         N(id="getBodyDavid", type="VariableGet", variable_name="BodyDavid"),
         N(id="setAnchorD", type="VariableSet", variable_name="Anchor"),
         N(id="setBodyD", type="VariableSet", variable_name="HiddenBody"),
         N(id="setViewD", type="VariableSet", variable_name="MariaView", pin_defaults={"MariaView": "0.0"}),
+        N(id="setDistD", type="VariableSet", variable_name="GazeDistance", pin_defaults={"GazeDistance": str(GAZE_VIEW["David"][0])}),
+        N(id="setYawD", type="VariableSet", variable_name="GazeYaw", pin_defaults={"GazeYaw": str(GAZE_VIEW["David"][1])}),
         # start
         N(id="getMPC", type="VariableGet", variable_name="Perception"),
         N(id="getMariaView", type="VariableGet", variable_name="MariaView"),
@@ -151,12 +164,21 @@ def build_graph(bp):
         N(id="tgtValid", type="MacroInstance", macro_name="IsValid"),
         N(id="anchorLoc2", type="CallFunction", target="Actor", function_name="K2_GetActorLocation"),
         N(id="anchorFwd", type="CallFunction", target="Actor", function_name="GetActorForwardVector"),
-        N(id="fwdScaled", type="CallFunction", target="KismetMathLibrary", function_name="Multiply_VectorFloat",
-          pin_defaults={"B": str(GAZE_DISTANCE)}),
+        N(id="getGazeYaw", type="VariableGet", variable_name="GazeYaw"),
+        N(id="rotFwd", type="CallFunction", target="KismetMathLibrary", function_name="RotateAngleAxis",
+          pin_defaults={"Axis": "0.0,0.0,1.0"}),
+        N(id="getGazeDist", type="VariableGet", variable_name="GazeDistance"),
+        N(id="fwdScaled", type="CallFunction", target="KismetMathLibrary", function_name="Multiply_VectorFloat"),
         N(id="tgtLoc", type="CallFunction", target="KismetMathLibrary", function_name="Add_VectorVector"),
         N(id="tgtRot", type="CallFunction", target="KismetMathLibrary", function_name="FindLookAtRotation"),
         N(id="placeTgt", type="CallFunction", target="Actor", function_name="K2_SetActorLocationAndRotation",
           pin_defaults={"bSweep": "false", "bTeleport": "true"}),
+        # scale the marker with its distance so disc and caption cover the same angle in every view
+        N(id="getGazeDist2", type="VariableGet", variable_name="GazeDistance"),
+        N(id="tgtScale", type="CallFunction", target="KismetMathLibrary", function_name="Divide_DoubleDouble",
+          pin_defaults={"B": str(GAZE_DISTANCE)}),
+        N(id="tgtScaleV", type="CallFunction", target="KismetMathLibrary", function_name="Conv_DoubleToVector"),
+        N(id="scaleTgt", type="CallFunction", target="Actor", function_name="SetActorScale3D"),
         N(id="getPlayer", type="VariableGet", variable_name="Player"),
         N(id="setStartedNow", type="VariableSet", variable_name="Started", pin_defaults={"Started": "true"}),
         N(id="playNow", type="CallFunction", target="MovieSceneSequencePlayer", function_name="Play"),
@@ -261,21 +283,27 @@ def build_graph(bp):
         C("setAnchorM", "then", "setBodyM", "execute"),
         C("getBodyMaria", "BodyMaria", "setBodyM", "HiddenBody"),
         C("setBodyM", "then", "setViewM", "execute"),
-        C("setViewM", "then", "setMariaView", "execute"),
+        C("setViewM", "then", "setDistM", "execute"),
+        C("setDistM", "then", "setYawM", "execute"),
+        C("setYawM", "then", "setMariaView", "execute"),
         # not Maria -> Corner?
         C("branchMaria", "else", "branchCorner", "execute"),
         C("branchCorner", "then", "setAnchorC", "execute"),
         C("getAnchorCorner", "AnchorCorner", "setAnchorC", "Anchor"),
         C("setAnchorC", "then", "setBodyC", "execute"),
         C("setBodyC", "then", "setViewC", "execute"),
-        C("setViewC", "then", "setMariaView", "execute"),
+        C("setViewC", "then", "setDistC", "execute"),
+        C("setDistC", "then", "setYawC", "execute"),
+        C("setYawC", "then", "setMariaView", "execute"),
         # otherwise David
         C("branchCorner", "else", "setAnchorD", "execute"),
         C("getAnchorDavid", "AnchorDavid", "setAnchorD", "Anchor"),
         C("setAnchorD", "then", "setBodyD", "execute"),
         C("getBodyDavid", "BodyDavid", "setBodyD", "HiddenBody"),
         C("setBodyD", "then", "setViewD", "execute"),
-        C("setViewD", "then", "setMariaView", "execute"),
+        C("setViewD", "then", "setDistD", "execute"),
+        C("setDistD", "then", "setYawD", "execute"),
+        C("setYawD", "then", "setMariaView", "execute"),
         # start
         C("getMPC", "Perception", "setMariaView", "Collection"),
         C("getMariaView", "MariaView", "setMariaView", "ParameterValue"),
@@ -298,14 +326,22 @@ def build_graph(bp):
         C("getStartTarget", "StartTarget", "placeTgt", "self"),
         C("getAnchor", "Anchor", "anchorLoc2", "self"),
         C("getAnchor", "Anchor", "anchorFwd", "self"),
-        C("anchorFwd", "ReturnValue", "fwdScaled", "A"),
+        C("anchorFwd", "ReturnValue", "rotFwd", "InVect"),
+        C("getGazeYaw", "GazeYaw", "rotFwd", "AngleDeg"),
+        C("rotFwd", "ReturnValue", "fwdScaled", "A"),
+        C("getGazeDist", "GazeDistance", "fwdScaled", "B"),
         C("anchorLoc2", "ReturnValue", "tgtLoc", "A"),
         C("fwdScaled", "ReturnValue", "tgtLoc", "B"),
         C("tgtLoc", "ReturnValue", "tgtRot", "Start"),
         C("anchorLoc2", "ReturnValue", "tgtRot", "Target"),
         C("tgtLoc", "ReturnValue", "placeTgt", "NewLocation"),
         C("tgtRot", "ReturnValue", "placeTgt", "NewRotation"),
-        C("placeTgt", "then", "delayRecentre", "execute"),
+        C("placeTgt", "then", "scaleTgt", "execute"),
+        C("getStartTarget", "StartTarget", "scaleTgt", "self"),
+        C("getGazeDist2", "GazeDistance", "tgtScale", "A"),
+        C("tgtScale", "ReturnValue", "tgtScaleV", "InDouble"),
+        C("tgtScaleV", "ReturnValue", "scaleTgt", "NewScale3D"),
+        C("scaleTgt", "then", "delayRecentre", "execute"),
         # no marker: start straight away
         C("tgtValid", "Is Not Valid", "setStartedNow", "execute"),
         C("setStartedNow", "then", "playNow", "execute"),
@@ -443,6 +479,8 @@ def build():
     add_var(bp, "Swapped", bel.get_basic_type_by_name("bool"), False)
     add_var(bp, "Player", bel.get_object_reference_type(unreal.LevelSequencePlayer), False)
     add_var(bp, "GazeProgress", bel.get_basic_type_by_name("real"), False)
+    add_var(bp, "GazeDistance", bel.get_basic_type_by_name("real"), False)
+    add_var(bp, "GazeYaw", bel.get_basic_type_by_name("real"), False)
     add_var(bp, "Started", bel.get_basic_type_by_name("bool"), False)
     add_var(bp, "Anchor", actor_ref, False)
     add_var(bp, "HiddenBody", actor_ref, False)

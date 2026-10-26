@@ -36,7 +36,7 @@ SLOTS = {
     "M_Shoes":        ("brown_leather", "colour", (0.45, 0.42, 0.40), 0.0, 3.0, 0.45),
     "M_ShoesBlack":   (None, None, (0.02, 0.02, 0.02), 0.0, 1.0, 0.35),
     "M_Badge":        (None, None, (0.88, 0.88, 0.86), 0.0, 1.0, 0.4),
-    "M_Cardigan":     ("wool_boucle", "detail", (0.80, 0.74, 0.62), 0.6, 4.0, 0.95),
+    "M_Cardigan":     ("wool_boucle", "detail", (0.80, 0.74, 0.62), 0.3, 1.5, 0.95),   # finer aliased on the PICO
     "M_Blouse":       ("floral_jacquard", "detail", (0.85, 0.70, 0.75), 0.8, 5.0, 0.8),
     "M_Skirt":        (None, None, (0.05, 0.06, 0.13), 0.0, 1.0, 0.85),
     "M_FlannelShirt": ("wool_boucle", "colour", (1.0, 0.75, 0.70), 0.0, 3.0, 0.9),

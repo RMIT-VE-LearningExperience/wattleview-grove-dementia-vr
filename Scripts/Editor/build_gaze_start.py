@@ -180,6 +180,9 @@ def build():
     tr.set_world_size(7.0)
     tr.set_horizontal_alignment(unreal.HorizTextAligment.EHTA_CENTER)
     tr.set_text_render_color(unreal.Color(235, 225, 205, 255))
+    # The default text material is lit: by the window it rendered dark brown, from behind near
+    # white. Unlit keeps the caption the same warm white in every view.
+    tr.set_text_material(unreal.load_asset("/Engine/EngineMaterials/UnlitText"))
     tr.set_mobility(unreal.ComponentMobility.MOVABLE)
     text.attach_to_actor(root, "", unreal.AttachmentRule.SNAP_TO_TARGET, unreal.AttachmentRule.SNAP_TO_TARGET,
                          unreal.AttachmentRule.KEEP_WORLD, False)

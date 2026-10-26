@@ -63,7 +63,7 @@ SLOTS = {
     "M_Linen":           dict(tex="rough_linen", mode="detail", tint=(0.90, 0.89, 0.86), strength=0.35, tiling=2.0, rough=0.9, normal=0.5),
     "M_FloralCover":     dict(tex="floral_jacquard", mode="detail", tint=(0.78, 0.56, 0.62), strength=0.85, tiling=2.0, rough=0.85, normal=0.6),
     "M_Crochet":         dict(tex="wool_boucle", mode="colour", tint=(1.6, 1.45, 1.4), lift=0.1, tiling=3.0, rough=0.95, normal=0.8),
-    "M_Curtain":         dict(tex="rough_linen", mode="detail", tint=(0.88, 0.85, 0.78), strength=0.3, tiling=1.5, rough=0.9, normal=0.4),
+    "M_Curtain":         dict(tex="rough_linen", mode="detail", tint=(0.88, 0.85, 0.78), strength=0.3, tiling=1.5, rough=0.9, normal=0.4, two_sided=True),
     "M_Rug":             dict(tex="hessian_380", mode="colour", tint=(1.0, 1.0, 1.0), lift=0.0, tiling=2.0, rough=0.95, normal=0.7),
     "M_Metal":           dict(tex=None, tint=(0.62, 0.62, 0.64), rough=0.45, metallic=1.0),
     "M_Brass":           dict(tex=None, tint=(0.78, 0.58, 0.26), rough=0.4, metallic=1.0),
@@ -105,6 +105,9 @@ LIGHTMAP_RES = {
     "SM_CurtainRod": 64, "SM_FloorLamp": 64, "SM_CeilingFan": 32, "SM_Shelf": 64,
     "SM_PhotoFrame_MariaEnzo": 64, "SM_Calendar": 64, "SM_Lawn": 512, "SM_SkyDome": 4,
     "SM_GardenTree_A": 128, "SM_GardenTree_B": 128, "SM_Fence": 128, "SM_FlowerBed": 128,
+    # nearest props in Maria's seated view: the size-based default (32) showed blocky seams.
+    # (Glass and Hairbrush are Movable story props: no lightmap, so no entry.)
+    "SM_Jug": 128, "SM_Vase": 128, "SM_CallBell": 64,
 }
 
 
@@ -304,6 +307,12 @@ def build_instances(master, textures):
                 mel.set_material_instance_scalar_parameter_value(mi, "ColourMode", 0.0)
                 mel.set_material_instance_scalar_parameter_value(mi, "TexMean", max(0.02, t["mean"]))
                 mel.set_material_instance_scalar_parameter_value(mi, "TexStrength", cfg.get("strength", 0.5))
+        # Single-sided cloth: Lightmass saw the back faces as invalid, leaving a pure-black pocket
+        # behind the curtain, and the inside showed through from other angles.
+        bpo = mi.get_editor_property("base_property_overrides")
+        bpo.set_editor_property("override_two_sided", bool(cfg.get("two_sided")))
+        bpo.set_editor_property("two_sided", bool(cfg.get("two_sided")))
+        mi.set_editor_property("base_property_overrides", bpo)
         mel.update_material_instance(mi)
         eas.save_loaded_asset(mi, False)
         mis[slot] = mi

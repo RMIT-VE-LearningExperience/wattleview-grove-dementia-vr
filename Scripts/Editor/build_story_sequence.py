@@ -466,6 +466,11 @@ def build():
         chs = transform_channels(binding)
         for t, loc, facing, interp in unwrap_yaws(keys, 2):
             key_transform(chs, t, loc, facing + MESH_YAW_OFFSET, interp)
+        # The level placement is what students see until the gaze starts LS_Story (the director
+        # creates the player but does not evaluate it), so pose each character at its t=0 key.
+        _, loc0, facing0, _ = keys[0]
+        actor.set_actor_location_and_rotation(unreal.Vector(*loc0),
+                                              unreal.Rotator(0, 0, facing0 + MESH_YAW_OFFSET), False, True)
         anim_binding, sections = binding, ANIMS.get(label, [])
         if is_mh:
             # MetaHuman Blueprint (build_characters.py): the root is a scene component, so the
@@ -475,6 +480,12 @@ def build():
             if body is not None:
                 anim_binding = seq.add_possessable(body)
                 sections = [(s0, s1, mh_clip(path, label), rate) for s0, s1, path, rate in sections]
+                # Before the gaze start nothing animates the body: loop the idle so the student
+                # doesn't see an A-pose (the mannequin stand-ins get theirs in build_resident_room).
+                idle = unreal.load_asset(mh_clip(IDLE, label))
+                if idle is not None:
+                    body.set_animation_mode(unreal.AnimationMode.ANIMATION_SINGLE_NODE)
+                    body.set_editor_property("animation_data", unreal.SingleAnimationPlayData(anim_to_play=idle))
         n_anim = add_anim_sections(anim_binding, sections, seq)
         log(f"{label}: {len(keys)} blocking keys, {n_anim} anim sections{' (MetaHuman body)' if is_mh else ''}")
 
