@@ -8,6 +8,7 @@ GENERATED_PREFIXES = (
     "WG_Corridor_",
     "WG_LargeRoom_",
     "WG_Sky_",
+    "WG_Lighting_",
 )
 
 FLOOR_MESH = "/Game/HospitalPack/floor_tile_1"
@@ -63,6 +64,8 @@ def spawn_mesh(
     collision=True,
     cast_shadow=True,
     material=None,
+    affect_navigation=True,
+    mobility=unreal.ComponentMobility.STATIC,
 ):
     asset = asset_cache.get(asset_path)
     if asset is None:
@@ -85,9 +88,16 @@ def spawn_mesh(
         actor.set_actor_scale3d(vec(*scale))
 
     component = actor.static_mesh_component
-    component.set_editor_property("mobility", unreal.ComponentMobility.STATIC)
+    actor.modify()
+    component.modify()
+    component.set_editor_property("mobility", mobility)
     component.set_editor_property("cast_shadow", bool(cast_shadow))
+    component.set_editor_property(
+        "can_ever_affect_navigation",
+        bool(affect_navigation),
+    )
     if not collision:
+        component.set_collision_profile_name("NoCollision")
         component.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
     if material is not None:
         component.set_material(0, material)
@@ -254,26 +264,43 @@ def create_unlit_material(asset_path, color, gradient=False):
     return material, True
 
 
-def spawn_point_light(actor_subsystem, label, location, intensity, radius, folder):
+def spawn_rect_light(
+    actor_subsystem,
+    label,
+    location,
+    intensity,
+    indirect_intensity,
+    radius,
+    source_width,
+    source_height,
+    folder,
+):
     actor = actor_subsystem.spawn_actor_from_class(
-        unreal.PointLight,
+        unreal.RectLight,
         vec(*location),
-        rot(),
+        rot(-90.0, 0.0, 0.0),
     )
     if actor is None:
-        raise RuntimeError("Unable to spawn point light: {}".format(label))
+        raise RuntimeError("Unable to spawn rect light: {}".format(label))
     actor.set_actor_label(label)
     actor.set_folder_path(folder)
 
-    component = actor.point_light_component
-    component.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
+    component = actor.rect_light_component
+    component.set_editor_property("mobility", unreal.ComponentMobility.STATIC)
     component.set_editor_property("intensity_units", unreal.LightUnits.LUMENS)
     component.set_editor_property("intensity", float(intensity))
     component.set_editor_property("attenuation_radius", float(radius))
+    component.set_editor_property("source_width", float(source_width))
+    component.set_editor_property("source_height", float(source_height))
     component.set_editor_property("use_temperature", True)
-    component.set_editor_property("temperature", 6300.0)
-    component.set_editor_property("cast_shadows", False)
-    component.set_editor_property("indirect_lighting_intensity", 0.0)
+    component.set_editor_property("temperature", 6200.0)
+    component.set_editor_property("cast_shadows", True)
+    component.set_editor_property("cast_static_shadows", True)
+    component.set_editor_property("cast_dynamic_shadows", False)
+    component.set_editor_property(
+        "indirect_lighting_intensity",
+        float(indirect_intensity),
+    )
     component.set_editor_property("volumetric_scattering_intensity", 0.0)
     return actor
 
@@ -290,16 +317,20 @@ def spawn_window_fill(actor_subsystem):
     actor.set_folder_path("WG Expansion/Large Room/Lights")
 
     component = actor.spot_light_component
-    component.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
+    component.set_editor_property("mobility", unreal.ComponentMobility.STATIC)
     component.set_editor_property("intensity_units", unreal.LightUnits.LUMENS)
-    component.set_editor_property("intensity", 800.0)
+    component.set_editor_property("intensity", 400.0)
     component.set_editor_property("attenuation_radius", 1000.0)
-    component.set_editor_property("inner_cone_angle", 30.0)
-    component.set_editor_property("outer_cone_angle", 60.0)
+    component.set_editor_property("inner_cone_angle", 25.0)
+    component.set_editor_property("outer_cone_angle", 65.0)
+    component.set_editor_property("source_radius", 90.0)
+    component.set_editor_property("soft_source_radius", 150.0)
     component.set_editor_property("use_temperature", True)
-    component.set_editor_property("temperature", 5900.0)
-    component.set_editor_property("cast_shadows", False)
-    component.set_editor_property("indirect_lighting_intensity", 0.0)
+    component.set_editor_property("temperature", 5700.0)
+    component.set_editor_property("cast_shadows", True)
+    component.set_editor_property("cast_static_shadows", True)
+    component.set_editor_property("cast_dynamic_shadows", False)
+    component.set_editor_property("indirect_lighting_intensity", 0.7)
     component.set_editor_property("volumetric_scattering_intensity", 0.0)
     return actor
 
@@ -308,9 +339,23 @@ def configure_navigation(actor_subsystem):
     nav_bounds = get_actor_by_label(actor_subsystem, "NavBounds")
     if nav_bounds is None:
         return False
-    nav_bounds.set_actor_location(vec(300.0, -400.0, 125.0), False, False)
-    nav_bounds.set_actor_scale3d(vec(5.5, 10.0, 1.6))
+    nav_bounds.set_actor_location(vec(300.0, -400.0, 80.0), False, False)
+    nav_bounds.set_actor_scale3d(vec(5.5, 10.0, 1.2))
     return True
+
+
+def configure_lightmass_volume(actor_subsystem):
+    actor = actor_subsystem.spawn_actor_from_class(
+        unreal.LightmassImportanceVolume,
+        vec(300.0, -400.0, 125.0),
+        rot(),
+    )
+    if actor is None:
+        raise RuntimeError("Unable to create Lightmass Importance Volume")
+    actor.set_actor_label("WG_Lighting_ImportanceVolume")
+    actor.set_folder_path("WG Expansion/Lighting")
+    actor.set_actor_scale3d(vec(6.5, 11.0, 2.25))
+    return actor
 
 
 def build():
@@ -360,6 +405,8 @@ def build():
                     "WG_Corridor_Ceiling_X300_Y{}".format(y),
                     (300, y, 250),
                     folder="WG Expansion/Corridor/Ceiling",
+                    collision=False,
+                    affect_navigation=False,
                 )
             )
             for x, side in ((200, "West"), (400, "East")):
@@ -397,15 +444,19 @@ def build():
                     (300, y, 250),
                     folder="WG Expansion/Corridor/Lights",
                     collision=False,
+                    affect_navigation=False,
                 )
             )
         created.append(
-            spawn_point_light(
+            spawn_rect_light(
                 actor_subsystem,
                 "WG_Corridor_Fill",
-                (300, -300, 210),
-                550,
-                420,
+                (300, -300, 235),
+                350,
+                0.6,
+                450,
+                180,
+                80,
                 "WG Expansion/Corridor/Lights",
             )
         )
@@ -433,6 +484,8 @@ def build():
                         "WG_LargeRoom_Ceiling_X{}_Y{}".format(x, y),
                         (x, y, 250),
                         folder="WG Expansion/Large Room/Ceiling",
+                        collision=False,
+                        affect_navigation=False,
                     )
                 )
 
@@ -504,26 +557,33 @@ def build():
                         (x, y, 250),
                         folder="WG Expansion/Large Room/Lights",
                         collision=False,
+                        affect_navigation=False,
                     )
                 )
 
         created.append(
-            spawn_point_light(
+            spawn_rect_light(
                 actor_subsystem,
                 "WG_LargeRoom_Fill_West",
-                (100, -1000, 210),
-                900,
-                620,
+                (100, -1000, 235),
+                450,
+                0.6,
+                650,
+                260,
+                120,
                 "WG Expansion/Large Room/Lights",
             )
         )
         created.append(
-            spawn_point_light(
+            spawn_rect_light(
                 actor_subsystem,
                 "WG_LargeRoom_Fill_East",
-                (500, -1000, 210),
-                900,
-                620,
+                (500, -1000, 235),
+                450,
+                0.6,
+                650,
+                260,
+                120,
                 "WG Expansion/Large Room/Lights",
             )
         )
@@ -544,6 +604,8 @@ def build():
                 collision=False,
                 cast_shadow=False,
                 material=sky_material,
+                affect_navigation=False,
+                mobility=unreal.ComponentMobility.MOVABLE,
             )
         )
         created.append(
@@ -558,6 +620,8 @@ def build():
                 collision=False,
                 cast_shadow=False,
                 material=sun_material,
+                affect_navigation=False,
+                mobility=unreal.ComponentMobility.MOVABLE,
             )
         )
 
@@ -568,6 +632,7 @@ def build():
             old_backdrop.static_mesh_component.set_material(0, sky_material)
 
         nav_updated = configure_navigation(actor_subsystem)
+        created.append(configure_lightmass_volume(actor_subsystem))
 
     try:
         unreal.SystemLibrary.execute_console_command(world, "RebuildNavigation")

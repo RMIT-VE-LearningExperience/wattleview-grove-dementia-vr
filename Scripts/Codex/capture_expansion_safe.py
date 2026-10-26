@@ -71,6 +71,7 @@ def run():
         unreal.Paths.project_saved_dir(),
         "CodexCaptures",
         "BuildingExpansion",
+        "ExposureRebalance",
     )
     os.makedirs(output_dir, exist_ok=True)
 

@@ -47,10 +47,10 @@ Saved/
 *_BuiltData.uasset
 
 # Build folder, but keep config that must be versioned
-Build/*
-!Build/*/
-!Build/**/*.ico
-!Build/*/PakBlacklist*.txt
+/Build/*
+!/Build/*/
+!/Build/**/*.ico
+!/Build/*/PakBlacklist*.txt
 
 # Source art originals (keep these out of the runtime project)
 SourceArt/**/*.png
@@ -83,4 +83,4 @@ __pycache__/
 .mcp.json
 
 # Packaged build output (APK/OBB) - large binaries, reproducible from source
-Build/
+/Build/
