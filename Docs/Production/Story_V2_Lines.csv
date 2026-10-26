@@ -1,0 +1,20 @@
+Id,Time,Speaker,Line,Source
+D01,0:06,David,Maria? Morning — how are you doing today?,Story V2
+D02,0:14,David,"Let's get you sat down, yeah? Come on.",Story V2
+M01,0:22,Maria,...he'll want to know...,Story V2
+M02,0:52,Maria,...that's him... that's him...,Story V2
+D03,1:02,David,"Sorry, is the TV bothering you? Let me turn that down.",Story V2
+D04,1:42,David,"Let's just do your hair before breakfast, alright?",PLACEHOLDER wording (hairbrush version replaces the medication line; confirm)
+M03,1:50,Maria,"No — not now, not now, not now...",Story V2
+M04,2:02,Maria,...he'll want to know...,Story V2
+M05,2:32,Maria,...time for water... it needs doing before it gets hot...,Story V2
+D05,2:40,David,"Water — sure, here. Good idea, it's going to be a warm one.",Story & Purpose Guide
+M06,2:50,Maria,"No — no, not that. Not for me.",Story V2
+M07,3:20,Maria,...why is it so loud... he won't hear me...,Story V2
+D06,3:28,David,"It's alright, it's just the hallway. Let's get your hair done, okay?",PLACEHOLDER wording (hairbrush version of 'let's try the tablets again'; confirm)
+M08,3:36,Maria,...he'll want to know... he'll want to know...,Story V2
+D07,4:05,David,Hey. Maria. What's going on?,Story V2
+M09,4:33.5,Maria,Enzo... l'hai trovato. You found it. Good.,Story V2
+D08,4:42.0,David,There we go. All settled?,Story V2
+M10,4:45.5,Maria,Come on then.,Story V2
+D09,4:48.5,David,"I'll leave your brush here — ring the buzzer if you need me, alright?",PLACEHOLDER wording (hairbrush version of the tablets line; confirm)
