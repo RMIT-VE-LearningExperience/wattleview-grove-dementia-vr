@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.7",
+	"EngineAssociation": "5.8",
 	"Category": "",
 	"Description": "SC&H - Wattleview Grove - Dementia VR Experience",
 	"Plugins": [
@@ -10,50 +10,28 @@
 		},
 		{
 			"Name": "OpenXREyeTracker",
-			"Enabled": true
+			"Enabled": false
 		},
 		{
 			"Name": "OpenXRHandTracking",
-			"Enabled": true
+			"Enabled": false
 		},
 		{
-			"Name": "PICOOpenXR",
-			"Enabled": true
-		},
-		{
-			"Name": "FullBodyIK",
-			"Enabled": true
-		},
-		{
-			"Name": "RigLogic",
-			"Enabled": true
-		},
-		{
-			"Name": "HairStrands",
-			"Enabled": true
+			"Name": "PICOController",
+			"Enabled": true,
+			"SupportedTargetPlatforms": [
+				"Win64",
+				"Linux",
+				"Android"
+			]
 		},
 		{
 			"Name": "PythonScriptPlugin",
 			"Enabled": true
 		},
 		{
-			"Name": "UnrealMCPython",
+			"Name": "EditorScriptingUtilities",
 			"Enabled": true
-		},
-		{
-			"Name": "LiveLinkControlRig",
-			"Enabled": true
-		},
-		{
-			"Name": "AppleARKitFaceSupport",
-			"Enabled": true,
-			"SupportedTargetPlatforms": [
-				"IOS",
-				"Win64",
-				"Mac",
-				"Linux",
-				"Android"
-			]
 		}
 	],
 	"TargetPlatforms": [
