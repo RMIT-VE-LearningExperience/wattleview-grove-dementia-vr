@@ -253,7 +253,10 @@ Verify: `adb shell pm list packages | grep wattleview` → `com.rmit.wattleviewg
 - **No controller needed by students.** Launch shows the room with a glowing marker labelled "Look at
   the light to begin". Holding head gaze on it for 2 s fills its ring and starts the story (fade in from
   black). The PICO 4 Ultra Enterprise has **no eye tracking**; this is head gaze. The view recentres
-  0.75 s after launch so the marker is in front of the student.
+  0.75 s after launch. The marker's place is per view (`GAZE_VIEW` in `build_story_director.py`):
+  David's sits about 32 degrees left, on the wall between Maria and her photo. Maria's is 50 cm out,
+  in front of the photo. The marker is scaled by its distance, so it looks the same size in every
+  view. Before the gaze the characters stand at their t=0 marks, looping an idle.
 - Launch defaults to the **support worker (David) view**, as the script requires.
 - Teacher: controller **menu button** opens the VR menu. **Support worker view / Resident view / Observer
   view** reopen the room in that viewpoint (the gaze marker appears again). **Restart** restarts in the
