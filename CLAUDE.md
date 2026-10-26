@@ -1,10 +1,14 @@
-# Wattleview Grove — machine setup & build
+# Wattleview Grove — machine setup & build (UE 5.8 branch)
 
 Getting this project building and deploying to a **PICO 4 Ultra Enterprise** from a clean Windows
-machine. For *why* the stack was chosen (UE 5.7, PICO OpenXR plugin, MetaHuman constraints), see
-[README.md](README.md) — this file is the *how*.
+machine. For *why* the stack was chosen and what the experience is, see [README.md](README.md) and
+[Docs/Production/Story_V2_VR_Breakdown.md](Docs/Production/Story_V2_VR_Breakdown.md).
 
-Everything below was verified end-to-end on 2026-07-17: clean machine → APK running on device.
+This branch (`ue58`) is a fresh UE 5.8.4 project with Epic's **native PICO support**. The UE 5.7
+hospital project, with the Fab PICO OpenXR plugin, stays on `main`.
+
+Verified on 2026-10-26: clean UE 5.8.4 install → template APK and story APK packaged. On-device
+verification on the PICO 4 Ultra is still pending.
 
 ---
 
@@ -12,101 +16,73 @@ Everything below was verified end-to-end on 2026-07-17: clean machine → APK ru
 
 | Thing | Version | Notes |
 |---|---|---|
-| Unreal Engine | **5.7.4** | Via Epic Games Launcher |
-| UE Android support | — | **Separate optional component** — see step 1. Easy to miss. |
-| PICO OpenXR plugin | **1.6.1** | From Fab, installs into the engine |
-| Android Studio | 2026.1+ | Only used as a delivery vehicle for the SDK + its bundled JDK |
-| Android NDK | **27.2.12479018** | Pinned by UE 5.7 — do not substitute |
-| Android platform | **android-34** | |
-| Build tools | **35.0.1** | |
+| Unreal Engine | **5.8.4** | Via Epic Games Launcher |
+| UE Android support | — | **Separate optional component**: see step 1. Easy to miss. |
+| UE MetaHuman Creator Core Data | — | Optional component; needed to author the MetaHumans in-engine |
+| PICO plugin | **none** | 5.8 ships OpenXR plus Epic's `PICOController` plugin. No Fab plugin. |
+| Android Studio | 2026.1+ | Only used as a delivery vehicle for the SDK and its bundled JDK |
+| Android NDK | **27.2.12479018** | Pinned by UE 5.8 (same as 5.7) |
+| Android platform | **android-36** | UE 5.8 pin (5.7 used android-34) |
+| Build tools | **36.0.0** | UE 5.8 pin |
 | CMake | **3.22.1** | |
-| JDK | **21** (Studio's JBR) | UE 5.7 ships no JDK of its own |
-| Disk | ~30 GB free | Engine + SDK + NDK + DDC |
+| JDK | **21** (Studio's JBR) | UE 5.8 ships no JDK of its own |
+| Disk | ~50 GB free | Engine + Android + MetaHuman data + SDK + DDC |
 
-No Visual Studio C++ workload is needed. This is a Blueprint-only project and stays that way — see
-the `-unrealexe` note in step 6.
+No Visual Studio C++ workload is needed. This is a Blueprint-only project. See `-unrealexe` in step 7.
 
 ---
 
-## 1. Engine + Android component (Epic Games Launcher)
+## 1. Engine + optional components (Epic Games Launcher)
 
-Install **UE 5.7.4**, then — this is the step everyone misses:
+Install **UE 5.8.4**, then:
 
-> Launcher → **Library** → UE 5.7 entry → dropdown chevron → **Options** →
-> tick **Android** under Target Platforms → **Apply**
+> Launcher → **Library** → 5.8.4 tile → dropdown chevron → **Options** →
+> tick **Android** under Target Platforms (and **MetaHuman Creator Core Data**) → **Apply**
 
-Without it, `Engine/Platforms/Android` exists but contains only a `Plugins` folder, and any Android
-build dies instantly with:
+**The launcher cannot modify an engine while that engine's editor is running.** It sits at
+"Initializing" / "Update Queued" with no error. Close the editor first. The launcher also auto-opens
+the editor after a fresh install; close that too.
 
-```
-Missing files required to build Android targets.
-Enable Android as an optional download component in the Epic Games Launcher.
-```
-
-Verify it took — you should see engine libraries, not an empty shell:
+Verify Android took: you should see engine libraries, not an empty folder.
 
 ```bash
-ls "C:/Program Files/Epic Games/UE_5.7/Engine/Binaries/Android"
-# expect: UnrealGame-Android-Shipping-arm64.so, UnrealGame-arm64.so, ...
+ls "C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Android"
+# expect: UnrealGame-arm64.so, UnrealGame-Android-Shipping-arm64.so, ...
 ```
 
-## 2. PICO OpenXR plugin
+On this machine the launcher's `LauncherInstalled.dat` never lists 5.8 even after install. Check the
+folder above, not the manifest.
 
-Install **PICO OpenXR** from Fab into UE 5.7. It lands at
-`Engine/Plugins/Marketplace/PICOOpenfe9bc3609ba1V9/PICOOpenXR.uplugin`.
-
-The folder name is opaque; the plugin's real name comes from the `.uplugin` filename (`PICOOpenXR`),
-which is what `WattleviewGrove.uproject` references.
-
-**The launcher cannot install into the engine while the Unreal Editor is running.** It will sit
-at "Initializing" or "Update Queued" forever with no visible error. The launcher log says:
-
-```
-RequestAppInstall: .bAllowInstallWhileRunning: false
-LogDownloadManager: SetNewActivePosition: User actions are currently blocked.
-```
-
-Close the editor first. Same applies to step 1.
-
-## 3. Android Studio
+## 2. Android Studio
 
 ```
 winget install --id Google.AndroidStudio -e --accept-package-agreements --accept-source-agreements --silent
 ```
 
-**Run this in an interactive terminal and accept the UAC prompt.** The installer requires elevation.
-If it can't prompt, winget prints `Successfully installed` and exits 0 **having installed nothing**.
-Always verify rather than trust the exit code:
+**Run this in an interactive terminal and accept the UAC prompt.** If it can't prompt, winget prints
+`Successfully installed` and exits 0 **having installed nothing**. Verify:
 
 ```
 winget list --id Google.AndroidStudio -e     # must list it
 ```
 
-You never need to open Android Studio. It's here for two things: its bundled JBR (which becomes
-`JAVA_HOME`) and the registry key `HKLM\SOFTWARE\Android Studio` that SetupAndroid.bat reads.
+You never need to open Android Studio. It provides the bundled JBR (which becomes `JAVA_HOME`) and the
+registry key `HKLM\SOFTWARE\Android Studio` that SetupAndroid.bat reads.
 
-## 4. Command-line tools
+## 3. Command-line tools
 
-Studio's default install omits these, and SetupAndroid.bat drives everything through `sdkmanager`.
-Rather than opening Studio's SDK Manager GUI, install them directly.
-
-Resolve the current version from Google's own manifest (don't hardcode a URL — they rotate):
+Studio's default install omits these. Resolve the current version from Google's manifest:
 
 ```bash
 curl -s https://dl.google.com/android/repository/repository2-3.xml \
   | grep -oE 'commandlinetools-win-[0-9]+_latest\.zip' | tail -1
 ```
 
-Download, verify the sha1 against the manifest, and extract so that `sdkmanager.bat` ends up at
-exactly:
+Download, verify the sha1 against the manifest, and extract so that `sdkmanager.bat` ends up at exactly
+`%LOCALAPPDATA%\Android\Sdk\cmdline-tools\latest\bin\sdkmanager.bat`. The `latest` directory name
+matters: SetupAndroid.bat probes for it literally.
 
-```
-%LOCALAPPDATA%\Android\Sdk\cmdline-tools\latest\bin\sdkmanager.bat
-```
-
-The `latest` directory name matters — SetupAndroid.bat probes for it literally.
-
-## 5. Accept SDK licenses
+## 4. Accept SDK licenses
 
 ```bash
 export JAVA_HOME="/c/Program Files/Android/Android Studio/jbr"
@@ -114,149 +90,166 @@ SDK="C:/Users/<you>/AppData/Local/Android/Sdk"
 yes | "$SDK/cmdline-tools/latest/bin/sdkmanager.bat" --licenses --sdk_root="$SDK"
 ```
 
-**Use Git Bash, not PowerShell.** Piping `y` from PowerShell into `sdkmanager.bat` silently fails —
-it exits 0 while accepting nothing. Verify by checking the files actually exist:
+**Use Git Bash, not PowerShell.** Piping `y` from PowerShell silently accepts nothing. Verify
+`ls "$SDK/licenses"` shows files.
+
+## 5. Install the pinned SDK components
+
+UE 5.8 pins them in `Engine/Config/Android/Android_SDK.json`. Either run SetupAndroid.bat:
+
+```
+"C:\Program Files\Epic Games\UE_5.8\Engine\Extras\Android\SetupAndroid.bat" android-36 36.0.0 3.22.1 27.2.12479018 -noninteractive
+```
+
+or, if the NDK/CMake are already there from a 5.7 setup, just add the two new pins:
 
 ```bash
-ls "$SDK/licenses"     # expect 7 files; no directory at all == nothing accepted
+"$SDK/cmdline-tools/latest/bin/sdkmanager.bat" --sdk_root="$SDK" "platforms;android-36" "build-tools;36.0.0"
 ```
 
-## 6. Run SetupAndroid.bat
+SetupAndroid.bat persists user-scope `ANDROID_HOME`, `JAVA_HOME`, `NDKROOT`/`NDK_ROOT` and adds
+`platform-tools` (adb) to PATH. **Restart every shell and the editor afterwards.**
 
-```
-"C:\Program Files\Epic Games\UE_5.7\Engine\Extras\Android\SetupAndroid.bat" android-34 35.0.1 3.22.1 27.2.12479018 -noninteractive
-```
-
-It installs the pinned SDK/NDK/CMake and persists these **user-scope** env vars:
-
-| Var | Value |
-|---|---|
-| `ANDROID_HOME` | `%LOCALAPPDATA%\Android\Sdk` |
-| `JAVA_HOME` | `C:\Program Files\Android\Android Studio\jbr` |
-| `NDKROOT` / `NDK_ROOT` | `%LOCALAPPDATA%\Android\Sdk\ndk\27.2.12479018` |
-
-It also adds `platform-tools` to PATH, which is where `adb` comes from.
-
-> **Restart every shell, IDE, and the Unreal Editor afterward.** Already-running processes keep the
-> old empty environment and will report Android as unavailable. This looks exactly like a broken
-> install but is only stale env.
-
-Verify — this is the authoritative check:
+Authoritative check:
 
 ```bash
-"C:/Program Files/Epic Games/UE_5.7/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe" \
+"C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe" \
   -Mode=ValidatePlatforms -Platforms=Android
 # expect: ##PlatformValidate: Android VALID
 ```
 
-Note this only validates the Google SDK — it will report `VALID` even if step 1 was skipped.
-Both are required.
+This validates the Google SDK only; it reports VALID even if step 1's Android component is missing.
 
 ---
+
+## 6. Open the project
+
+Open `WattleviewGrove.uproject` with UE 5.8. Default map: `/Game/Wattleview/Maps/L_ResidentRoom`.
+
+The room, timeline, director, menu and perception layer are all **generated by scripts** in
+`Scripts/Editor/`. Rerun them rather than hand-editing, so the scripts stay the source of truth:
+
+| Script | Builds | How to run |
+|---|---|---|
+| `build_resident_room.py` | `L_ResidentRoom` greybox, garden, lights, viewpoint cameras, stand-ins | headless (below) |
+| `capture_viewpoints.py` | PNG from every camera into `Saved/Captures` | headless (below) |
+| `build_story_sequence.py` | `LS_Story` (5:00), viewer anchors, blocking, `MPC_Perception` keys | open editor |
+| `build_story_director.py` | `BP_StoryDirector` and its placement | open editor, needs UnrealMCPython |
+| `build_viewpoint_menu.py` | viewpoint buttons in `WBP_Menu`, Restart fix | open editor, needs UnrealMCPython |
+| `build_perception_layer.py` | Maria's perception materials and actors | open editor |
+
+**Rerunning `build_resident_room.py` recreates the map from scratch**: rerun the open-editor scripts
+after it (sequence, director, perception).
+
+Headless:
+
+```
+"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe" ^
+  "D:\Unreal-Projects\WattleviewGrove-ue58\WattleviewGrove.uproject" ^
+  -ExecutePythonScript="<script>" -nosplash
+```
+
+Open editor (Python console or MCP `execute_python`): `exec(open(r"<script>").read())`.
+
+Editor-scripting gotchas learned the hard way:
+
+- `-ExecutePythonScript` **closes the editor as soon as the script returns.** A script that needs
+  frames to pass (shader compile, captures) must call
+  `unreal.EditorPythonScripting.set_keep_python_script_alive(True)` and release it when done.
+- `-run=pythonscript` (commandlet) has no editor world: actor spawning returns `None`.
+- **Never delete a Blueprint asset while an instance is placed in the level**: the editor crashes
+  (TickTaskManager assertion). Destroy the instance first.
+- **Never delete a material that placed actors use**: a modal "assets in use" dialog blocks the
+  editor and every scripted call times out. Rebuild materials in place
+  (`MaterialEditingLibrary.delete_all_material_expressions`).
+- **Don't rebuild `MPC_Perception`'s parameter list from scratch**: materials reference collection
+  parameters by internal ID. Add missing parameters only.
+- The UnrealMCPython graph builder can't resolve wildcard pins (for-each, array get). Design graphs
+  without them: direct actor references, `IsValid` macro, `Branch`.
 
 ## 7. Package for the headset
 
 ```powershell
-& "C:\Program Files\Epic Games\UE_5.7\Engine\Build\BatchFiles\RunUAT.bat" BuildCookRun `
-  -project="d:\Unreal-Projects\WattleviewGrove\WattleviewGrove.uproject" `
-  -noP4 -platform=Android -cookflavor=ASTC -clientconfig=Development `
-  -cook -build -stage -pak -package -archive `
-  -archivedirectory="d:\Unreal-Projects\WattleviewGrove\Build\Android" `
-  -utf8output -nocompileeditor -unrealexe="UnrealEditor-Cmd.exe"
+.\Scripts\Build\Build-Pico.ps1             # -Install to also install over adb
 ```
 
-Two flags are load-bearing and non-obvious:
+It runs BuildCookRun for Android ASTC with `-package` and `-unrealexe=UnrealEditor-Cmd.exe`.
+Enabling OpenXR makes UAT treat this Blueprint project as code-based; pointing it at the stock editor
+avoids needing a project editor build.
 
-- **`-package`** — actually builds the APK and its OBB. Without it, `-stage -pak` lay out the cooked
-  content but the archive step fails with `Error_ObbNotFound` (exit 53).
-- **`-unrealexe="UnrealEditor-Cmd.exe"`** — enabling OpenXR makes UAT treat this Blueprint project as
-  "code-based" and generate temporary `.Target.cs` files. It then looks for a project-specific editor
-  receipt (`Binaries\Win64\WattleviewGroveEditor.target`) that doesn't exist and can't be built
-  without a C++ toolchain. Pointing it at the stock editor sidesteps this — a Blueprint project
-  cooks fine with the stock editor.
-
-First run takes ~10 min (shader compilation dominates). Subsequent runs are ~40 s.
-
-Output: `Build/Android/WattleviewGrove-arm64.apk` (~102 MB) + `main.1.com.rmit.wattleviewgrove.obb` (~62 MB).
+First run ~10 min (shader compile), then ~2 min. Output goes to
+`Build/Profiles/PICO/Development/<timestamp>/Android_ASTC/`, with `Build/Profiles/PICO/Latest.txt`
+pointing at the newest. The template build was a 124 MB APK plus a 54 MB OBB.
 
 ## 8. Deploy
 
 ```
-cd Build\Android
+cd <artifact dir>
 .\Install_WattleviewGrove-arm64.bat
 ```
 
-Handles the APK install, OBB placement, and permission grants. Ends with `Installation successful`.
-
-Verify:
-
-```bash
-adb shell pm list packages | grep wattleview     # com.rmit.wattleviewgrove
-```
+Verify: `adb shell pm list packages | grep wattleview` → `com.rmit.wattleviewgrove`.
 
 ---
+
+## Using the experience
+
+- Launch starts the **support worker (David) view**, as the script requires.
+- Controller **menu button** opens the VR menu. **Support worker view / Resident view / Observer view**
+  reopen the room in that viewpoint. **Restart** restarts in the current viewpoint.
+- Head rotation is always the user's. Viewpoint changes are cuts at scripted moments.
 
 ## Device notes
 
-Target is **PICO 4 Ultra Enterprise** (model `A9210`, codename `sparrow`), Android 14 / SDK 34,
-arm64-v8a, firmware 5.15.5 (README requires 5.14.0+). It self-identifies in logcat as
-`Build: getProduct check PICO 4 Ultra Enterprise`.
+Target is **PICO 4 Ultra Enterprise** (`A9210`, `sparrow`), Android 14 / SDK 34, arm64-v8a, firmware
+5.15.5 (README requires 5.14.0+).
 
-Enable developer mode + USB debugging on the headset; `adb devices` should list it as `device`.
+**A PICO Neo 3 (A7H10, Android 10 / SDK 29) will not run this build.** The APK's minimum SDK is 32, and
+5.8's PICOController plugin dropped Neo 3 support. Check `adb shell getprop ro.product.model` before
+debugging an install failure.
+
+Enable developer mode and USB debugging on the headset; `adb devices` should list it as `device`.
 
 ### Things that look like bugs but aren't
 
-- **App launches but no engine logs / nothing renders** — check `adb shell dumpsys power | grep mWakefulness`.
-  If `Asleep`, the headset simply isn't being worn. The proximity sensor gates the display, and UE's
-  `GameActivity` never initialises. Put the headset on.
-- **OBB looks missing** — `adb shell ls /sdcard/Android/obb/<pkg>/` returns *Permission denied*, not
-  *not found*, because of Android 11+ scoped storage. That's expected; it doesn't mean the OBB is absent.
-- **Device timestamps look 30 min stale** — the headset may be on a different timezone to the PC
-  (ACST vs AEST). Compare `adb shell date` against the PC clock before concluding anything is old.
-- **App disappears from `adb` / `adb devices` empty after it worked** — usually a half-seated USB
-  plug or the headset sleeping and dropping the link, not a driver fault. Check
-  `Get-PnpDevice | ? FriendlyName -match 'PICO'` in PowerShell — if Windows shows *PICO Composite ADB
-  Interface* as OK, the cable/driver are fine; reseat the plug and `adb kill-server; adb start-server`.
+- **App launches but nothing renders**: `adb shell dumpsys power | grep mWakefulness`. `Asleep` means
+  the headset isn't being worn; the proximity sensor gates the display.
+- **OBB looks missing**: `adb shell ls /sdcard/Android/obb/<pkg>/` returns *Permission denied* under
+  Android 11+ scoped storage. That's expected.
+- **Device timestamps look 30 min stale**: the headset may be on ACST while the PC is on AEST.
+- **No PICO in `adb devices` and Windows only shows "Pico Streaming" audio devices**: the headset isn't
+  enumerating on USB at all. Reseat the plug, use a data cable, wake the headset. A flat battery also
+  prevents enumeration until it has charged enough to boot.
 
----
+## PICO controller input
 
-## PICO controller input (the non-obvious part)
+5.8's built-in `PICOController` plugin registers `PICO_Left_*` / `PICO_Right_*` keys for the PICO 4
+and PICO 4 Ultra interaction profiles. The VR template's mapping contexts already bind them, mirroring
+every Oculus Touch binding, so **no manual remapping is needed** (the 5.7 project needed it). These
+keys are not Blueprint-bindable as raw key events; use Enhanced Input actions.
 
-Head tracking and rendering can work perfectly while **controllers are invisible and dead** — no
-pose, no render model, no button/thumbstick input, no teleport. This is not a toolchain problem.
+## Rendering facts
 
-**Cause.** UE only suggests an OpenXR interaction profile when a mapping context binds that
-profile's keys. PICO 4 controllers report **dedicated FKeys** — `PICOUltra_*` and `PICO4_*`
-(registered by the plugin's `PICOOpenXRInput` module, see `PICO_Controller.cpp`). They do **not**
-emulate Oculus Touch. The XRFramework template shipped bindings only for Oculus/Vive/Index/WMR, so
-the PICO controllers matched nothing.
-
-**Fix (already committed).** Every `OculusTouch_*` binding in the five
-`Content/XRFramework/Input/IMC_*` mapping contexts was mirrored to its `PICOUltra_*` and `PICO4_*`
-equivalent (PICO's button layout matches Oculus Touch: X/Y/A/B, thumbstick, grip, trigger, menu).
-A fresh clone of this repo already has these — nothing to redo. Only relevant if you build a *new*
-project or add new input actions: they need PICO key bindings too.
-
-> **Editor gotcha if you re-edit IMCs via Python/MCP:** `EditorAssetLibrary.save_asset(path)`
-> defaults to *save-only-if-dirty* and returns `True` without writing when a programmatic edit didn't
-> flag the package dirty. The cook then ships the **old** asset while every log says "success". Use
-> `save_asset(path, only_if_is_dirty=False)` and confirm the source `.uasset` mtime actually changed.
-
----
+- Forward shading, Mobile HDR off, 4x MSAA, Mobile Multi-View: the 5.8 VR template defaults.
+- **No exposure on device** (mobile LDR). Keep raw light values near 1. Never tune brightness through
+  the desktop renderer or a manual-exposure post-process volume. The headset is the only truthful
+  brightness reference.
+- Maria's perception layer uses translucent materials driven by `MPC_Perception`, with no
+  post-processing. The full-view overlay costs ~186 pixel instructions; profile it first if the frame
+  rate suffers.
+- `OpenXREyeTracker` and `OpenXRHandTracking` are disabled. The 4 Ultra Enterprise has no eye
+  tracking, and the experience doesn't use hands.
 
 ## Project config facts
 
-- Package name: `com.rmit.wattleviewgrove`; display name "Wattleview Grove"
-- `MinSDKVersion` / `TargetSDKVersion` = **32**, while the device runs SDK 34. Installs and runs fine;
-  revisit if PICO store submission requires a higher floor.
-- `OpenXREyeTracker` is **disabled deliberately** — the 4 Ultra Enterprise has no eye-tracking
-  hardware (that was the older 4 Enterprise). Don't re-enable it expecting ETFR.
-- Rendering is forward + MSAA (`r.Mobile.AntiAliasing=3`). See README for why this conflicts with
-  MetaHuman skin.
-- PICO controller bindings live in `Content/XRFramework/Input/IMC_*` — see the controller section
-  above. Don't strip the `PICOUltra_*` / `PICO4_*` mappings.
+- Package name `com.rmit.wattleviewgrove`, display name "Wattleview Grove".
+- `MinSDKVersion` / `TargetSDKVersion` = 32. `bPackageForMetaQuest=False`, `bPackageForOpenXRImmersive=True`,
+  activity metadata `pvr.app.type=vr`.
+- Fixed foveation: `bIsFBFoveationEnabled`, `xr.OpenXRFBFoveationLevel=2`, dynamic.
 
 ## MCP tooling (optional, per-developer)
 
-Not required to build. See [README.md](README.md#mcp-setup-optional-per-developer) — `Plugins/UnrealMCPython`
-and `.mcp.json` are gitignored and machine-specific.
+`Plugins/UnrealMCPython` (GenOrca v2.2.0, **5.8 build**) is gitignored. Download
+`UnrealMCPython_5.8_2.2.0.zip` from https://github.com/GenOrca/unreal-mcp/releases and extract to
+`Plugins/UnrealMCPython/`. It's enabled in the `.uproject` (Win64 editor only, never packaged). See the
+README for the MCP server setup. UE 5.8 also ships Epic's own experimental MCP server plugin.
