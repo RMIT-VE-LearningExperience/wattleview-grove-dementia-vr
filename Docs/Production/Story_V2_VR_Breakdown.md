@@ -19,7 +19,7 @@ Three viewpoints of the same five minutes, all driven by one master Level Sequen
 |---|---|---|---|
 | 1 | David, support worker (VR Experience 1) | First person. Moves: door → beside Maria → table → seated → door. | Off |
 | 2 | Maria, resident (VR Experience 2) | First person. Standing by her chair, then seated at the table. | On |
-| 3 | Corner of the room | Fixed position in a corner, sees the whole room. Third-person viewing in VR and the source for the 2D montage. | Off |
+| 3 | Corner of the room | Fixed position in a corner, sees the whole room. Watched in VR as a third-person option, and exported as a flat video for students who can't wear a headset, viewed on a tablet. | Off |
 
 Rules that apply to every viewpoint:
 
@@ -35,7 +35,7 @@ Rules that apply to every viewpoint:
 
 | Character | Role in the scene | Build need |
 |---|---|---|
-| **Maria Russo** | 82, resident, Alzheimer's disease, moderate stage (confirmed by Lawrence 2026-10-26). Italian background; slips into Italian when settled. Injured right arm, visible on a second look, never mentioned. Standing by her chair, then seated. | MetaHuman. Verify whether the existing Maria asset matches an 82-year-old Italian woman or needs re-authoring. Injury as a skin decal (see note below). Full-body and facial performance. |
+| **Maria Russo** | 82, resident, Alzheimer's disease, moderate stage (confirmed by Lawrence 2026-10-26). Italian background; slips into Italian when settled. Injured right arm, visible on a second look, never mentioned. Standing by her chair, then seated. | MetaHuman, re-authored: the existing Maria asset does not match the brief (decision 2026-10-26). Injury as a skin decal (see note below). Full-body and facial performance. |
 
 **Injury note.** Lawrence has proposed a cast or a bruise on the right arm. The Story & Purpose
 Guide requires the injury to be "only visible on a second look, painful but unspoken, and
@@ -81,6 +81,32 @@ A backyard that replaces the room for a moment: tomatoes and basil climbing thei
 tree, and a garden hose lying across the table in front of her. Italian kitchen garden, not a
 generic lawn.
 
+## Room reference
+
+From "Aged Care Room environment examples" (received 2026-10-26). The PDF should be copied into
+`Docs/References/` so it travels with the repo.
+
+- **Page 1, real rooms.** A traditional room: mauve walls with a floral border, wall clock, photo
+  collage boards, a wall calendar and planner, floral curtains, a red recliner, bedside cabinet with
+  radio and flowers, floral bedspread, carpet. A modern facility room: neutral walls, grey curtains,
+  a large window onto a courtyard garden, light-timber built-in wardrobe and shelving, a lounge chair
+  by the window, adjustable bed with a quilt, timber bedside drawers with a phone, downlights, fan.
+- **Page 2, AI concepts.** Full-height glass onto a garden, a resident in a recliner with a carer
+  kneeling beside, mirror, timber wardrobe, light pelmet above the bed, warm neutral palette.
+- **Page 3, AI concept, closest to the brief.** An Italian-Australian personalised room: a large
+  window with floral curtains onto a flowering garden with a bench; a pink floral recliner by the
+  window with a crochet throw; a side table with a framed photo and flowers; pot plants on the sill;
+  a timber wardrobe covered in family photos with an Italian flag, a Madonna figurine, a cross and a
+  "Famiglia Amore Sempre" sign; a gallery wall of family photos and a coastal painting; an adjustable
+  bed with floral linen and a granny-square blanket; an overbed table; a teddy bear; timber bedside
+  drawers with lamp, alarm clock, water glass, rosary and saint figurine; a basket with a gardening
+  magazine; slippers; a floral rug on carpet.
+
+Direction: take the architecture from the modern facility room (built-ins, big window, adjustable
+bed, downlights, fan) and the dressing and warmth from page 3. Palette: warm cream walls, light
+timber, pink and floral textiles, green garden light. The script needs a small table with armchairs
+in addition to the recliner, since David guides Maria to the table and she grips a chair arm.
+
 ## Beat table
 
 Both views run the same clock. Quotes are verbatim from Story V2.
@@ -115,7 +141,9 @@ post-processing, so none of it relies on depth of field, bloom, or colour gradin
 
 ## Audio
 
-- Voice: David in English. Maria in English with one Italian line, "Enzo... l'hai trovato."
+- Voice: David in English. Maria in English with one Italian line, "Enzo... l'hai trovato." Final
+  lines will be generated with ElevenLabs once the script is locked; the Windows TTS placeholders
+  stand in until then. No subtitles in VR for now.
 - Beds: fan loop, morning-news TV bed with a visible presenter, garden ambience, corridor chatter
   in two mixes, room tone, heartbeat, backyard ambience, hose or water, footsteps, door.
 - Two mixes per bed where the views differ. The fan is the last sound to fade in view 2.
@@ -132,15 +160,21 @@ post-processing, so none of it relies on depth of field, bloom, or colour gradin
 - Systems: viewpoint selection at launch, master sequence with per-view camera and effect tracks,
   per-view audio submixes, fade-based transitions.
 
+## Decisions so far (2026-10-26)
+
+- Maria Russo is 82, Italian, Alzheimer's disease at moderate stage.
+- The existing Maria MetaHuman will be re-authored.
+- The corner view is both a VR option and a flat video export for tablet viewing.
+- No subtitles in VR for now.
+- Voices via ElevenLabs once the script is final.
+- Engine: UE 5.8.4, fresh project from the VR template, native PICO support.
+
 ## Open questions
 
 1. Confirm the hairbrush version supersedes the medication prose, and supply David's final lines for
    the changed beats, including his parting line.
-2. Resolved: Alzheimer's disease, moderate stage.
-3. Confirm whether the existing Maria MetaHuman is Maria Russo, 82, Italian, or needs re-authoring.
-   Decide cast versus bruise for the right arm (see Injury note; bruise recommended).
-4. The corner viewpoint: viewable in VR, montage source, or both, and which corner and height.
-5. David's movement between positions: cuts with fades, or continuous walking.
-6. Subtitles in VR, and whether the Italian line is translated on screen.
-7. Who records the voices and when. The current text-to-speech placeholders are fine for the prototype.
-8. Both experiences run exactly five minutes; confirm no intro or outro inside the VR itself.
+2. Cast versus bruise for the right arm. See the Injury note; bruise recommended.
+3. David's movement between positions: cuts with fades, or continuous walking.
+4. Which corner and what height for the corner camera.
+5. Both experiences run exactly five minutes; confirm no intro or outro inside the VR itself.
+6. David's and Enzo's looks beyond "early 30s, uniform" and "grey hair, work shirt".
