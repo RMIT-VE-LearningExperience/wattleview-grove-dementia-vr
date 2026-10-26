@@ -33,6 +33,7 @@ BP_PATH = f"{BP_DIR}/{BP_NAME}"
 SEQ = "/Game/Wattleview/Cinematics/LS_Story.LS_Story"
 MPC = "/Game/Wattleview/Materials/MPC_Perception.MPC_Perception"
 MAP_PATH = "/Game/Wattleview/Maps/L_ResidentRoom"
+SNAP_CM = 40.0   # camera further than this from the anchor gets snapped back onto it
 
 bel = unreal.BlueprintEditorLibrary
 eas = unreal.EditorAssetLibrary
@@ -133,6 +134,28 @@ def build_graph(bp):
         N(id="makePlayer", type="CallFunction", target="LevelSequencePlayer",
           function_name="CreateLevelSequencePlayer"),
         N(id="play", type="CallFunction", target="MovieSceneSequencePlayer", function_name="Play"),
+        # ---- Tick: keep the viewer's eyes on the anchor -------------------------------
+        # The tracking origin is not guaranteed (PICO may stay on a floor/stage origin, and a
+        # system recenter resets it). Each frame, if the camera is more than SNAP_CM from the
+        # anchor, move the pawn so the camera sits exactly on the anchor. Head movement within
+        # that radius is untouched, so parallax stays natural.
+        N(id="tick", type="Event", event_name="ReceiveTick"),
+        N(id="tickAnchor", type="VariableGet", variable_name="Anchor"),
+        N(id="tickValid", type="MacroInstance", macro_name="IsValid"),
+        N(id="camMgr", type="CallFunction", target="GameplayStatics", function_name="GetPlayerCameraManager",
+          pin_defaults={"PlayerIndex": "0"}),
+        N(id="camLoc", type="CallFunction", target="PlayerCameraManager", function_name="GetCameraLocation"),
+        N(id="anchorLoc", type="CallFunction", target="Actor", function_name="K2_GetActorLocation"),
+        N(id="diff", type="CallFunction", target="KismetMathLibrary", function_name="Subtract_VectorVector"),
+        N(id="dist", type="CallFunction", target="KismetMathLibrary", function_name="VSize"),
+        N(id="far", type="CallFunction", target="KismetMathLibrary", function_name="Greater_DoubleDouble",
+          pin_defaults={"B": str(SNAP_CM)}),
+        N(id="branchFar", type="Branch"),
+        N(id="negate", type="CallFunction", target="KismetMathLibrary", function_name="NegateVector"),
+        N(id="tickPawn", type="CallFunction", target="GameplayStatics", function_name="GetPlayerPawn",
+          pin_defaults={"PlayerIndex": "0"}),
+        N(id="snap", type="CallFunction", target="Actor", function_name="K2_AddActorWorldOffset",
+          pin_defaults={"bSweep": "false", "bTeleport": "true"}),
     ]
     connections = [
         C("begin", "then", "origin", "execute"),
@@ -180,6 +203,21 @@ def build_graph(bp):
         C("getStory", "Story", "makePlayer", "LevelSequence"),
         C("makePlayer", "then", "play", "execute"),
         C("makePlayer", "ReturnValue", "play", "self"),
+        # tick snap
+        C("tick", "then", "tickValid", "exec"),
+        C("tickAnchor", "Anchor", "tickValid", "InputObject"),
+        C("tickValid", "Is Valid", "branchFar", "execute"),
+        C("camMgr", "ReturnValue", "camLoc", "self"),
+        C("tickAnchor", "Anchor", "anchorLoc", "self"),
+        C("camLoc", "ReturnValue", "diff", "A"),
+        C("anchorLoc", "ReturnValue", "diff", "B"),
+        C("diff", "ReturnValue", "dist", "A"),
+        C("dist", "ReturnValue", "far", "A"),
+        C("far", "ReturnValue", "branchFar", "Condition"),
+        C("branchFar", "then", "snap", "execute"),
+        C("diff", "ReturnValue", "negate", "A"),
+        C("negate", "ReturnValue", "snap", "DeltaLocation"),
+        C("tickPawn", "ReturnValue", "snap", "self"),
     ]
     return json.loads(unreal.MCPythonHelper.build_blueprint_graph(
         bp, "EventGraph", json.dumps({"nodes": nodes, "connections": connections})))

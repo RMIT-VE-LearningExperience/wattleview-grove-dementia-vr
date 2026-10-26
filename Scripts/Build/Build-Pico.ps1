@@ -62,7 +62,16 @@ Write-Output "Artifacts: $artifactDir"
 if ($Install) {
     $bat = Get-ChildItem $artifactDir -Filter "Install_*.bat" | Select-Object -First 1
     if (-not $bat) { throw "No installer .bat in $artifactDir" }
+    # Run through cmd and judge by exit code: the generated installer writes harmless
+    # messages to stderr (e.g. "rm: ... No such file"), which PowerShell's Stop preference
+    # would otherwise treat as fatal, aborting before the OBB is pushed.
     Push-Location $artifactDir
-    try { if ($Serial) { & $bat.FullName $Serial } else { & $bat.FullName } }
+    try {
+        $installOut = & cmd.exe /c "`"$($bat.FullName)`" $Serial 2>&1"
+        $installOut | Select-Object -Last 3
+        if ($LASTEXITCODE -ne 0 -or -not ($installOut -match 'Installation successful')) {
+            throw "Install failed (exit $LASTEXITCODE)."
+        }
+    }
     finally { Pop-Location }
 }

@@ -9,7 +9,9 @@ Run headless:
   UnrealEditor-Cmd.exe <project>.uproject -ExecutePythonScript="<this file>" -nosplash
   (-ExecutePythonScript closes the editor when the script returns.)
 
-Re-runnable: rebuilds the map from scratch each time.
+Re-runnable: rebuilds the map from scratch each time. Afterwards rerun, in the open editor:
+build_lighting.py (palette, daylight, bake), build_story_sequence.py, build_story_director.py,
+build_perception_layer.py, since this script discards everything they placed.
 
 Coordinates (cm): X = 0 south wall -> 500 north (window) wall.
                   Y = 0 west (door) wall -> 450 east (bed/TV) wall.  Z up, floor at 0.
@@ -354,7 +356,10 @@ def build():
     # Placeholder characters (mannequins until the MetaHumans exist) ---------
     idle = unreal.load_asset("/Game/Characters/Mannequins/Anims/Unarmed/MM_Idle.MM_Idle")
 
-    def stand_in(label, mesh_path, loc, yaw):
+    def stand_in(label, mesh_path, loc, facing):
+        """facing: direction the character faces (0 = +X). The UE5 mannequin mesh faces +Y,
+        so the actor yaw is facing - 90."""
+        yaw = facing - 90.0
         mesh = unreal.load_asset(mesh_path)
         if mesh is None:
             log(f"missing mesh {mesh_path}; skipping {label}")
@@ -368,8 +373,8 @@ def build():
             sk.set_editor_property("animation_data", unreal.SingleAnimationPlayData(anim_to_play=idle))
         return a
 
-    stand_in("Maria_StandIn", "/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple", (355, 60, 0), -90)
-    stand_in("David_StandIn", "/Game/Characters/Mannequins/Meshes/SKM_Manny_Simple.SKM_Manny_Simple", (105, 40, 0), 60)
+    stand_in("Maria_StandIn", "/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple", (355, 68, 0), -90)
+    stand_in("David_StandIn", "/Game/Characters/Mannequins/Meshes/SKM_Manny_Simple.SKM_Manny_Simple", (105, 45, 0), 45)
     stand_in("Gardener_StandIn", "/Game/Characters/Mannequins/Meshes/SKM_Manny_Simple.SKM_Manny_Simple", (745, 300, -20), 180)
 
     # Player start at David's door position, facing into the room.

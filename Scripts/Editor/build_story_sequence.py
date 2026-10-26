@@ -43,45 +43,73 @@ def yaw_to(src, dst):
 
 # ------------------------------------------------------------------ timeline data
 # Viewer anchors: (time_s, (x, y, eye_z), look_at) -> yaw derived from look_at.
+# Seated eye positions sit above the seated stand-in's hips (AS_Placeholder_Sit puts the
+# hips 13 cm behind the actor root, eyes ~64 cm above the hips).
+MARIA_SEATED_EYE = (333, 200, 117)
 VIEWPOINTS = {
     "Anchor_David": [
-        (0.0,   (105, 40, 165), (300, 150, 130)),   # 0:00 enters at the door with the clipboard
-        (14.0,  (360, 150, 165), (335, 200, 100)),  # 0:14 arrives beside Maria at the table
-        (240.0, (348, 262, 115), (335, 200, 110)),  # 4:00 pulls a chair in, sits close
-        (288.0, (120, 70, 165), (330, 200, 110)),   # 4:48 at the door, leaving
+        (0.0,   (105, 40, 165), (300, 150, 130)),     # 0:00 enters at the door with the clipboard
+        (14.0,  (332, 112, 165), (355, 60, 150)),     # 0:14 beside Maria at the photograph
+        (34.0,  (372, 145, 165), MARIA_SEATED_EYE),   # 0:34 standing at her chair, table
+        (240.0, (368, 268, 118), MARIA_SEATED_EYE),   # 4:00 pulled a chair in, sits close
+        (288.0, (120, 70, 165), (340, 200, 110)),     # 4:48 at the door, leaving
     ],
     "Anchor_Maria": [
-        (0.0,   (355, 60, 155), (355, 0, 147)),     # 0:00 standing at the photograph
-        (35.0,  (340, 200, 115), (700, 200, 90)),   # 0:35 seated, facing the garden window
+        (0.0,   (355, 60, 155), (355, 0, 147)),       # 0:00 standing at the photograph
+        (35.0,  MARIA_SEATED_EYE, (700, 200, 90)),    # 0:35 seated, facing the garden window
     ],
     "Anchor_Corner": [
-        (0.0,   (480, 25, 225), (300, 230, 90)),    # fixed overview from the window corner
+        (0.0,   (480, 25, 225), (300, 230, 90)),      # fixed overview from the window corner
     ],
 }
 
-# Stand-in blocking: (time_s, (x, y, z), yaw, interp). Floor-level positions.
+# Stand-in blocking: (time_s, (x, y, z), facing_deg, interp). Floor-level root positions.
+# facing_deg is the direction the character faces (0 = +X, toward the window). The UE5
+# mannequin mesh faces +Y, so MESH_YAW_OFFSET is added to get the actor yaw.
+MESH_YAW_OFFSET = -90.0
 BLOCKING = {
     "David_StandIn": [
-        (0.0,   (105, 40, 0), 45, CONST),
-        (6.0,   (105, 40, 0), 45, LINEAR),          # reads the handover, then walks in
-        (14.0,  (300, 105, 0), 30, LINEAR),
-        (20.0,  (372, 140, 0), 130, CONST),         # guides Maria to the table
-        (236.0, (372, 140, 0), 130, LINEAR),
-        (240.0, (362, 265, 0), -105, CONST),        # sits close (4:00)
-        (282.0, (362, 265, 0), -105, LINEAR),
-        (292.0, (110, 50, 0), 200, LINEAR),         # leaves (4:42-4:52)
-        (298.0, (105, -60, 0), 270, CONST),         # out through the door
+        (0.0,   (105, 45, 0), 45, CONST),
+        (6.0,   (105, 45, 0), 45, LINEAR),            # reads the handover, then walks in
+        (14.0,  (330, 112, 0), -62, CONST),           # greets Maria at the photograph
+        (24.0,  (330, 112, 0), -62, LINEAR),          # guides her to the table
+        (34.0,  (372, 145, 0), 115, CONST),           # stands at her chair
+        (240.0, (365, 260, 0), -113, CONST),          # sits in the pulled-in chair (4:00)
+        (282.0, (365, 260, 0), -113, LINEAR),         # stands to leave
+        (292.0, (110, 55, 0), 200, LINEAR),           # leaves (4:42-4:52)
+        (298.0, (105, -60, 0), 270, CONST),           # out through the door
     ],
     "Maria_StandIn": [
-        (0.0,   (355, 60, 0), -90, CONST),          # at the photograph
-        (24.0,  (355, 60, 0), -90, LINEAR),
-        (34.0,  (335, 200, 0), 0, CONST),           # led to her table chair
+        (0.0,   (355, 68, 0), -90, CONST),            # at the photograph, facing it
+        (24.0,  (355, 68, 0), -90, LINEAR),
+        (34.0,  (346, 200, 0), 0, CONST),             # seated at the table, facing the window
     ],
     "Gardener_StandIn": [
-        (0.0,   (745, 300, -20), 180, LINEAR),
-        (120.0, (745, 330, -20), 200, LINEAR),      # drifts along the bed while working
-        (300.0, (745, 280, -20), 170, LINEAR),
+        (0.0,   (745, 300, -20), 180, LINEAR),        # faces the house while working
+        (120.0, (745, 330, -20), 160, LINEAR),
+        (300.0, (745, 280, -20), 190, LINEAR),
     ],
+}
+
+# Animation sections per stand-in: (start_s, end_s, anim). Sections loop to fill.
+IDLE = "/Game/Characters/Mannequins/Anims/Unarmed/MM_Idle.MM_Idle"
+WALK = "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd.MF_Unarmed_Walk_Fwd"
+SIT = "/Game/Wattleview/Animations/AS_Placeholder_Sit.AS_Placeholder_Sit"
+ANIMS = {
+    "David_StandIn": [(0, 6, IDLE), (6, 14, WALK), (14, 24, IDLE), (24, 34, WALK), (34, 240, IDLE),
+                      (240, 282, SIT), (282, 298, WALK), (298, 300, IDLE)],
+    "Maria_StandIn": [(0, 24, IDLE), (24, 34, WALK), (34, 300, SIT)],
+    "Gardener_StandIn": [(0, 300, IDLE)],
+}
+
+# Props that move: label of the root actor, the label prefix of parts to attach to it, and
+# keys (time_s, (x, y, z), yaw, interp) for the root. David pulls this chair in at 4:00.
+PROP_MOVES = {
+    "Chair_Second_Seat": ("Chair_Second_", [
+        (0.0,   (400, 268, 46), -90, CONST),
+        (236.0, (400, 268, 46), -90, LINEAR),
+        (240.0, (370, 272, 46), -113, CONST),
+    ]),
 }
 
 # Perception layer (Maria's view). Values 0..1; keyed AUTO for smooth ramps.
@@ -163,14 +191,31 @@ def key(channel, t, v, interp):
                     unreal.MovieSceneTimeUnit.DISPLAY_RATE, interp)
 
 
-def key_transform(chs, t, loc, yaw, interp):
+def key_transform(chs, t, loc, yaw, interp, scale=(1.0, 1.0, 1.0)):
     for i, v in enumerate(loc):
         key(chs[i], t, v, interp)
     key(chs[3], t, 0.0, interp)   # roll
     key(chs[4], t, 0.0, interp)   # pitch
     key(chs[5], t, yaw, interp)   # yaw
-    for i in (6, 7, 8):
-        key(chs[i], t, 1.0, interp)
+    for i, v in zip((6, 7, 8), scale):
+        key(chs[i], t, v, interp)
+
+
+def add_anim_sections(binding, sections):
+    if not sections:
+        return 0
+    track = binding.add_track(unreal.MovieSceneSkeletalAnimationTrack)
+    for start, end, path in sections:
+        anim = unreal.load_asset(path)
+        if anim is None:
+            log(f"missing animation {path}")
+            continue
+        sec = track.add_section()
+        sec.set_range_seconds(float(start), float(end))
+        params = sec.get_editor_property("params")
+        params.set_editor_property("animation", anim)
+        sec.set_editor_property("params", params)
+    return len(sections)
 
 
 # ------------------------------------------------------------------ build
@@ -214,10 +259,32 @@ def build():
         actor.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
         tags = [unreal.Name("Body_" + label.split("_")[0])]
         actor.set_editor_property("tags", tags)
-        chs = transform_channels(seq.add_possessable(actor))
+        binding = seq.add_possessable(actor)
+        chs = transform_channels(binding)
+        for t, loc, facing, interp in keys:
+            key_transform(chs, t, loc, facing + MESH_YAW_OFFSET, interp)
+        n_anim = add_anim_sections(binding, ANIMS.get(label, []))
+        log(f"{label}: {len(keys)} blocking keys, {n_anim} anim sections")
+
+    # Moving props (parts attached to a root so the whole chair moves).
+    for root_label, (prefix, keys) in PROP_MOVES.items():
+        root = find_actor(root_label)
+        if root is None:
+            log(f"missing {root_label}; skipped")
+            continue
+        root.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+        for part in actors.get_all_level_actors():
+            lbl = part.get_actor_label()
+            if lbl.startswith(prefix) and lbl != root_label:
+                part.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+                if part.get_attach_parent_actor() != root:
+                    part.attach_to_actor(root, "", unreal.AttachmentRule.KEEP_WORLD,
+                                         unreal.AttachmentRule.KEEP_WORLD, unreal.AttachmentRule.KEEP_WORLD, False)
+        chs = transform_channels(seq.add_possessable(root))
+        scale = root.get_actor_scale3d()
         for t, loc, yaw, interp in keys:
-            key_transform(chs, t, loc, yaw, interp)
-        log(f"{label}: {len(keys)} blocking keys")
+            key_transform(chs, t, loc, yaw, interp, (scale.x, scale.y, scale.z))
+        log(f"{root_label}: {len(keys)} prop keys")
 
     # Perception parameters.
     track = seq.add_track(unreal.MovieSceneMaterialParameterCollectionTrack)
