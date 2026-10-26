@@ -1,13 +1,14 @@
 """Natural daylight for L_ResidentRoom: baked, mobile-friendly, high-key.
 
-Target look (reference from Lawrence, 2026-10-26): sun streaming through the
-window onto the floor, light spreading by bounce, soft shadows, clear blue sky. After the first
-headset test: "very bright inside, not very cinematic" -> less sky fill and darker walls, so the
-sun patch and window read against softer shade. Second test: "the light is too bright, the
-highlight is very strong" -> sun 2.3 -> 1.5 with a wider source angle, sky 0.55 -> 0.45, pendant
-3.0 -> 1.5, dimmer sky outside the window.
+Target look (reference from Lawrence, 2026-10-26): soft 10am light streaming through the
+window, light spreading by bounce, readable material detail, grounded shadows and a clear blue
+sky. Headset and editor reviews found the earlier setup overexposed. More importantly, the
+Blueprint-style SetIntensity/SetLightColor calls did not persist those values in the saved level;
+after reload the lights returned to their much brighter class defaults. All authored values below
+are therefore written to editor properties so the bake, saved map and packaged build agree.
 
-  * Static sun (morning, from the north-east through the north window) -> crisp sun patch.
+  * Stationary sun (morning, from the north-east through the north window) -> baked room light
+    plus one short mobile CSM cascade for grounding the movable MetaHumans.
   * Static sky light from a daylight cubemap + a Lightmass portal on the window -> soft fill.
   * Lightmass importance volume around the room and near garden; 4 indirect bounces.
   * Per-surface lightmap resolution so the sun patch has clean edges.
@@ -34,6 +35,25 @@ eas = unreal.EditorAssetLibrary
 mel = unreal.MaterialEditingLibrary
 
 ROOM_X, ROOM_Y, ROOM_H = 500.0, 450.0, 270.0
+
+# Mobile LDR lighting values. Keep these intentionally conservative: values above 1 clip rather
+# than being recovered by exposure on the PICO. The light colours are stored as sRGB FColor values
+# because that is the serialized type of ULightComponentBase.LightColor.
+SUN_INTENSITY = 2.20
+SUN_COLOR = unreal.Color(r=255, g=249, b=240, a=255)  # neutral-warm 10am daylight
+SUN_SOURCE_ANGLE = 4.0                             # broad, soft morning shadow edge
+SUN_SPECULAR_SCALE = 0.40                          # retain skin detail without a plastic hotspot
+SUN_CSM_DISTANCE = 700.0                           # one room-sized character-shadow cascade
+
+SKY_INTENSITY = 0.80
+SKY_COLOR = unreal.Color(r=236, g=244, b=255, a=255)  # cool fill lifts shade without flattening it
+
+PENDANT_INTENSITY = 2.00
+PENDANT_COLOR = unreal.Color(r=255, g=220, b=185, a=255)  # subtle warm practical, not the key light
+PENDANT_RADIUS = 380.0
+PENDANT_SOURCE_RADIUS = 30.0
+PENDANT_SOFT_RADIUS = 20.0
+PENDANT_SPECULAR_SCALE = 0.25
 
 # Palette toward the reference: warm whites, light timber, jute; Maria's pinks kept.
 PALETTE = {
@@ -158,18 +178,28 @@ def build():
     recolour()
     sky_gradient()
 
-    remove({"Sun_Morning", "SkyLight", "RoomFill", "WindowPortal", "LightmassVolume",
-            "RoomReflection", "PendantWarm"})
+    remove({"Sun_Morning", "SkyLight", "RoomFill", "WindowFill", "WindowPortal",
+            "LightmassVolume", "RoomReflection", "PendantWarm"})
 
     # Sun: morning light from the north-east, through the north window, down onto the floor.
+    # Stationary (rather than Static) is deliberate: the room remains baked, while the one short
+    # mobile CSM cascade gives Maria/David/Enzo direct light and grounding shadows as they move.
     sun = spawn(unreal.DirectionalLight, "Sun_Morning", (ROOM_X + 200, 225, 400), (0.0, -38.0, 215.0))
     lc = sun.light_component
-    lc.set_mobility(unreal.ComponentMobility.STATIC)
-    lc.set_intensity(1.5)            # 2.3 read too bright with a hard highlight on device (2026-10-26)
-    lc.set_light_color(unreal.LinearColor(1.0, 0.92, 0.80, 1.0))
-    lc.set_editor_property("light_source_angle", 1.2)          # softer sun-patch edge
+    lc.set_mobility(unreal.ComponentMobility.STATIONARY)
+    lc.set_editor_property("intensity", SUN_INTENSITY)
+    lc.set_editor_property("light_color", SUN_COLOR)
+    lc.set_editor_property("light_source_angle", SUN_SOURCE_ANGLE)
+    lc.set_editor_property("specular_scale", SUN_SPECULAR_SCALE)
+    lc.set_editor_property("dynamic_shadow_distance_stationary_light", SUN_CSM_DISTANCE)
+    lc.set_editor_property("dynamic_shadow_cascades", 1)
+    lc.set_editor_property("use_inset_shadows_for_movable_objects", False)
+    lc.set_editor_property("use_ray_traced_distance_field_shadows", False)
+    lc.set_editor_property("cast_shadows", True)
+    lc.set_editor_property("cast_static_shadows", True)
+    lc.set_editor_property("cast_dynamic_shadows", True)
     lms = lc.get_editor_property("lightmass_settings")
-    lms.set_editor_property("light_source_angle", 1.2)
+    lms.set_editor_property("light_source_angle", SUN_SOURCE_ANGLE)
     lms.set_editor_property("indirect_lighting_saturation", 1.0)
     lc.set_editor_property("lightmass_settings", lms)
 
@@ -180,7 +210,8 @@ def build():
     slc.set_editor_property("source_type", unreal.SkyLightSourceType.SLS_SPECIFIED_CUBEMAP)
     slc.set_editor_property("cubemap", unreal.load_asset(
         "/Engine/MapTemplates/Sky/DaylightAmbientCubemap.DaylightAmbientCubemap"))
-    slc.set_intensity(0.45)        # less flat fill: contrast between sun and shade
+    slc.set_editor_property("intensity", SKY_INTENSITY)
+    slc.set_editor_property("light_color", SKY_COLOR)
 
     # Portal over the window opening (Y 100..350, Z 80..220) focuses sky light into the room.
     portal = spawn(unreal.LightmassPortal, "WindowPortal", (ROOM_X + 7, 225, 150))
@@ -190,10 +221,12 @@ def build():
     pend = spawn(unreal.PointLight, "PendantWarm", (250, 225, 235))
     plc = pend.light_component
     plc.set_mobility(unreal.ComponentMobility.STATIC)
-    plc.set_intensity(1.5)
-    plc.set_attenuation_radius(450.0)
-    plc.set_light_color(unreal.LinearColor(1.0, 0.85, 0.65, 1.0))
-    plc.set_editor_property("source_radius", 20.0)
+    plc.set_editor_property("intensity", PENDANT_INTENSITY)
+    plc.set_editor_property("attenuation_radius", PENDANT_RADIUS)
+    plc.set_editor_property("light_color", PENDANT_COLOR)
+    plc.set_editor_property("source_radius", PENDANT_SOURCE_RADIUS)
+    plc.set_editor_property("soft_source_radius", PENDANT_SOFT_RADIUS)
+    plc.set_editor_property("specular_scale", PENDANT_SPECULAR_SCALE)
 
     # Importance volume: room plus the garden strip seen through the window.
     vol = spawn(unreal.LightmassImportanceVolume, "LightmassVolume", (ROOM_X / 2 + 150, ROOM_Y / 2, 140))
@@ -212,6 +245,9 @@ def build():
     lm.set_editor_property("indirect_lighting_quality", 2.0)
     lm.set_editor_property("indirect_lighting_smoothness", 1.2)
     lm.set_editor_property("environment_color", unreal.Color(0, 0, 0, 255))
+    # The default 200 cm volumetric cells are too coarse for faces and bodies in this small room.
+    # 75 cm remains inexpensive here but gives the movable MetaHumans more coherent baked fill.
+    lm.set_editor_property("volumetric_lightmap_detail_cell_size", 75.0)
     ws.set_editor_property("lightmass_settings", lm)
 
     set_lightmaps()

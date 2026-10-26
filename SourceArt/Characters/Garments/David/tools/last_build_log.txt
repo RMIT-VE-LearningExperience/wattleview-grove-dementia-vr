@@ -1,0 +1,44 @@
+[DAVID    3.1s] armhole l seam f top 0.000 bottom 0.407  min -0.062 max 0.428  top pt [0.221, 0.039, 1.442]
+[DAVID    5.2s] armhole r seam f top 0.000 bottom 0.430  min -0.084 max 0.431  top pt [-0.22, 0.022, 1.443]
+[DAVID    5.6s]   clearance pass 7: worst 0.66 cm, 13 body verts under 0.66 cm, moving 35 garment verts
+[DAVID   12.3s] CHECK rest     arm_l                {'n': 61, 'pokes': 0, 'signed_min_cm': 0.76, 'nearest_min_cm': 0.66, 'n_under_0p6': 0, 'along_normal_min_cm': 0.65, 'nearest_at': [0.292, -0.014, 1.29]}
+[DAVID   12.3s] CHECK rest     arm_r                {'n': 63, 'pokes': 0, 'signed_min_cm': 0.8, 'nearest_min_cm': 0.66, 'n_under_0p6': 0, 'along_normal_min_cm': 0.65, 'nearest_at': [-0.29, 0.073, 1.292]}
+[DAVID   12.3s] CHECK rest     leg_l                {'n': 541, 'pokes': 0, 'signed_min_cm': 0.66, 'nearest_min_cm': 0.66, 'n_under_0p6': 0, 'along_normal_min_cm': 0.65, 'nearest_at': [0.004, -0.025, 0.746]}
+[DAVID   12.3s] CHECK rest     leg_r                {'n': 538, 'pokes': 0, 'signed_min_cm': 0.66, 'nearest_min_cm': 0.66, 'n_under_0p6': 0, 'along_normal_min_cm': 0.66, 'nearest_at': [-0.008, -0.026, 0.722]}
+[DAVID   12.3s] CHECK rest     foot_l               {'n': 911, 'pokes': 0, 'signed_min_cm': 0.66, 'nearest_min_cm': 0.66, 'n_under_0p6': 0, 'along_normal_min_cm': 0.65, 'nearest_at': [0.123, 0.055, 0.075]}
+[DAVID   12.3s] CHECK rest     foot_r               {'n': 911, 'pokes': 0, 'signed_min_cm': 0.66, 'nearest_min_cm': 0.66, 'n_under_0p6': 0, 'along_normal_min_cm': 0.65, 'nearest_at': [-0.199, -0.106, -0.002]}
+[DAVID   12.3s] CHECK rest     shirt_in_trousers    {'n': 108, 'bad': 0, 'min_cm': 0.99}
+[DAVID   12.3s] CHECK rest     belt_over_trousers   {'n': 152, 'bad': 0, 'min_cm': 0.07}
+[DAVID   12.3s] CHECK seated   arm_l                {'n': 61, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.13, 'at': [0.222, -0.014, 1.289]}
+[DAVID   12.3s] CHECK seated   arm_r                {'n': 63, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.65, 'at': [-0.23, 0.033, 1.24]}
+[DAVID   12.3s] CHECK seated   leg_l                {'n': 541, 'pokes': 6, 'visible': 0, 'signed_min_cm': -1.04, 'at': [0.087, 0.044, 0.465]}
+[DAVID   12.3s] CHECK seated   leg_r                {'n': 538, 'pokes': 5, 'visible': 0, 'signed_min_cm': -1.08, 'at': [-0.103, 0.053, 0.447]}
+[DAVID   12.3s] CHECK seated   foot_l               {'n': 911, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.66, 'at': [0.141, -0.218, 0.022]}
+[DAVID   12.3s] CHECK seated   foot_r               {'n': 911, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.66, 'at': [-0.199, -0.106, -0.002]}
+[DAVID   12.3s] CHECK seated   shirt_in_trousers    {'n': 108, 'bad': 8, 'min_cm': -1.02}
+[DAVID   12.3s] CHECK seated   belt_over_trousers   {'n': 152, 'bad': 2, 'min_cm': -0.89}
+[DAVID   12.4s] STRETCH seated   max by part {'trousers': 2.68, 'shirt': 1.62, 'belt': 1.12, 'shoes': 1.03}  edges>1.6x: 136
+[DAVID   12.4s]    stretch seated 99th percentile 1.61
+[DAVID   12.5s] CHECK lowchair arm_l                {'n': 61, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.13, 'at': [0.222, -0.014, 1.289]}
+[DAVID   12.5s] CHECK lowchair arm_r                {'n': 63, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.65, 'at': [-0.23, 0.033, 1.24]}
+[DAVID   12.5s] CHECK lowchair leg_l                {'n': 541, 'pokes': 1, 'visible': 0, 'signed_min_cm': -0.86, 'at': [0.117, 0.071, 0.395]}
+[DAVID   12.5s] CHECK lowchair leg_r                {'n': 538, 'pokes': 1, 'visible': 0, 'signed_min_cm': -1.01, 'at': [-0.12, 0.07, 0.396]}
+[DAVID   12.5s] CHECK lowchair foot_l               {'n': 911, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.66, 'at': [0.141, -0.218, 0.022]}
+[DAVID   12.5s] CHECK lowchair foot_r               {'n': 911, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.66, 'at': [-0.199, -0.106, -0.002]}
+[DAVID   12.5s] CHECK lowchair shirt_in_trousers    {'n': 108, 'bad': 8, 'min_cm': -0.97}
+[DAVID   12.5s] CHECK lowchair belt_over_trousers   {'n': 152, 'bad': 4, 'min_cm': -0.09}
+[DAVID   12.6s] STRETCH lowchair max by part {'trousers': 2.75, 'shirt': 1.62, 'shoes': 1.15, 'belt': 1.12}  edges>1.6x: 146
+[DAVID   12.6s]    stretch lowchair 99th percentile 1.64
+[DAVID   12.6s] CHECK reach    arm_l                {'n': 61, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.67, 'at': [0.233, -0.024, 1.297]}
+[DAVID   12.6s] CHECK reach    arm_r                {'n': 63, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.55, 'at': [-0.266, -0.018, 1.323]}
+[DAVID   12.6s] CHECK reach    leg_l                {'n': 541, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.66, 'at': [0.004, -0.025, 0.746]}
+[DAVID   12.6s] CHECK reach    leg_r                {'n': 538, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.66, 'at': [-0.008, -0.026, 0.722]}
+[DAVID   12.6s] CHECK reach    foot_l               {'n': 911, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.66, 'at': [0.141, -0.218, 0.022]}
+[DAVID   12.6s] CHECK reach    foot_r               {'n': 911, 'pokes': 0, 'visible': 0, 'signed_min_cm': 0.66, 'at': [-0.199, -0.106, -0.002]}
+[DAVID   12.6s] CHECK reach    shirt_in_trousers    {'n': 108, 'bad': 0, 'min_cm': 0.99}
+[DAVID   12.6s] CHECK reach    belt_over_trousers   {'n': 152, 'bad': 0, 'min_cm': 0.06}
+[DAVID   12.7s] STRETCH reach    max by part {'shirt': 3.07, 'trousers': 1.32, 'belt': 1.23, 'shoes': 1.0}  edges>1.6x: 144
+[DAVID   12.7s]    stretch reach 99th percentile 1.63
+[DAVID   12.9s] body hide mask: 1602 body triangles hidden -> D:\Unreal-Projects\WattleviewGrove-ue58\SourceArt\Characters\Garments\David\T_David_Body_OutfitHideMask.png
+[DAVID   18.4s] ROUNDTRIP vertex max offset 0.00001 cm | bone max offset 0.00051 cm | posed (seated) max offset 0.00042 cm
+[DAVID   18.4s] ROUNDTRIP tris 8672  max influences 4  slots ['M_PoloShirt', 'M_Trousers', 'M_Belt', 'M_Shoes', 'M_Badge']  mesh name SKM_David_Outfit  body objects untouched SKM_David_BodyMesh.001

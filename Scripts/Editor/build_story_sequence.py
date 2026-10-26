@@ -176,7 +176,9 @@ PROP_MOVES = {
 # Perception layer (Maria's view). Values 0..1; keyed AUTO for smooth ramps.
 PERCEPTION = {
     # Whole-room softness; photo stays sharp (rendered separately).
-    "Softness": [(0, 0.8), (45, 0.8), (100, 0.6), (210, 0.7), (240, 0.4), (275, 0.0), (300, 0.0)],
+    # (the 275-277.6 pulse hides the moment David becomes Enzo in her view; see build_story_director)
+    "Softness": [(0, 0.8), (45, 0.8), (100, 0.6), (210, 0.7), (240, 0.4), (274.8, 0.0), (275.6, 0.55),
+                 (276.6, 0.55), (277.6, 0.0), (300, 0.0)],
     # Warmth: +1 warm, 0 neutral, negative = cool (3:15-4:00 corridor overload).
     "Warmth":   [(0, 0.3), (195, 0.3), (205, -0.6), (238, -0.6), (255, 0.4), (275, 0.8), (300, 0.8)],
     # Darkened vision edges, peaks with the corridor noise.
@@ -475,6 +477,18 @@ def build():
                 sections = [(s0, s1, mh_clip(path, label), rate) for s0, s1, path, rate in sections]
         n_anim = add_anim_sections(anim_binding, sections, seq)
         log(f"{label}: {len(keys)} blocking keys, {n_anim} anim sections{' (MetaHuman body)' if is_mh else ''}")
+
+    # Enzo (MetaHuman, attached to David, hidden until the director swaps them in Maria's view)
+    # plays David's animation on his own body so the swap lands on the same pose.
+    enzo = find_actor("Enzo_Overlay")
+    if enzo is not None:
+        ebody = next((c for c in enzo.get_components_by_class(unreal.SkeletalMeshComponent)
+                      if c.get_name().startswith("Body")), None)
+        if ebody is not None:
+            seq.add_possessable(enzo)
+            esections = [(s0, s1, mh_clip(path, "David_StandIn"), rate)
+                         for s0, s1, path, rate in ANIMS.get("David_StandIn", [])]
+            log(f"Enzo_Overlay: {add_anim_sections(seq.add_possessable(ebody), esections, seq)} anim sections (David's)")
 
     # Moving props (parts attached to a root so the whole chair moves).
     for root_label, (prefix, keys) in PROP_MOVES.items():

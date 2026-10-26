@@ -36,6 +36,8 @@ BP_DIR = "/Game/Wattleview/Blueprints"
 BP_NAME = "BP_StoryDirector"
 BP_PATH = f"{BP_DIR}/{BP_NAME}"
 SEQ = "/Game/Wattleview/Cinematics/LS_Story.LS_Story"
+# EnzoBlend value at which David becomes Enzo in Maria's view (keyed 1.0 at 4:36 cinematic).
+ENZO_SWAP = 0.99
 MPC = "/Game/Wattleview/Materials/MPC_Perception.MPC_Perception"
 MAP_PATH = "/Game/Wattleview/Maps/L_ResidentRoom"
 SNAP_CM = 40.0   # camera further than this from the anchor gets snapped back onto it
@@ -219,6 +221,30 @@ def build_graph(bp):
         N(id="negate", type="CallFunction", target="KismetMathLibrary", function_name="NegateVector"),
         N(id="snap", type="CallFunction", target="Actor", function_name="K2_SetActorRelativeLocation",
           pin_defaults={"bSweep": "false", "bTeleport": "true"}),
+        # ---- Enzo: in Maria's view only, David becomes Enzo once EnzoBlend reaches ENZO_SWAP
+        # (4:30-4:36 cinematic, under a softness pulse keyed in the sequence). David's and
+        # Corner views never swap: the sequence is shared, so this lives in the director.
+        N(id="getEnzo", type="VariableGet", variable_name="EnzoOverlay"),
+        N(id="enzoValid", type="MacroInstance", macro_name="IsValid"),
+        N(id="getSwapped", type="VariableGet", variable_name="Swapped"),
+        N(id="notSwapped", type="CallFunction", target="KismetMathLibrary", function_name="Not_PreBool"),
+        N(id="getMV2", type="VariableGet", variable_name="MariaView"),
+        N(id="isMariaView", type="CallFunction", target="KismetMathLibrary", function_name="Greater_DoubleDouble",
+          pin_defaults={"B": "0.5"}),
+        N(id="eMPC", type="VariableGet", variable_name="Perception"),
+        N(id="getBlend", type="CallFunction", target="KismetMaterialLibrary",
+          function_name="GetScalarParameterValue", pin_defaults={"ParameterName": "EnzoBlend"}),
+        N(id="blendDone", type="CallFunction", target="KismetMathLibrary", function_name="GreaterEqual_DoubleDouble",
+          pin_defaults={"B": str(ENZO_SWAP)}),
+        N(id="and1", type="CallFunction", target="KismetMathLibrary", function_name="BooleanAND"),
+        N(id="and2", type="CallFunction", target="KismetMathLibrary", function_name="BooleanAND"),
+        N(id="branchSwap", type="Branch"),
+        N(id="setSwapped", type="VariableSet", variable_name="Swapped", pin_defaults={"Swapped": "true"}),
+        N(id="getBodyD2", type="VariableGet", variable_name="BodyDavid"),
+        N(id="hideDavid", type="CallFunction", target="Actor", function_name="SetActorHiddenInGame",
+          pin_defaults={"bNewHidden": "true"}),
+        N(id="showEnzo", type="CallFunction", target="Actor", function_name="SetActorHiddenInGame",
+          pin_defaults={"bNewHidden": "false"}),
     ]
     connections = [
         C("begin", "then", "origin", "execute"),
@@ -344,6 +370,25 @@ def build_graph(bp):
         C("hmd", "DevicePosition", "negate", "A"),
         C("negate", "ReturnValue", "snap", "NewRelativeLocation"),
         C("tickPawn", "ReturnValue", "snap", "self"),
+        # Enzo swap check, every frame once the story is playing
+        C("branchStarted", "then", "enzoValid", "exec"),
+        C("getEnzo", "EnzoOverlay", "enzoValid", "InputObject"),
+        C("enzoValid", "Is Valid", "getBlend", "execute"),     # impure node: must sit on the exec chain
+        C("getBlend", "then", "branchSwap", "execute"),
+        C("getSwapped", "Swapped", "notSwapped", "A"),
+        C("getMV2", "MariaView", "isMariaView", "A"),
+        C("eMPC", "Perception", "getBlend", "Collection"),
+        C("getBlend", "ReturnValue", "blendDone", "A"),
+        C("notSwapped", "ReturnValue", "and1", "A"),
+        C("isMariaView", "ReturnValue", "and1", "B"),
+        C("and1", "ReturnValue", "and2", "A"),
+        C("blendDone", "ReturnValue", "and2", "B"),
+        C("and2", "ReturnValue", "branchSwap", "Condition"),
+        C("branchSwap", "then", "setSwapped", "execute"),
+        C("setSwapped", "then", "hideDavid", "execute"),
+        C("getBodyD2", "BodyDavid", "hideDavid", "self"),
+        C("hideDavid", "then", "showEnzo", "execute"),
+        C("getEnzo", "EnzoOverlay", "showEnzo", "self"),
     ]
     return json.loads(unreal.MCPythonHelper.build_blueprint_graph(
         bp, "EventGraph", json.dumps({"nodes": nodes, "connections": connections})))
@@ -375,7 +420,8 @@ def place_director(bp):
     d.set_folder_path("Story")
     for var, label in [("AnchorDavid", "Anchor_David"), ("AnchorMaria", "Anchor_Maria"),
                        ("AnchorCorner", "Anchor_Corner"), ("BodyDavid", "David_StandIn"),
-                       ("BodyMaria", "Maria_StandIn"), ("StartTarget", "StartTarget")]:
+                       ("BodyMaria", "Maria_StandIn"), ("StartTarget", "StartTarget"),
+                       ("EnzoOverlay", "Enzo_Overlay")]:
         if label in by_label:
             d.set_editor_property(var, by_label[label])
         else:
@@ -393,6 +439,8 @@ def build():
     for name in ("AnchorDavid", "AnchorMaria", "AnchorCorner", "BodyDavid", "BodyMaria"):
         add_var(bp, name, actor_ref, True)
     add_var(bp, "StartTarget", actor_ref, True)
+    add_var(bp, "EnzoOverlay", actor_ref, True)
+    add_var(bp, "Swapped", bel.get_basic_type_by_name("bool"), False)
     add_var(bp, "Player", bel.get_object_reference_type(unreal.LevelSequencePlayer), False)
     add_var(bp, "GazeProgress", bel.get_basic_type_by_name("real"), False)
     add_var(bp, "Started", bel.get_basic_type_by_name("bool"), False)

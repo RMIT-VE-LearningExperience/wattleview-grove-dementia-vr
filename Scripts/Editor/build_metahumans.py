@@ -70,6 +70,18 @@ CHARACTERS = {
         hair_colour={"Melanin": 0.3, "Whiteness": 0.85, "Lightness": 0.55},
         body_from="David",
     ),
+    "MariaYoung": dict(
+        # Maria in the wall photograph (younger, dark hair). Desktop-only like EnzoYoung.
+        blend={"Vivian": 0.45, "Jelena": 0.35, "Grace": 0.20},
+        skin=dict(u=0.46, v=0.60, face_texture_index=58, roughness=1.0),
+        body={"Height": 157.0, "Fat": 0.3, "Muscularity": -1.2, "Masculine/Feminine": 1.3},
+        teeth=dict(variation=0.2),
+        sclera_tint=None,
+        iris_from="Mateo",
+        grooms={"Hair": "Hair/WI_Hair_M_BobCurly", "Eyebrows": "Eyebrows/WI_Eyebrows_M_Thin",
+                "Eyelashes": "Eyelashes/WI_Eyelashes_S_Fine", "Peachfuzz": "Peachfuzz/WI_Peachfuzz_M_Thin"},
+        hair_colour={"Melanin": 0.85, "Whiteness": 0.0},
+    ),
     "EnzoYoung": dict(
         blend={"Lorenzo": 0.35, "Mateo": 0.4, "Jorge": 0.25},
         skin=dict(u=0.50, v=0.55, face_texture_index=36, roughness=1.0),

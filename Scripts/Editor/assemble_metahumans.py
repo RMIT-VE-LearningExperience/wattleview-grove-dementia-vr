@@ -23,7 +23,7 @@ import unreal
 
 SRC = "/Game/MetaHumans/Src"
 RUNTIME = ["Maria", "David", "Enzo"]
-PHOTO = ["EnzoYoung"]
+PHOTO = ["EnzoYoung", "MariaYoung"]
 ONLY = [n for n in os.environ.get("WG_MH_ONLY", "").split(",") if n]
 
 eas = unreal.EditorAssetLibrary

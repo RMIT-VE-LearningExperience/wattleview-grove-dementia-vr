@@ -95,3 +95,6 @@ SourceArt/Room/*.blend1
 
 # MetaHuman desktop-only photo build (EnzoYoung, Cinematic): regenerate with assemble_metahumans.py
 Content/MetaHumans/Photo/
+
+# Garment review renders (regenerable by the build/critique scripts)
+SourceArt/Characters/Garments/*/Review/
