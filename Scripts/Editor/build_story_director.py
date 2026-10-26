@@ -10,9 +10,14 @@ On BeginPlay the director:
        Maria  -> Anchor_Maria,  Maria_StandIn, 1
        Corner -> Anchor_Corner, (none),        0
   4. Sets MPC_Perception.MariaView, so Maria's perception layer only shows in her view.
-  5. Attaches the player pawn to the anchor and recentres the headset; LS_Story moving
-     the anchor then carries the viewer through the viewpoint cuts.
-  6. Hides the body the viewer is "inside", then creates a player for LS_Story and plays.
+  5. Attaches the player pawn to the anchor; LS_Story moving the anchor then carries the
+     viewer through the viewpoint cuts. Each tick keeps the eyes on the anchor (see SNAP_CM),
+     and 0.75 s after the story starts the headset yaw is recentred.
+  6. Hides the body the viewer is "inside" and creates a player for LS_Story, but waits:
+     the StartTarget marker is placed GAZE_DISTANCE in front of the viewpoint, and the story
+     plays once the student has looked at it for GAZE_SECONDS (head gaze; the PICO 4 Ultra
+     Enterprise has no eye tracking). No controller is needed. Without a StartTarget the
+     story starts immediately.
 
 The per-view actor references are set on the placed instance. Direct references avoid
 array/for-each nodes, whose wildcard pins the scripted graph builder cannot resolve.
@@ -34,6 +39,9 @@ SEQ = "/Game/Wattleview/Cinematics/LS_Story.LS_Story"
 MPC = "/Game/Wattleview/Materials/MPC_Perception.MPC_Perception"
 MAP_PATH = "/Game/Wattleview/Maps/L_ResidentRoom"
 SNAP_CM = 40.0   # camera further than this from the anchor gets snapped back onto it
+GAZE_SECONDS = 2.0      # look at the start marker this long to begin (head gaze; no eye tracking)
+GAZE_COS = 0.993        # ~7 degree cone around the marker counts as looking at it
+GAZE_DISTANCE = 160.0   # marker distance in front of the viewpoint (cm)
 
 bel = unreal.BlueprintEditorLibrary
 eas = unreal.EditorAssetLibrary
@@ -124,8 +132,11 @@ def build_graph(bp):
         N(id="attach", type="CallFunction", target="Actor", function_name="K2_AttachToActor",
           pin_defaults={"LocationRule": "SnapToTarget", "RotationRule": "SnapToTarget",
                         "ScaleRule": "KeepWorld"}),
+        N(id="delayRecentre", type="CallFunction", target="KismetSystemLibrary", function_name="Delay",
+          pin_defaults={"Duration": "0.75"}),
         N(id="recentre", type="CallFunction", target="HeadMountedDisplayFunctionLibrary",
-          function_name="ResetOrientationAndPosition", pin_defaults={"Yaw": "0.0"}),
+          function_name="ResetOrientationAndPosition",
+          pin_defaults={"Yaw": "0.0", "Options": "Orientation"}),
         N(id="getBody", type="VariableGet", variable_name="HiddenBody"),
         N(id="bodyValid", type="MacroInstance", macro_name="IsValid"),
         N(id="hide", type="CallFunction", target="Actor", function_name="SetActorHiddenInGame",
@@ -133,28 +144,80 @@ def build_graph(bp):
         N(id="getStory", type="VariableGet", variable_name="Story"),
         N(id="makePlayer", type="CallFunction", target="LevelSequencePlayer",
           function_name="CreateLevelSequencePlayer"),
-        N(id="play", type="CallFunction", target="MovieSceneSequencePlayer", function_name="Play"),
+        N(id="setPlayer", type="VariableSet", variable_name="Player"),
+        N(id="getStartTarget", type="VariableGet", variable_name="StartTarget"),
+        N(id="tgtValid", type="MacroInstance", macro_name="IsValid"),
+        N(id="anchorLoc2", type="CallFunction", target="Actor", function_name="K2_GetActorLocation"),
+        N(id="anchorFwd", type="CallFunction", target="Actor", function_name="GetActorForwardVector"),
+        N(id="fwdScaled", type="CallFunction", target="KismetMathLibrary", function_name="Multiply_VectorFloat",
+          pin_defaults={"B": str(GAZE_DISTANCE)}),
+        N(id="tgtLoc", type="CallFunction", target="KismetMathLibrary", function_name="Add_VectorVector"),
+        N(id="tgtRot", type="CallFunction", target="KismetMathLibrary", function_name="FindLookAtRotation"),
+        N(id="placeTgt", type="CallFunction", target="Actor", function_name="K2_SetActorLocationAndRotation",
+          pin_defaults={"bSweep": "false", "bTeleport": "true"}),
+        N(id="getPlayer", type="VariableGet", variable_name="Player"),
+        N(id="setStartedNow", type="VariableSet", variable_name="Started", pin_defaults={"Started": "true"}),
+        N(id="playNow", type="CallFunction", target="MovieSceneSequencePlayer", function_name="Play"),
         # ---- Tick: keep the viewer's eyes on the anchor -------------------------------
         # The tracking origin is not guaranteed (PICO may stay on a floor/stage origin, and a
         # system recenter resets it). Each frame, if the camera is more than SNAP_CM from the
         # anchor, move the pawn so the camera sits exactly on the anchor. Head movement within
         # that radius is untouched, so parallax stays natural.
         N(id="tick", type="Event", event_name="ReceiveTick"),
+        N(id="tickSeq", type="Sequence"),
+        N(id="getStarted", type="VariableGet", variable_name="Started"),
+        N(id="branchStarted", type="Branch"),
+        N(id="gCamMgr", type="CallFunction", target="GameplayStatics", function_name="GetPlayerCameraManager",
+          pin_defaults={"PlayerIndex": "0"}),
+        N(id="gCamLoc", type="CallFunction", target="PlayerCameraManager", function_name="GetCameraLocation"),
+        N(id="gCamRot", type="CallFunction", target="PlayerCameraManager", function_name="GetCameraRotation"),
+        N(id="gCamFwd", type="CallFunction", target="KismetMathLibrary", function_name="GetForwardVector"),
+        N(id="gTgt", type="VariableGet", variable_name="StartTarget"),
+        N(id="gTgtLoc", type="CallFunction", target="Actor", function_name="K2_GetActorLocation"),
+        N(id="gToTgt", type="CallFunction", target="KismetMathLibrary", function_name="Subtract_VectorVector"),
+        N(id="gDir", type="CallFunction", target="KismetMathLibrary", function_name="Normal"),
+        N(id="gDot", type="CallFunction", target="KismetMathLibrary", function_name="Dot_VectorVector"),
+        N(id="gLooking", type="CallFunction", target="KismetMathLibrary", function_name="Greater_DoubleDouble",
+          pin_defaults={"B": str(GAZE_COS)}),
+        N(id="branchLook", type="Branch"),
+        N(id="getGP", type="VariableGet", variable_name="GazeProgress"),
+        N(id="gStep", type="CallFunction", target="KismetMathLibrary", function_name="Divide_DoubleDouble",
+          pin_defaults={"B": str(GAZE_SECONDS)}),
+        N(id="gUp", type="CallFunction", target="KismetMathLibrary", function_name="Add_DoubleDouble"),
+        N(id="gUpClamp", type="CallFunction", target="KismetMathLibrary", function_name="FMin",
+          pin_defaults={"B": "1.0"}),
+        N(id="gDown", type="CallFunction", target="KismetMathLibrary", function_name="Subtract_DoubleDouble"),
+        N(id="gDownClamp", type="CallFunction", target="KismetMathLibrary", function_name="FMax",
+          pin_defaults={"B": "0.0"}),
+        N(id="setGPUp", type="VariableSet", variable_name="GazeProgress"),
+        N(id="setGPDown", type="VariableSet", variable_name="GazeProgress"),
+        N(id="gMPC", type="VariableGet", variable_name="Perception"),
+        N(id="setGazeMPC", type="CallFunction", target="KismetMaterialLibrary",
+          function_name="SetScalarParameterValue", pin_defaults={"ParameterName": "GazeProgress"}),
+        N(id="gDone", type="CallFunction", target="KismetMathLibrary", function_name="GreaterEqual_DoubleDouble",
+          pin_defaults={"B": "1.0"}),
+        N(id="branchDone", type="Branch"),
+        N(id="setStarted", type="VariableSet", variable_name="Started", pin_defaults={"Started": "true"}),
+        N(id="hideTgt", type="CallFunction", target="Actor", function_name="K2_SetActorLocation",
+          pin_defaults={"NewLocation": "0.0,0.0,-10000.0", "bSweep": "false", "bTeleport": "true"}),
+        N(id="gPlayer", type="VariableGet", variable_name="Player"),
+        N(id="playGaze", type="CallFunction", target="MovieSceneSequencePlayer", function_name="Play"),
         N(id="tickAnchor", type="VariableGet", variable_name="Anchor"),
         N(id="tickValid", type="MacroInstance", macro_name="IsValid"),
-        N(id="camMgr", type="CallFunction", target="GameplayStatics", function_name="GetPlayerCameraManager",
+        N(id="hmd", type="CallFunction", target="HeadMountedDisplayFunctionLibrary",
+          function_name="GetOrientationAndPosition"),
+        N(id="tickPawn", type="CallFunction", target="GameplayStatics", function_name="GetPlayerPawn",
           pin_defaults={"PlayerIndex": "0"}),
-        N(id="camLoc", type="CallFunction", target="PlayerCameraManager", function_name="GetCameraLocation"),
-        N(id="anchorLoc", type="CallFunction", target="Actor", function_name="K2_GetActorLocation"),
-        N(id="diff", type="CallFunction", target="KismetMathLibrary", function_name="Subtract_VectorVector"),
+        N(id="root", type="CallFunction", target="Actor", function_name="K2_GetRootComponent"),
+        N(id="relT", type="CallFunction", target="SceneComponent", function_name="GetRelativeTransform"),
+        N(id="breakT", type="CallFunction", target="KismetMathLibrary", function_name="BreakTransform"),
+        N(id="sum", type="CallFunction", target="KismetMathLibrary", function_name="Add_VectorVector"),
         N(id="dist", type="CallFunction", target="KismetMathLibrary", function_name="VSize"),
         N(id="far", type="CallFunction", target="KismetMathLibrary", function_name="Greater_DoubleDouble",
           pin_defaults={"B": str(SNAP_CM)}),
         N(id="branchFar", type="Branch"),
         N(id="negate", type="CallFunction", target="KismetMathLibrary", function_name="NegateVector"),
-        N(id="tickPawn", type="CallFunction", target="GameplayStatics", function_name="GetPlayerPawn",
-          pin_defaults={"PlayerIndex": "0"}),
-        N(id="snap", type="CallFunction", target="Actor", function_name="K2_AddActorWorldOffset",
+        N(id="snap", type="CallFunction", target="Actor", function_name="K2_SetActorRelativeLocation",
           pin_defaults={"bSweep": "false", "bTeleport": "true"}),
     ]
     connections = [
@@ -193,34 +256,115 @@ def build_graph(bp):
         C("setMariaView", "then", "attach", "execute"),
         C("pawn", "ReturnValue", "attach", "self"),
         C("getAnchor", "Anchor", "attach", "ParentActor"),
-        C("attach", "then", "recentre", "execute"),
-        C("recentre", "then", "bodyValid", "exec"),
+        C("attach", "then", "bodyValid", "exec"),
         C("getBody", "HiddenBody", "bodyValid", "InputObject"),
         C("bodyValid", "Is Valid", "hide", "execute"),
         C("getBody", "HiddenBody", "hide", "self"),
         C("bodyValid", "Is Not Valid", "makePlayer", "execute"),
         C("hide", "then", "makePlayer", "execute"),
         C("getStory", "Story", "makePlayer", "LevelSequence"),
-        C("makePlayer", "then", "play", "execute"),
-        C("makePlayer", "ReturnValue", "play", "self"),
-        # tick snap
-        C("tick", "then", "tickValid", "exec"),
+        C("makePlayer", "then", "setPlayer", "execute"),
+        C("makePlayer", "ReturnValue", "setPlayer", "Player"),
+        C("setPlayer", "then", "tgtValid", "exec"),
+        C("getStartTarget", "StartTarget", "tgtValid", "InputObject"),
+        # marker present: place it in front of the viewpoint, facing the viewer
+        C("tgtValid", "Is Valid", "placeTgt", "execute"),
+        C("getStartTarget", "StartTarget", "placeTgt", "self"),
+        C("getAnchor", "Anchor", "anchorLoc2", "self"),
+        C("getAnchor", "Anchor", "anchorFwd", "self"),
+        C("anchorFwd", "ReturnValue", "fwdScaled", "A"),
+        C("anchorLoc2", "ReturnValue", "tgtLoc", "A"),
+        C("fwdScaled", "ReturnValue", "tgtLoc", "B"),
+        C("tgtLoc", "ReturnValue", "tgtRot", "Start"),
+        C("anchorLoc2", "ReturnValue", "tgtRot", "Target"),
+        C("tgtLoc", "ReturnValue", "placeTgt", "NewLocation"),
+        C("tgtRot", "ReturnValue", "placeTgt", "NewRotation"),
+        C("placeTgt", "then", "delayRecentre", "execute"),
+        # no marker: start straight away
+        C("tgtValid", "Is Not Valid", "setStartedNow", "execute"),
+        C("setStartedNow", "then", "playNow", "execute"),
+        C("getPlayer", "Player", "playNow", "self"),
+        C("playNow", "then", "delayRecentre", "execute"),
+        C("delayRecentre", "then", "recentre", "execute"),
+        # tick snap: eye offset from the anchor = pawn offset (anchor space) + HMD tracked position.
+        # If it exceeds SNAP_CM (startup on a floor origin, a PICO recenter), set the pawn offset
+        # to -HMD so the eyes land exactly on the anchor. Anchor cuts move pawn and anchor
+        # together, so they never trigger a correction.
+        C("tick", "then", "tickSeq", "execute"),
+        C("tickSeq", "then_0", "tickValid", "exec"),
+        # gaze to start (head gaze: the PICO 4 Ultra Enterprise has no eye tracking)
+        C("tickSeq", "then_1", "branchStarted", "execute"),
+        C("getStarted", "Started", "branchStarted", "Condition"),
+        C("branchStarted", "else", "branchLook", "execute"),
+        C("gCamMgr", "ReturnValue", "gCamLoc", "self"),
+        C("gCamMgr", "ReturnValue", "gCamRot", "self"),
+        C("gCamRot", "ReturnValue", "gCamFwd", "InRot"),
+        C("gTgt", "StartTarget", "gTgtLoc", "self"),
+        C("gTgtLoc", "ReturnValue", "gToTgt", "A"),
+        C("gCamLoc", "ReturnValue", "gToTgt", "B"),
+        C("gToTgt", "ReturnValue", "gDir", "A"),
+        C("gCamFwd", "ReturnValue", "gDot", "A"),
+        C("gDir", "ReturnValue", "gDot", "B"),
+        C("gDot", "ReturnValue", "gLooking", "A"),
+        C("gLooking", "ReturnValue", "branchLook", "Condition"),
+        C("tick", "DeltaSeconds", "gStep", "A"),
+        C("getGP", "GazeProgress", "gUp", "A"),
+        C("gStep", "ReturnValue", "gUp", "B"),
+        C("gUp", "ReturnValue", "gUpClamp", "A"),
+        C("getGP", "GazeProgress", "gDown", "A"),
+        C("tick", "DeltaSeconds", "gDown", "B"),
+        C("gDown", "ReturnValue", "gDownClamp", "A"),
+        C("branchLook", "then", "setGPUp", "execute"),
+        C("gUpClamp", "ReturnValue", "setGPUp", "GazeProgress"),
+        C("branchLook", "else", "setGPDown", "execute"),
+        C("gDownClamp", "ReturnValue", "setGPDown", "GazeProgress"),
+        C("setGPUp", "then", "setGazeMPC", "execute"),
+        C("setGPDown", "then", "setGazeMPC", "execute"),
+        C("gMPC", "Perception", "setGazeMPC", "Collection"),
+        C("getGP", "GazeProgress", "setGazeMPC", "ParameterValue"),
+        C("setGazeMPC", "then", "branchDone", "execute"),
+        C("getGP", "GazeProgress", "gDone", "A"),
+        C("gDone", "ReturnValue", "branchDone", "Condition"),
+        C("branchDone", "then", "setStarted", "execute"),
+        C("setStarted", "then", "hideTgt", "execute"),
+        C("gTgt", "StartTarget", "hideTgt", "self"),
+        C("hideTgt", "then", "playGaze", "execute"),
+        C("gPlayer", "Player", "playGaze", "self"),
         C("tickAnchor", "Anchor", "tickValid", "InputObject"),
         C("tickValid", "Is Valid", "branchFar", "execute"),
-        C("camMgr", "ReturnValue", "camLoc", "self"),
-        C("tickAnchor", "Anchor", "anchorLoc", "self"),
-        C("camLoc", "ReturnValue", "diff", "A"),
-        C("anchorLoc", "ReturnValue", "diff", "B"),
-        C("diff", "ReturnValue", "dist", "A"),
+        C("tickPawn", "ReturnValue", "root", "self"),
+        C("root", "ReturnValue", "relT", "self"),
+        C("relT", "ReturnValue", "breakT", "InTransform"),
+        C("breakT", "Location", "sum", "A"),
+        C("hmd", "DevicePosition", "sum", "B"),
+        C("sum", "ReturnValue", "dist", "A"),
         C("dist", "ReturnValue", "far", "A"),
         C("far", "ReturnValue", "branchFar", "Condition"),
         C("branchFar", "then", "snap", "execute"),
-        C("diff", "ReturnValue", "negate", "A"),
-        C("negate", "ReturnValue", "snap", "DeltaLocation"),
+        C("hmd", "DevicePosition", "negate", "A"),
+        C("negate", "ReturnValue", "snap", "NewRelativeLocation"),
         C("tickPawn", "ReturnValue", "snap", "self"),
     ]
     return json.loads(unreal.MCPythonHelper.build_blueprint_graph(
         bp, "EventGraph", json.dumps({"nodes": nodes, "connections": connections})))
+
+
+def disable_locomotion():
+    """Remove IA_Turn / IA_Move mappings from the template's default mapping context."""
+    imc = unreal.load_asset("/Game/XRFramework/Input/IMC_Default")
+    removed = 0
+    for action_name in ("IA_Turn", "IA_Move"):
+        action = unreal.load_asset(f"/Game/XRFramework/Input/Actions/{action_name}")
+        if imc is None or action is None:
+            continue
+        def count():
+            return len(imc.get_editor_property("default_key_mappings").get_editor_property("mappings"))
+        before = count()
+        imc.unmap_all_keys_from_action(action)
+        removed += before - count()
+    if imc is not None:
+        eas.save_loaded_asset(imc)
+    log(f"locomotion disabled: {removed} thumbstick mappings removed from IMC_Default")
 
 
 def place_director(bp):
@@ -230,8 +374,11 @@ def place_director(bp):
     d.set_folder_path("Story")
     for var, label in [("AnchorDavid", "Anchor_David"), ("AnchorMaria", "Anchor_Maria"),
                        ("AnchorCorner", "Anchor_Corner"), ("BodyDavid", "David_StandIn"),
-                       ("BodyMaria", "Maria_StandIn")]:
-        d.set_editor_property(var, by_label[label])
+                       ("BodyMaria", "Maria_StandIn"), ("StartTarget", "StartTarget")]:
+        if label in by_label:
+            d.set_editor_property(var, by_label[label])
+        else:
+            log(f"missing {label}; {var} left empty")
     les.save_current_level()
     log("placed StoryDirector in " + MAP_PATH)
 
@@ -244,6 +391,10 @@ def build():
     actor_ref = bel.get_object_reference_type(unreal.Actor)
     for name in ("AnchorDavid", "AnchorMaria", "AnchorCorner", "BodyDavid", "BodyMaria"):
         add_var(bp, name, actor_ref, True)
+    add_var(bp, "StartTarget", actor_ref, True)
+    add_var(bp, "Player", bel.get_object_reference_type(unreal.LevelSequencePlayer), False)
+    add_var(bp, "GazeProgress", bel.get_basic_type_by_name("real"), False)
+    add_var(bp, "Started", bel.get_basic_type_by_name("bool"), False)
     add_var(bp, "Anchor", actor_ref, False)
     add_var(bp, "HiddenBody", actor_ref, False)
     add_var(bp, "MariaView", bel.get_basic_type_by_name("real"), False)
@@ -260,6 +411,7 @@ def build():
     bel.compile_blueprint(bp)
     eas.save_loaded_asset(bp)
     place_director(bp)
+    disable_locomotion()
     return bp
 
 

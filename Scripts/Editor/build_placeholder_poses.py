@@ -1,5 +1,10 @@
 """Create placeholder pose animations for the UE5 mannequin stand-ins.
 
+AS_Placeholder_Walk: MF_Unarmed_Walk_Fwd with its root motion removed (the root bone is
+keyed at the origin), so LS_Story's transform keys alone move the character. The clip's
+own root travels 450 cm per 1.5 s cycle (~300 cm/s); LS_Story sets each walk section's
+play rate from the distance actually covered so the feet don't slide.
+
 AS_Placeholder_Sit: MM_Idle with the legs posed for sitting on a 46 cm chair. The upper
 body keeps the idle breathing; pelvis, thighs and calves are overwritten with a constant
 seated pose. Built by editing the pose in component space (mesh forward is +Y, up +Z,
@@ -13,6 +18,8 @@ import unreal
 SRC = "/Game/Characters/Mannequins/Anims/Unarmed/MM_Idle"
 DST_DIR = "/Game/Wattleview/Animations"
 SIT = "AS_Placeholder_Sit"
+WALK_SRC = "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd"
+WALK = "AS_Placeholder_Walk"
 
 # Seated geometry (cm / degrees).
 PELVIS_DROP = 40.0      # lower the hips onto the seat
@@ -76,4 +83,30 @@ def build_sit():
     return seq
 
 
+def key_count(seq):
+    try:
+        return seq.controller.get_model_interface().get_number_of_keys()
+    except Exception:
+        return unreal.AnimationLibrary.get_num_frames(seq) + 1
+
+
+def build_walk():
+    """In-place walk: root keyed at the origin for every frame, other bones untouched."""
+    path = f"{DST_DIR}/{WALK}"
+    if eas.does_asset_exist(path):
+        eas.delete_asset(path)
+    seq = eas.duplicate_asset(WALK_SRC, path)
+    n = key_count(seq)
+    ident = unreal.Transform()
+    c = seq.controller
+    c.open_bracket(unreal.Text("In-place walk"))
+    c.set_bone_track_keys("root", [ident.translation] * n, [ident.rotation] * n, [ident.scale3d] * n)
+    c.close_bracket()
+    seq.set_editor_property("enable_root_motion", False)
+    eas.save_loaded_asset(seq)
+    log(f"built {path} ({n} keys)")
+    return seq
+
+
 build_sit()
+build_walk()

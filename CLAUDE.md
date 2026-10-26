@@ -194,10 +194,24 @@ Verify: `adb shell pm list packages | grep wattleview` → `com.rmit.wattleviewg
 
 ## Using the experience
 
-- Launch starts the **support worker (David) view**, as the script requires.
-- Controller **menu button** opens the VR menu. **Support worker view / Resident view / Observer view**
-  reopen the room in that viewpoint. **Restart** restarts in the current viewpoint.
-- Head rotation is always the user's. Viewpoint changes are cuts at scripted moments.
+- **No controller needed by students.** Launch shows the room with a glowing marker labelled "Look at
+  the light to begin". Holding head gaze on it for 2 s fills its ring and starts the story (fade in from
+  black). The PICO 4 Ultra Enterprise has **no eye tracking**; this is head gaze. The view recentres
+  0.75 s after launch so the marker is in front of the student.
+- Launch defaults to the **support worker (David) view**, as the script requires.
+- Teacher: controller **menu button** opens the VR menu. **Support worker view / Resident view / Observer
+  view** reopen the room in that viewpoint (the gaze marker appears again). **Restart** restarts in the
+  current viewpoint. Thumbstick move/snap-turn are disabled.
+- Head rotation is always the user's. Viewpoint changes are fades to black at scripted moments.
+- **Pacing.** The Story V2 timestamps are the 5:00 *cinematic* cut. The VR build uses a slower pacing
+  table (`BEATS_VR` in `build_story_sequence.py`, ~7:50). `PACING = "cinematic"` rebuilds the 5:00 cut.
+
+### Handing headsets to students (PICO Enterprise kiosk mode)
+
+So students never see the PICO home screen: set the app as the headset's home app. On the headset:
+**Settings > Developer > Business settings > Home Screen**, choose Wattleview Grove, reboot. For a fleet,
+apply the Kiosk Mode template to a device group in PICO's Business Device Manager / Business Suite. Not
+yet verified here: whether the boundary (guardian) setup can be skipped; check before a class session.
 
 ## Device notes
 

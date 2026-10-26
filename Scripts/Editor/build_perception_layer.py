@@ -7,7 +7,7 @@ invisible, and in Maria's view it follows the script beats:
   PerceptionOverlay  inside-out sphere on Anchor_Maria, drawn over everything:
                      EdgeDark -> darkened vision edges (from screen position, so it follows
                      the head); Warmth -> warm (+) / cool (-) tint; Softness -> light haze.
-  PhotoGlow          warm additive glow behind the wall photograph.
+  PhotoGlow          warm additive halo behind the wall photograph (frame hides its centre).
   GardenerHalo       warm additive halo around the gardener.
   Memory_*           backyard overlay on the table: tomato stakes, basil, fig tree, hose.
   TV screen          TVOn (both views) and a grey blur in Maria's view.
@@ -271,11 +271,15 @@ def build():
     # Overlay around Maria's eyes; follows her anchor (standing -> seated cut).
     anchor = find("Anchor_Maria")
     loc = anchor.get_actor_location()
-    ov = mesh_actor("PerceptionOverlay", SPHERE, (loc.x, loc.y, loc.z), (0.6, 0.6, 0.6), m_overlay, parent=anchor)
+    # 2 m radius: depth test is off and the effect is screen-space, so size does not change the
+    # look; it just guarantees the eye is always well inside (director snap radius is 40 cm).
+    ov = mesh_actor("PerceptionOverlay", SPHERE, (loc.x, loc.y, loc.z), (4.0, 4.0, 4.0), m_overlay, parent=anchor)
     ov.static_mesh_component.set_editor_property("translucency_sort_priority", 100)
 
     # Glow behind the photograph (frame spans X 330..380, Z 125..170 on the west wall).
-    mesh_actor("PhotoGlow", PLANE, (355, 4.5, 147.5), (0.95, 0.85, 1.0), m_photo, pitch=0.0, yaw=0.0).set_actor_rotation(
+    # Between the wall (Y=0) and the frame face (Y=3): the opaque frame hides the card's centre,
+    # so only a warm halo shows around the photo and the image itself stays clear.
+    mesh_actor("PhotoGlow", PLANE, (355, 1.5, 147.5), (1.3, 1.2, 1.0), m_photo, pitch=0.0, yaw=0.0).set_actor_rotation(
         unreal.Rotator(90.0, 0.0, 0.0), False)
 
     # Halo around the gardener; follows his blocking.
@@ -292,8 +296,8 @@ def build():
         for j, z in enumerate((120, 145, 170)):
             mesh_actor(f"Memory_Tomato{i}_{j}", SPHERE, (x - 10, y + (5 if j % 2 else -5), z),
                        (0.06, 0.06, 0.06), m_tomato)
-    for i, (x, y) in enumerate([(438, 140), (440, 262)]):
-        mesh_actor(f"Memory_Basil{i}", SPHERE, (x, y, 84), (0.16, 0.16, 0.12), m_leaf)
+    for i, (x, y) in enumerate([(425, 178), (425, 232)]):        # on the tabletop (r 47.5)
+        mesh_actor(f"Memory_Basil{i}", SPHERE, (x, y, 81), (0.16, 0.16, 0.12), m_leaf)
     mesh_actor("Memory_FigTrunk", CYL, (620, 380, 120), (0.15, 0.15, 2.4), m_stake)
     mesh_actor("Memory_FigCanopy", SPHERE, (620, 380, 250), (2.2, 2.2, 1.6), m_leaf)
     mesh_actor("Memory_Hose", CYL, (395, 200, 77), (0.03, 0.03, 1.1), m_hose, yaw=0.0).set_actor_rotation(

@@ -31,6 +31,16 @@ if (Get-Process UnrealEditor -ErrorAction SilentlyContinue) {
     throw "Close Unreal Editor before packaging."
 }
 
+# Baked lighting must exist and be newer than the map, or the room ships unlit/stale.
+$map = Join-Path $projectRoot "Content\Wattleview\Maps\L_ResidentRoom.umap"
+$builtData = Join-Path $projectRoot "Content\Wattleview\Maps\L_ResidentRoom_BuiltData.uasset"
+if (-not (Test-Path $builtData)) {
+    throw "Missing $builtData. Run Scripts/Editor/build_lighting.py (bakes lighting) first."
+}
+if ((Get-Item $builtData).LastWriteTime -lt (Get-Item $map).LastWriteTime.AddMinutes(-30)) {
+    Write-Warning "Lighting bake is older than the map by over 30 min; rebake if geometry or lights changed."
+}
+
 New-Item -ItemType Directory -Path $archiveDir -Force | Out-Null
 
 $uatArgs = @(
@@ -40,7 +50,7 @@ $uatArgs = @(
     "-platform=Android"
     "-cookflavor=ASTC"
     "-clientconfig=$Configuration"
-    "-cook", "-allmaps", "-build", "-stage", "-pak", "-package", "-archive"
+    "-cook", "-map=/Game/Wattleview/Maps/L_ResidentRoom", "-build", "-stage", "-pak", "-package", "-archive"
     "-archivedirectory=$archiveDir"
     "-compressed"
     "-unattended"
@@ -70,7 +80,7 @@ if ($Install) {
         $installOut = & cmd.exe /c "`"$($bat.FullName)`" $Serial 2>&1"
         $installOut | Select-Object -Last 3
         if ($LASTEXITCODE -ne 0 -or -not ($installOut -match 'Installation successful')) {
-            throw "Install failed (exit $LASTEXITCODE)."
+            throw "Install did not report success (exit $LASTEXITCODE). Is the headset connected and awake? Check 'adb devices'."
         }
     }
     finally { Pop-Location }

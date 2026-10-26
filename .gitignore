@@ -45,6 +45,8 @@ Saved/
 
 # Built lighting/map data - large, regenerated on build
 *_BuiltData.uasset
+# Baked lighting for our maps must ship with the map (a clean checkout would build unlit)
+!Content/Wattleview/Maps/*_BuiltData.uasset
 
 # Build folder, but keep config that must be versioned
 /Build/*

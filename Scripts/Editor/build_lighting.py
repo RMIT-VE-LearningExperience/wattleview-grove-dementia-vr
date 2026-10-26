@@ -1,7 +1,9 @@
 """Natural daylight for L_ResidentRoom: baked, mobile-friendly, high-key.
 
-Target look (reference from Lawrence, 2026-10-26): bright airy room, sun streaming through the
-window onto the floor, soft bounce fill everywhere, warm-white walls, gentle shadows.
+Target look (reference from Lawrence, 2026-10-26): sun streaming through the
+window onto the floor, light spreading by bounce, soft shadows, clear blue sky. After the first
+headset test: "very bright inside, not very cinematic" -> less sky fill and darker walls, so the
+sun patch and window read against softer shade.
 
   * Static sun (morning, from the north-east through the north window) -> crisp sun patch.
   * Static sky light from a daylight cubemap + a Lightmass portal on the window -> soft fill.
@@ -33,8 +35,8 @@ ROOM_X, ROOM_Y, ROOM_H = 500.0, 450.0, 270.0
 
 # Palette toward the reference: warm whites, light timber, jute; Maria's pinks kept.
 PALETTE = {
-    "Wall": (0.86, 0.83, 0.77),
-    "Ceiling": (0.90, 0.89, 0.86),
+    "Wall": (0.74, 0.71, 0.66),
+    "Ceiling": (0.80, 0.79, 0.76),
     "Carpet": (0.52, 0.48, 0.43),
     "Rug": (0.58, 0.44, 0.28),
     "Linen": (0.92, 0.91, 0.88),
@@ -170,7 +172,7 @@ def build():
     slc.set_editor_property("source_type", unreal.SkyLightSourceType.SLS_SPECIFIED_CUBEMAP)
     slc.set_editor_property("cubemap", unreal.load_asset(
         "/Engine/MapTemplates/Sky/DaylightAmbientCubemap.DaylightAmbientCubemap"))
-    slc.set_intensity(1.1)
+    slc.set_intensity(0.55)        # less flat fill: contrast between sun and shade
 
     # Portal over the window opening (Y 100..350, Z 80..220) focuses sky light into the room.
     portal = spawn(unreal.LightmassPortal, "WindowPortal", (ROOM_X + 7, 225, 150))
@@ -180,7 +182,7 @@ def build():
     pend = spawn(unreal.PointLight, "PendantWarm", (250, 225, 235))
     plc = pend.light_component
     plc.set_mobility(unreal.ComponentMobility.STATIC)
-    plc.set_intensity(8.0)
+    plc.set_intensity(3.0)
     plc.set_attenuation_radius(450.0)
     plc.set_light_color(unreal.LinearColor(1.0, 0.85, 0.65, 1.0))
     plc.set_editor_property("source_radius", 20.0)

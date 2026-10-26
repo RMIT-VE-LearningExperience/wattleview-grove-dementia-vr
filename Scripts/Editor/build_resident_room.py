@@ -351,7 +351,7 @@ def build():
     cam("VP_David_Seated", (348, 262, 115), (335, 200, 110))
     cam("VP_Maria_Standing", (355, 60, 155), (355, 0, 147))
     cam("VP_Maria_Seated", (340, 200, 115), (700, 200, 90))
-    cam("CAM_Corner", (480, 25, 225), (300, 230, 90))
+    cam("CAM_Corner", (80, 330, 225), (300, 140, 100))   # south-east corner: door, table, window
 
     # Placeholder characters (mannequins until the MetaHumans exist) ---------
     idle = unreal.load_asset("/Game/Characters/Mannequins/Anims/Unarmed/MM_Idle.MM_Idle")
