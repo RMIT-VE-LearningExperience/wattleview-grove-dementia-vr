@@ -394,6 +394,37 @@ def ensure_fade_sphere(anchor, param):
     c.set_editor_property("translucency_sort_priority", 200)
     sphere.attach_to_actor(anchor, "", unreal.AttachmentRule.KEEP_WORLD, unreal.AttachmentRule.KEEP_WORLD,
                            unreal.AttachmentRule.KEEP_WORLD, False)
+    # Hidden except while a fade is running (key_visibility): even fully transparent it cost a
+    # full-view translucent pass every frame on the PICO.
+    sphere.set_actor_hidden_in_game(True)
+    return sphere
+
+
+def fade_visible_ranges(anchor_label):
+    """(start, end) seconds in which the anchor's fade sphere is not fully transparent."""
+    ranges = [(0.0, INTRO_FADE)]
+    for t, _loc, _look in VIEWPOINTS[anchor_label][1:]:
+        ranges.append((t - FADE_OUT - FADE_HOLD / 2, t + FADE_HOLD / 2 + FADE_IN))
+    ranges.append((DURATION - OUTRO_FADE, DURATION))
+    return ranges
+
+
+def key_visibility(seq, actor, ranges):
+    """Show the actor only inside the (start, end) ranges; hidden in game the rest of the time."""
+    track = seq.add_possessable(actor).add_track(unreal.MovieSceneVisibilityTrack)
+    track.set_property_name_and_path("bHiddenInGame", "bHiddenInGame")
+    sec = track.add_section()
+    sec.set_range_seconds(0.0, DURATION)
+    keep_state(sec)
+    keys = {0: True}                               # frame -> hidden; later keys win at a frame
+    for start, end in sorted(ranges):
+        keys[int(round(max(0.0, start) * FPS))] = False
+        if end < DURATION:
+            keys[int(round(end * FPS))] = True
+    ch = sec.get_all_channels()[0]
+    for frame in sorted(keys):
+        ch.add_key(unreal.FrameNumber(frame), keys[frame], 0.0, unreal.MovieSceneTimeUnit.DISPLAY_RATE)
+    return len(keys)
 
 
 # ------------------------------------------------------------------ build
@@ -449,7 +480,8 @@ def build():
         chs = transform_channels(seq.add_possessable(anchor))
         for t, loc, look in keys:
             key_transform(chs, t, loc, yaw_to(loc, look), CONST)
-        ensure_fade_sphere(anchor, FADE_PARAM[label])
+        sphere = ensure_fade_sphere(anchor, FADE_PARAM[label])
+        key_visibility(seq, sphere, fade_visible_ranges(label))
         log(f"{label}: {len(keys)} viewpoint keys, fades around {len(keys) - 1} cuts")
 
     # Character blocking.

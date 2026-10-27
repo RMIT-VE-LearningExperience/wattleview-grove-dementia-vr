@@ -16,7 +16,8 @@ OUT_DIR = os.path.join(unreal.Paths.project_saved_dir(), "Captures")
 W, H = 1600, 900
 # At runtime the director hides the body the viewer is inside and places the start marker per
 # view, so captures hide them too (else the viewer's own head fills VP_David_* / VP_Maria_*).
-HIDE_FOR = {"VP_David": ("David_StandIn", "Enzo_Overlay"), "VP_Maria": ("Maria_StandIn",)}
+HIDE_FOR = {"VP_David": ("David_StandIn", "Enzo_Overlay", "BlobShadow_David"),
+            "VP_Maria": ("Maria_StandIn", "BlobShadow_Maria")}
 
 
 def log(msg):

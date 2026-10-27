@@ -8,7 +8,7 @@ after reload the lights returned to their much brighter class defaults. All auth
 are therefore written to editor properties so the bake, saved map and packaged build agree.
 
   * Stationary sun (morning, from the north-east through the north window) -> baked room light
-    plus one short mobile CSM cascade for grounding the movable MetaHumans.
+    and no movable-shadow cascade (too expensive on the PICO; see build_blob_shadows.py).
   * Static sky light from a daylight cubemap + a Lightmass portal on the window -> soft fill.
   * Lightmass importance volume around the room and near garden; 4 indirect bounces.
   * Per-surface lightmap resolution so the sun patch has clean edges.
@@ -43,7 +43,10 @@ SUN_INTENSITY = 2.20
 SUN_COLOR = unreal.Color(r=255, g=249, b=240, a=255)  # neutral-warm 10am daylight
 SUN_SOURCE_ANGLE = 4.0                             # broad, soft morning shadow edge
 SUN_SPECULAR_SCALE = 0.40                          # retain skin detail without a plastic hotspot
-SUN_CSM_DISTANCE = 700.0                           # one room-sized character-shadow cascade
+# No movable-shadow cascade: on the PICO it cost ~7 ms/frame (every MetaHuman component re-drawn
+# into the shadow map, every room pixel sampling it). Characters get blob shadows instead
+# (build_blob_shadows.py); the baked room keeps its static sun shadows.
+SUN_CSM_DISTANCE = 0.0
 
 SKY_INTENSITY = 0.80
 SKY_COLOR = unreal.Color(r=236, g=244, b=255, a=255)  # cool fill lifts shade without flattening it
@@ -182,8 +185,8 @@ def build():
             "LightmassVolume", "RoomReflection", "PendantWarm"})
 
     # Sun: morning light from the north-east, through the north window, down onto the floor.
-    # Stationary (rather than Static) is deliberate: the room remains baked, while the one short
-    # mobile CSM cascade gives Maria/David/Enzo direct light and grounding shadows as they move.
+    # Stationary (rather than Static) is deliberate: the room remains baked, while Maria/David/Enzo
+    # still get direct sunlight as they move (their grounding comes from build_blob_shadows.py).
     sun = spawn(unreal.DirectionalLight, "Sun_Morning", (ROOM_X + 200, 225, 400), (0.0, -38.0, 215.0))
     lc = sun.light_component
     lc.set_mobility(unreal.ComponentMobility.STATIONARY)

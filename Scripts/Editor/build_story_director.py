@@ -121,6 +121,13 @@ def build_graph(bp):
         N(id="setViewM", type="VariableSet", variable_name="MariaView", pin_defaults={"MariaView": "1.0"}),
         N(id="setDistM", type="VariableSet", variable_name="GazeDistance", pin_defaults={"GazeDistance": str(GAZE_VIEW["Maria"][0])}),
         N(id="setYawM", type="VariableSet", variable_name="GazeYaw", pin_defaults={"GazeYaw": str(GAZE_VIEW["Maria"][1])}),
+        # Maria's perception overlay is gated off in the other views by MariaView, but a hidden
+        # actor also skips its full-view translucent pass.
+        N(id="getOverlay", type="VariableGet", variable_name="Overlay"),
+        N(id="hideOvC", type="CallFunction", target="Actor", function_name="SetActorHiddenInGame",
+          pin_defaults={"bNewHidden": "true"}),
+        N(id="hideOvD", type="CallFunction", target="Actor", function_name="SetActorHiddenInGame",
+          pin_defaults={"bNewHidden": "true"}),
         # Corner (no hidden body)
         N(id="getAnchorCorner", type="VariableGet", variable_name="AnchorCorner"),
         N(id="setAnchorC", type="VariableSet", variable_name="Anchor"),
@@ -154,8 +161,11 @@ def build_graph(bp):
           pin_defaults={"Yaw": "0.0", "Options": "Orientation"}),
         N(id="getBody", type="VariableGet", variable_name="HiddenBody"),
         N(id="bodyValid", type="MacroInstance", macro_name="IsValid"),
-        N(id="hide", type="CallFunction", target="Actor", function_name="SetActorHiddenInGame",
-          pin_defaults={"bNewHidden": "true"}),
+        # hide the viewer's body through its root with propagation, so attached actors (the blob
+        # shadow from build_blob_shadows.py) disappear with it
+        N(id="bodyRoot", type="CallFunction", target="Actor", function_name="K2_GetRootComponent"),
+        N(id="hide", type="CallFunction", target="SceneComponent", function_name="SetHiddenInGame",
+          pin_defaults={"NewHidden": "true", "bPropagateToChildren": "true"}),
         N(id="getStory", type="VariableGet", variable_name="Story"),
         N(id="makePlayer", type="CallFunction", target="LevelSequencePlayer",
           function_name="CreateLevelSequencePlayer"),
@@ -294,7 +304,9 @@ def build_graph(bp):
         C("setBodyC", "then", "setViewC", "execute"),
         C("setViewC", "then", "setDistC", "execute"),
         C("setDistC", "then", "setYawC", "execute"),
-        C("setYawC", "then", "setMariaView", "execute"),
+        C("setYawC", "then", "hideOvC", "execute"),
+        C("getOverlay", "Overlay", "hideOvC", "self"),
+        C("hideOvC", "then", "setMariaView", "execute"),
         # otherwise David
         C("branchCorner", "else", "setAnchorD", "execute"),
         C("getAnchorDavid", "AnchorDavid", "setAnchorD", "Anchor"),
@@ -303,7 +315,9 @@ def build_graph(bp):
         C("setBodyD", "then", "setViewD", "execute"),
         C("setViewD", "then", "setDistD", "execute"),
         C("setDistD", "then", "setYawD", "execute"),
-        C("setYawD", "then", "setMariaView", "execute"),
+        C("setYawD", "then", "hideOvD", "execute"),
+        C("getOverlay", "Overlay", "hideOvD", "self"),
+        C("hideOvD", "then", "setMariaView", "execute"),
         # start
         C("getMPC", "Perception", "setMariaView", "Collection"),
         C("getMariaView", "MariaView", "setMariaView", "ParameterValue"),
@@ -313,7 +327,8 @@ def build_graph(bp):
         C("attach", "then", "bodyValid", "exec"),
         C("getBody", "HiddenBody", "bodyValid", "InputObject"),
         C("bodyValid", "Is Valid", "hide", "execute"),
-        C("getBody", "HiddenBody", "hide", "self"),
+        C("getBody", "HiddenBody", "bodyRoot", "self"),
+        C("bodyRoot", "ReturnValue", "hide", "self"),
         C("bodyValid", "Is Not Valid", "makePlayer", "execute"),
         C("hide", "then", "makePlayer", "execute"),
         C("getStory", "Story", "makePlayer", "LevelSequence"),
@@ -457,7 +472,7 @@ def place_director(bp):
     for var, label in [("AnchorDavid", "Anchor_David"), ("AnchorMaria", "Anchor_Maria"),
                        ("AnchorCorner", "Anchor_Corner"), ("BodyDavid", "David_StandIn"),
                        ("BodyMaria", "Maria_StandIn"), ("StartTarget", "StartTarget"),
-                       ("EnzoOverlay", "Enzo_Overlay")]:
+                       ("EnzoOverlay", "Enzo_Overlay"), ("Overlay", "PerceptionOverlay")]:
         if label in by_label:
             d.set_editor_property(var, by_label[label])
         else:
@@ -476,6 +491,7 @@ def build():
         add_var(bp, name, actor_ref, True)
     add_var(bp, "StartTarget", actor_ref, True)
     add_var(bp, "EnzoOverlay", actor_ref, True)
+    add_var(bp, "Overlay", actor_ref, True)
     add_var(bp, "Swapped", bel.get_basic_type_by_name("bool"), False)
     add_var(bp, "Player", bel.get_object_reference_type(unreal.LevelSequencePlayer), False)
     add_var(bp, "GazeProgress", bel.get_basic_type_by_name("real"), False)

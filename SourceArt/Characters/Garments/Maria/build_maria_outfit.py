@@ -40,11 +40,12 @@ UVS = 2.0           # UV units per metre -> one texture tile = 50 cm
 MAX_INFL = 4
 
 T_CARD, T_SLV_L, T_SLV_R, T_CARD_DET, T_CARD_IN, T_SLV_IN = 1, 2, 3, 4, 5, 17
-T_BLOUSE, T_COLLAR, T_BL_IN, T_BL_DET = 6, 7, 8, 9
+T_BLOUSE, T_COLLAR, T_BL_IN, T_BL_DET, T_BL_CAP = 6, 7, 8, 9, 18
 T_SKIRT, T_SK_IN, T_SK_WB = 10, 11, 12
 T_SLIP, T_SLIP_L, T_SLIP_R, T_SLIP_IN = 13, 14, 15, 16
 T_SHOE_L, T_SHOE_R, T_SHOE_IN = 30, 31, 32
 SKIRT_TAGS = {T_SKIRT, T_SK_IN, T_SK_WB}
+SKIRT_OUTER_TAGS = {T_SKIRT, T_SK_WB}
 SLIP_TAGS = {T_SLIP, T_SLIP_L, T_SLIP_R, T_SLIP_IN}
 SHOE_TAGS = {T_SHOE_L, T_SHOE_R, T_SHOE_IN}
 
@@ -82,9 +83,19 @@ def setup_scene():
     emp = arm.parent
     mw = arm.matrix_world.copy()
     arm.parent = None
-    arm.matrix_world = mw          # armature keeps the 0.01 (cm->m) scale; bone data stays cm
+    arm.matrix_world = mw
     if emp is not None:
         bpy.data.objects.remove(emp, do_unlink=True)
+    # FBX arrives beneath a centimetre conversion node.  Bake that conversion into
+    # both data blocks so the exported armature has identity transforms.  Keeping a
+    # 0.01 object scale on the bind skeleton makes Unreal report an invalid bind pose.
+    bpy.context.view_layer.update()
+    arm.data.transform(mw)
+    body.data.transform(mw)
+    arm.matrix_world = Matrix.Identity(4)
+    body.parent = arm
+    body.matrix_parent_inverse = Matrix.Identity(4)
+    body.matrix_basis = Matrix.Identity(4)
     body.name = "SKM_%s_BodyMesh" % NAME
     bpy.context.view_layer.update()
     return arm, body
@@ -630,7 +641,7 @@ for v in hem:
     i0.append(p - d * 0.0045)
     i1.append(p - d * 0.0045 + Vector((0, 0, 0.028)))
 Vh, f_hem_e = sk.grid([hem, e_], T_SKIRT)
-Vhi, f_hem_i = sk.grid([Vh[-1], i0, i1], T_SK_IN)
+_, f_hem_i = sk.grid([Vh[-1], i0, i1], T_SK_IN)
 top = Vsk[0]
 r_e, r_i = [], []
 for j, th in enumerate(TH_SK):
@@ -639,7 +650,7 @@ for j, th in enumerate(TH_SK):
     r_e.append(p + Vector((0, 0, 0.0018)) - n * 0.0022)
     r_i.append(p - n * 0.0040 - Vector((0, 0, 0.022)))
 Vw, f_wb = sk.grid([top, r_e], T_SK_WB)
-Vwi, f_wbi = sk.grid([Vw[-1], r_i], T_SK_IN)
+_, f_wbi = sk.grid([Vw[-1], r_i], T_SK_IN)
 orient_faces(f_sk + f_hem_e + f_wb, lambda p: Vector((p.x, p.y, 0)))
 orient_faces(f_hem_i + f_wbi, lambda p: -Vector((p.x, p.y, 0)))
 SKIRT_BVH = bvh_from_faces(f_sk + f_wb)
@@ -861,6 +872,13 @@ BL_U = [1.02, 1.06, 1.10, 1.14, 1.175, Z_S, Z_S + 0.3 * DL, Z_S + 0.6 * DL, Z_S 
 rows = [[bl_point(u, th) for th in TH_B] for u in BL_U]
 Vb, f_bl = bl.grid(rows, T_BLOUSE)
 orient_faces(f_bl, lambda p: Vector((p.x, p.y - NECK_C[1], 0.0)) + Vector((0, 0, max(0.0, p.z - 1.2) * 2)))
+# The blouse is only meant to show at the open neckline.  Colour its concealed
+# shoulder faces as cardigan so even a sub-centimetre runtime seam cannot reveal a
+# bright pink wedge between the cardigan body and sleeve.
+for f in f_bl:
+    c = f.calc_center_median()
+    if abs(c.x) > 0.105 and c.z > 1.06:
+        f.material_index = M_CARD
 BL_BVH = bvh_from_faces(f_bl)
 top_ring = Vb[-1]
 inner = []
@@ -945,7 +963,10 @@ for sd in 'lr':
     FOLD_IN = {S_E - 0.028: 0.0045, S_E - 0.010: -0.0008, S_E + 0.008: 0.0050, S_E + 0.026: 0.0012}
     rows = []
     for s in SLV_S:
-        c, U, V, R = ring(s, lambda s_, ph, sd=sd: sleeve_style(sd, s_, ph), 0.0115)
+        # Extra room at the arm head keeps the live MetaHuman shoulder corrective
+        # bones inside the cardigan when the arm drops from the reference A-pose.
+        shoulder_clearance = lerp(0.0165, 0.0115, smoothstep(0.08, 0.14, s))
+        c, U, V, R = ring(s, lambda s_, ph, sd=sd: sleeve_style(sd, s_, ph), shoulder_clearance)
         row = []
         for j, phi in enumerate(phis):
             r = R[j]
@@ -956,11 +977,12 @@ for sd in 'lr':
             if abs(s - (S_C0 - 0.004)) < 1e-6: r += 0.0016
             row.append(c + (U * math.cos(phi) + V * math.sin(phi)) * r)
         rows.append(row)
-    for j in range(N_SL):
-        p = rows[0][j]
-        loc, n, _, _ = CARD_BVH.find_nearest(p, 0.2)
-        if loc is not None and (p - loc).dot(n) > -0.004:
-            rows[0][j] = loc - n * 0.006
+    for ri, tuck in ((0, 0.007), (1, 0.005)):
+        for j in range(N_SL):
+            p = rows[ri][j]
+            loc, n, _, _ = CARD_BVH.find_nearest(p, 0.2)
+            if loc is not None and (p - loc).dot(n) > -0.004:
+                rows[ri][j] = loc - n * tuck
     cuff_s = [S_C0, S_C0 + 0.022, S_C1 - 0.003]
     Rc_all = [ring(s, lambda s_, ph: 0.041, 0.0085) for s in cuff_s]
     Rmax = [max(r[3][j] for r in Rc_all) for j in range(N_SL)]
@@ -994,6 +1016,34 @@ for sd in 'lr':
     orient_faces(f_seal, lambda p, sd=sd, s1=S_C1: arm_frame(sd, s1)[1])
     SLEEVE_INFO[sd] = dict(faces=f_out, phi_in=phi_in)
     log("sleeve", sd, "S_E %.3f cuff %.3f..%.3f  phi_in %.2f" % (S_E, S_C0, S_C1, phi_in))
+
+# A thin cardigan-coloured safety cap follows the runtime body's own shoulder weights.
+# It normally sits beneath the outer cardigan, but prevents the optimized body's angular
+# cut boundary from becoming visible if the cardigan/sleeve seam opens in motion.
+log("building shoulder safety caps")
+CAP_S = [-0.025, 0.005, 0.035, 0.070, 0.105, 0.140]
+for sd in 'lr':
+    phis = [2 * math.pi * j / N_SL for j in range(N_SL)]
+    cap_rows = []
+    for s in CAP_S:
+        c, T, U, V = arm_frame(sd, s)
+        row = []
+        for phi in phis:
+            d = U * math.cos(phi) + V * math.sin(phi)
+            hit = BODY_SIDE[sd].ray_cast(c, d, 0.13)
+            rb = (hit[0] - c).length if hit[0] is not None else 0.050
+            # Outside the 5 mm blouse layer but still beneath the 11.5--16.5 mm
+            # cardigan shell, so the seam can only reveal cardigan fabric.
+            row.append(c + d * (rb + 0.0075))
+        cap_rows.append(row)
+    _, f_cap = card.grid(cap_rows, T_BL_CAP)
+
+    def cap_out(p, sd=sd):
+        s, _ = arm_s(sd, p)
+        c, T, U, V = arm_frame(sd, s)
+        d = p - c
+        return d - T * d.dot(T)
+    orient_faces(f_cap, cap_out)
 
 # ============================================================================= collar (Peter Pan)
 log("collar")
@@ -1048,7 +1098,7 @@ orient_faces(collar_faces, collar_out)
 log("building shoes")
 shoes = Part("Shoes", M_SHOES)
 parts['shoes'] = shoes
-N_SH = 20
+N_SH = 28
 SH_T = [0.0, 0.15, 0.32, 0.50, 0.68, 0.84, 1.0]
 SHOE_INFO = {}
 
@@ -1099,7 +1149,7 @@ for sd, sg in (('l', 1), ('r', -1)):
         phis.append(samp[k][0])
 
     def z_w(phi): return 0.011 + 0.005 * max(0.0, math.sin(phi))
-    def z_tp(phi): return 0.046 + 0.020 * max(0.0, math.sin(phi)) ** 2 + 0.024 * max(0.0, -math.sin(phi)) ** 2
+    def z_tp(phi): return 0.044 + 0.013 * max(0.0, math.sin(phi)) ** 2 + 0.024 * max(0.0, -math.sin(phi)) ** 2
     rows = []
     prevR = None
     for k, t in enumerate(SH_T):
@@ -1122,7 +1172,7 @@ for sd, sg in (('l', 1), ('r', -1)):
         R0 = list(R)
         for _ in range(2):
             R = [0.25 * R[j - 1] + 0.5 * R[j] + 0.25 * R[(j + 1) % N_SH] for j in range(N_SH)]
-        R = [max(a, b) for a, b in zip(R, R0)]
+        R = [0.35 * raw + 0.65 * smooth for raw, smooth in zip(R0, R)]
         prevR = R
         row = []
         for j, phi in enumerate(phis):
@@ -1372,13 +1422,40 @@ def mix(dst, src, f):
         dst[b] = dst.get(b, 0.0) + w * f
 
 
+def skirt_weights(p, tag):
+    """Continuous hip/thigh/knee field for the single-piece skirt shell.
+
+    The same smooth field runs around front, sides and back: nothing is cut into
+    separate flaps.  Above the knee it follows the thighs across the lap; below the
+    knee it follows the calves and falls vertically again.  A broad left/right blend
+    keeps the centre of the connected shell coherent without mobile cloth.
+    """
+    leg = smoothstep(0.945, 0.70, p.z)
+    knee = smoothstep(0.64, 0.36, p.z)
+    wl = smoothstep(-0.13, 0.13, p.x)
+    custom = {'pelvis': 1.0 - leg}
+    for sd, share in (('l', wl), ('r', 1.0 - wl)):
+        custom['thigh_' + sd] = leg * (1.0 - knee) * share
+        custom['calf_' + sd] = leg * knee * share
+    # Match the cardigan/torso field throughout their overlap, then transition to
+    # the controlled leg field below the cardigan hem.  This prevents the waistband
+    # from surfacing through the cardigan during the seated spine bend.
+    lower = smoothstep(0.80, 0.68, p.z)
+    W = {}
+    mix(W, proc_weights(ref_point(p), T_SKIRT), 1.0 - lower)
+    mix(W, custom, lower)
+    return W
+
+
 WFULL = []
 for i, v in enumerate(outfit.data.vertices):
     p = REST_W[i]; tag = tags[i]
     W = {}
     if tag in SHOE_TAGS:
         W = clean_dt(DTW[i], p, shoe=True)
-    elif tag in SKIRT_TAGS or tag in SLIP_TAGS:
+    elif tag in SKIRT_TAGS:
+        W = skirt_weights(p, tag)
+    elif tag in SLIP_TAGS:
         s_body = smoothstep(0.70, 0.615, p.z)
         if s_body > 0:
             if tag == T_SLIP_L or (tag == T_SLIP_IN and p.x > 0):
@@ -1394,11 +1471,29 @@ for i, v in enumerate(outfit.data.vertices):
     elif tag in (T_SLV_L, T_SLV_R, T_SLV_IN):
         sd = 'l' if p.x >= 0 else 'r'
         t, rad = arm_param(sd, p)
-        s_body = smoothstep(0.42, 0.56, t)
+        # Follow the MetaHuman's upper-arm corrective bones from the visible shoulder
+        # onward; retain the procedural field only for the buried cardigan seam ring.
+        s_body = smoothstep(-0.08, 0.10, t)
         dtc = clean_dt(DTW[i], p)
         if not dtc: s_body = 0.0
         if s_body > 0: mix(W, dtc, s_body)
         if s_body < 1: mix(W, proc_weights(p, tag), 1 - s_body)
+    elif tag == T_BL_CAP:
+        W = clean_dt(DTW[i], p)
+        if not W:
+            W = proc_weights(p, T_BLOUSE)
+    elif tag == T_BL_IN:
+        W = {'spine_05': 0.50, 'neck_01': 0.42, 'neck_02': 0.08}
+    elif tag in {T_CARD, T_CARD_IN, T_CARD_DET, T_BLOUSE}:
+        procedural = proc_weights(ref_point(p), tag)
+        dtc = clean_dt(DTW[i], p)
+        shoulder = 0.85 * smoothstep(0.105, 0.155, abs(p.x)) * smoothstep(1.065, 1.14, p.z) * \
+                   (1.0 - smoothstep(1.235, 1.275, p.z))
+        if dtc and shoulder > 0:
+            mix(W, procedural, 1.0 - shoulder)
+            mix(W, dtc, shoulder)
+        else:
+            W = procedural
     else:
         W = proc_weights(ref_point(p) if tag in TORSO_LAYER else p, tag)
     WFULL.append(W)
@@ -1416,7 +1511,8 @@ smooth_idx = [i for i, t in enumerate(tags) if t in GROUP and REST_W[i].z < 0.72
 for it in range(SMOOTH_ITERS):
     NW = {}
     for i in smooth_idx:
-        nb = [j for j in adj[i] if GROUP.get(tags[j]) == GROUP[tags[i]]]
+        nb = [j for j in adj[i] if GROUP.get(tags[j]) == GROUP[tags[i]] and
+              abs(REST_W[j].z - REST_W[i].z) < 0.015]
         if not nb: continue
         k = 0.5 * smoothstep(0.72, 0.64, REST_W[i].z)
         acc = {}
@@ -1482,17 +1578,33 @@ def seated_pose():
     rot_world('spine_01', 'X', 7)
     rot_world('spine_03', 'X', 4)
     for sd, sg in (('l', 1), ('r', -1)):
-        rot_world('thigh_' + sd, 'X', -86)
-        rot_world('calf_' + sd, 'X', 87)
+        rot_world('thigh_' + sd, 'X', -78)
+        rot_world('calf_' + sd, 'X', 82)
         rot_world('foot_' + sd, 'X', -1)
         aim('upperarm_' + sd, 'lowerarm_' + sd, (0.16 * sg, -0.46, -0.87))
         aim('lowerarm_' + sd, 'hand_' + sd, (-0.22 * sg, -0.97, -0.06))
 
 
+def relaxed_pose(recoil=False):
+    """Arms-down runtime-like idle, with the optional personal-space recoil."""
+    reset_pose()
+    for sd, sg in (('l', 1), ('r', -1)):
+        aim('upperarm_' + sd, 'lowerarm_' + sd, (0.18 * sg, -0.05, -0.982))
+        aim('lowerarm_' + sd, 'hand_' + sd, (0.06 * sg, -0.08, -0.995))
+    if recoil:
+        rot_world('neck_01', 'X', -10)
+        rot_world('neck_02', 'X', -6)
+
+
 def coverage_sets():
-    sets = {'arm_l': [], 'arm_r': [], 'legs_skirt': [], 'thigh_top_l': [], 'thigh_top_r': [], 'foot_l': [], 'foot_r': []}
+    sets = {'shoulder_l': [], 'shoulder_r': [], 'arm_l': [], 'arm_r': [], 'legs_skirt': [],
+            'thigh_top_l': [], 'thigh_top_r': [], 'foot_l': [], 'foot_r': []}
     for i, p in enumerate(BV):
         sd = 'l' if p.x > 0 else 'r'
+        if p.z > 1.075 and abs(p.x) > 0.09:
+            s, d = arm_s(sd, p)
+            if d < 0.14 and s <= 0.16:
+                sets['shoulder_' + sd].append(i)
         if p.z > 0.75 and abs(p.x) > 0.12:
             s, d = arm_s(sd, p)
             if d < 0.08 and s <= ARM[sd]['S_C1'] - 0.025:
@@ -1507,13 +1619,19 @@ def coverage_sets():
 
 
 COVER = coverage_sets()
-COVER_TAGS = {'arm_l': {T_SLV_L}, 'arm_r': {T_SLV_R}, 'legs_skirt': {T_SKIRT},
+assert len(COVER['shoulder_l']) >= 50 and len(COVER['shoulder_r']) >= 50, \
+    "shoulder regression set is too small: %s/%s" % (len(COVER['shoulder_l']), len(COVER['shoulder_r']))
+COVER_TAGS = {'shoulder_l': {T_CARD, T_SLV_L, T_BLOUSE, T_BL_CAP},
+              'shoulder_r': {T_CARD, T_SLV_R, T_BLOUSE, T_BL_CAP},
+              'arm_l': {T_SLV_L}, 'arm_r': {T_SLV_R}, 'legs_skirt': SKIRT_OUTER_TAGS,
               'thigh_top_l': {T_SLIP_L}, 'thigh_top_r': {T_SLIP_R},
               'foot_l': {T_SHOE_L}, 'foot_r': {T_SHOE_R}}
 log("coverage set sizes", {k: len(v) for k, v in COVER.items()})
 
 
-EXPO_TAGS = {'arm_l': {T_SLV_L, T_SLV_IN}, 'arm_r': {T_SLV_R, T_SLV_IN}, 'legs_skirt': SKIRT_TAGS | SLIP_TAGS,
+EXPO_TAGS = {'shoulder_l': {T_CARD, T_SLV_L, T_SLV_IN, T_BLOUSE, T_BL_CAP},
+             'shoulder_r': {T_CARD, T_SLV_R, T_SLV_IN, T_BLOUSE, T_BL_CAP},
+             'arm_l': {T_SLV_L, T_SLV_IN}, 'arm_r': {T_SLV_R, T_SLV_IN}, 'legs_skirt': SKIRT_TAGS | SLIP_TAGS,
              'thigh_top_l': SKIRT_TAGS | SLIP_TAGS, 'thigh_top_r': SKIRT_TAGS | SLIP_TAGS,
              'foot_l': SHOE_TAGS, 'foot_r': SHOE_TAGS}
 
@@ -1598,8 +1716,8 @@ def check(state):
         return (n_, bad, round(mind * 100, 2), exposed)
     res['blouse_in_cardigan'] = gg({T_BLOUSE}, lambda p: p.z < 1.19 and not (p.z > Z_V - 0.03 and abs(p.x) < xv(p.z) + 0.035),
                                    {T_CARD}, True)
-    res['skirt_in_cardigan'] = gg({T_SKIRT, T_SK_WB}, lambda p: p.z > 0.815, {T_CARD}, True)
-    res['slip_in_skirt'] = gg({T_SLIP}, lambda p: p.z > 0.715, {T_SKIRT, T_SK_WB}, True)
+    res['skirt_in_cardigan'] = gg(SKIRT_OUTER_TAGS, lambda p: p.z > 0.815, {T_CARD}, True)
+    res['slip_in_skirt'] = gg({T_SLIP}, lambda p: p.z > 0.715, SKIRT_OUTER_TAGS, True)
     for k, v in res.items():
         log("CHECK %-7s %-20s" % (state, k), v)
     return res, sorted(worst)[:12]
@@ -1627,6 +1745,14 @@ reset_pose()
 REST_EXPO = exposure("rest")
 REST_CHECK = check("rest")
 log("rest worst", REST_CHECK[1][:6])
+relaxed_pose()
+RELAX_EXPO = exposure("relaxed")
+RELAX_CHECK = check("relaxed")
+assert RELAX_EXPO['shoulder_l'][1] == 0 and RELAX_EXPO['shoulder_r'][1] == 0, RELAX_EXPO
+relaxed_pose(recoil=True)
+RECOIL_EXPO = exposure("recoil")
+RECOIL_CHECK = check("recoil")
+assert RECOIL_EXPO['shoulder_l'][1] == 0 and RECOIL_EXPO['shoulder_r'][1] == 0, RECOIL_EXPO
 seated_pose()
 SEAT_EXPO = exposure("seated")
 SEAT_CHECK = check("seated")
@@ -1646,7 +1772,9 @@ def setup_render():
     sh.cavity_type = 'BOTH'
     sh.curvature_ridge_factor = 1.0
     sh.curvature_valley_factor = 1.0
-    sh.show_backface_culling = True
+    # Cardigan and skirt materials are deliberately two-sided in Unreal; preview
+    # the same way so open wrap hems are evaluated as the player will see them.
+    sh.show_backface_culling = False
     sh.show_specular_highlight = False
     sc.view_settings.view_transform = 'Standard'
     w = bpy.data.worlds.new("Preview"); w.color = (0.62, 0.64, 0.67); sc.world = w
@@ -1687,6 +1815,8 @@ if DO_RENDER:
     PREVIEWS.append(render("06_closeup_right_cuff_wrist", (-0.33, -0.06, 0.95), 0.75, -45, 8, res=(1000, 900)))
     PREVIEWS.append(render("07_closeup_shoes", (0.0, -0.06, 0.07), 0.9, 35, 18, res=(1000, 700)))
     PREVIEWS.append(render("08_closeup_hem_pockets", (0.03, -0.08, 0.86), 0.85, 25, 6, res=(1000, 800)))
+    relaxed_pose()
+    PREVIEWS.append(render("09_relaxed_shoulders", (0.0, -0.01, 1.10), 1.15, 20, 6, res=(1000, 900)))
     seated_pose()
     PREVIEWS.append(render("10_seated_three_quarter", (0, -0.2, 0.72), 2.7, 40, 10))
     PREVIEWS.append(render("11_seated_side", (0, -0.2, 0.72), 2.7, 90, 5))

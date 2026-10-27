@@ -26,6 +26,7 @@ TWO_SIDED = {"M_Skirt", "M_Cardigan"}
 REMAP = {"David": {"M_Shoes": "M_ShoesBlack"}, "Enzo": {"M_Trousers": "M_TrousersBrown"}}
 # label of the actor in L_ResidentRoom -> garment name
 WEARERS = {"David_StandIn": "David", "Maria_StandIn": "Maria", "Enzo_Overlay": "Enzo"}
+TARGETS = tuple(n.strip() for n in os.environ.get("WG_GARMENT_TARGETS", "David,Maria,Enzo").split(",") if n.strip())
 
 # slot -> (texture id or None, mode, tint, strength/lift, tiling, roughness)
 SLOTS = {
@@ -209,7 +210,8 @@ def dress(garments):
 
 def main():
     mis = build_materials()
-    garments = {n: import_garment(n, mis) for n in ("David", "Maria", "Enzo")}
+    garments = {n: import_garment(n, mis) for n in TARGETS}
+    log(f"target garments: {', '.join(TARGETS)}")
     dress(garments)
 
 
