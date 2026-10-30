@@ -203,7 +203,12 @@ PERCEPTION = {
 # ------------------------------------------------------------------ helpers
 def mh_clip(path, label):
     """Retargeted clip for a MetaHuman body (build_characters.py), falling back to the original."""
-    body = "Maria" if label.startswith("Maria") else "David"     # Enzo shares David's body
+    body = {
+        "Maria_StandIn": "MariaReference",
+        "David_StandIn": "DavidReference",
+        "Gardener_StandIn": "GardenerReference",
+        "Enzo_Overlay": "EnzoReference",
+    }.get(label, "DavidReference")
     name = path.split("/")[-1].split(".")[0]
     candidate = f"/Game/Wattleview/Animations/MH/{body}/{name}_{body}"
     return candidate if unreal.EditorAssetLibrary.does_asset_exist(candidate) else path
@@ -504,6 +509,7 @@ def build():
         actor.set_actor_location_and_rotation(unreal.Vector(*loc0),
                                               unreal.Rotator(0, 0, facing0 + MESH_YAW_OFFSET), False, True)
         anim_binding, sections = binding, ANIMS.get(label, [])
+        outfit = None
         if is_mh:
             # MetaHuman Blueprint (build_characters.py): the root is a scene component, so the
             # animation goes on the Body skeletal mesh, using the clips retargeted to that body.
@@ -512,13 +518,22 @@ def build():
             if body is not None:
                 anim_binding = seq.add_possessable(body)
                 sections = [(s0, s1, mh_clip(path, label), rate) for s0, s1, path, rate in sections]
+                outfit = next((c for c in actor.get_components_by_class(unreal.SkeletalMeshComponent)
+                               if c.get_name() == "SkeletalMesh"), None)
                 # Before the gaze start nothing animates the body: loop the idle so the student
                 # doesn't see an A-pose (the mannequin stand-ins get theirs in build_resident_room).
                 idle = unreal.load_asset(mh_clip(IDLE, label))
                 if idle is not None:
                     body.set_animation_mode(unreal.AnimationMode.ANIMATION_SINGLE_NODE)
                     body.set_editor_property("animation_data", unreal.SingleAnimationPlayData(anim_to_play=idle))
+                    if outfit is not None:
+                        outfit.set_animation_mode(unreal.AnimationMode.ANIMATION_SINGLE_NODE)
+                        outfit.set_editor_property(
+                            "animation_data", unreal.SingleAnimationPlayData(anim_to_play=idle))
         n_anim = add_anim_sections(anim_binding, sections, seq)
+        if outfit is not None:
+            n_outfit = add_anim_sections(seq.add_possessable(outfit), sections, seq)
+            log(f"{label}: {n_outfit} matching independent wardrobe anim sections")
         log(f"{label}: {len(keys)} blocking keys, {n_anim} anim sections{' (MetaHuman body)' if is_mh else ''}")
 
     # Enzo (MetaHuman, attached to David, hidden until the director swaps them in Maria's view)
@@ -529,9 +544,13 @@ def build():
                       if c.get_name().startswith("Body")), None)
         if ebody is not None:
             seq.add_possessable(enzo)
-            esections = [(s0, s1, mh_clip(path, "David_StandIn"), rate)
+            esections = [(s0, s1, mh_clip(path, "Enzo_Overlay"), rate)
                          for s0, s1, path, rate in ANIMS.get("David_StandIn", [])]
             log(f"Enzo_Overlay: {add_anim_sections(seq.add_possessable(ebody), esections, seq)} anim sections (David's)")
+            eoutfit = next((c for c in enzo.get_components_by_class(unreal.SkeletalMeshComponent)
+                            if c.get_name() == "SkeletalMesh"), None)
+            if eoutfit is not None:
+                log(f"Enzo_Overlay: {add_anim_sections(seq.add_possessable(eoutfit), esections, seq)} matching independent wardrobe anim sections")
 
     # Moving props (parts attached to a root so the whole chair moves).
     for root_label, (prefix, keys) in PROP_MOVES.items():

@@ -137,6 +137,15 @@ def import_garment(name, mis):
     if not os.path.exists(fbx):
         log(f"{name}: no FBX yet ({fbx})")
         return None
+    # Blender writes both an FBX bind pose and cluster link matrices.  The clusters
+    # are the authoritative skinning data; choosing the pose first can collapse the
+    # garment when Interchange maps it onto the existing MetaHuman skeleton.
+    try:
+        fbx_settings = unreal.get_default_object(unreal.InterchangeFbxTranslatorSettings)
+        fbx_settings.set_editor_property("consider_cluster_before_pose_for_mesh_bind_pose", True)
+        log(f"{name}: Interchange bind source = skin clusters")
+    except Exception as exc:
+        log(f"{name}: could not set Interchange cluster-first bind policy ({exc})")
     dest = f"{DST}/{name}"
     t = unreal.AssetImportTask()
     t.filename, t.destination_path, t.destination_name = fbx, dest, f"SKM_{name}_Outfit"
@@ -151,8 +160,11 @@ def import_garment(name, mis):
     ui.create_physics_asset = False
     ui.skeleton = unreal.load_asset(SKELETON)
     sk = ui.skeletal_mesh_import_data
+    # Garment FBXs use the same centimetre skin space and canonical bind pose as the
+    # MetaHuman body export.  Preserve both the file bind and the shared skeleton pose.
     for prop, val in (("import_morph_targets", False), ("update_skeleton_reference_pose", False),
-                      ("use_t0_as_ref_pose", False), ("import_meshes_in_bone_hierarchy", True)):
+                      ("use_t0_as_ref_pose", False), ("convert_scene_unit", False),
+                      ("import_meshes_in_bone_hierarchy", True)):
         try:   # property names differ between engine versions; skip what is not exposed
             sk.set_editor_property(prop, val)
         except Exception:

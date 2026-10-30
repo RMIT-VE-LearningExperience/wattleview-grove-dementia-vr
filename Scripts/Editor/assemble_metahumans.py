@@ -22,7 +22,17 @@ import traceback
 import unreal
 
 SRC = "/Game/MetaHumans/Src"
-RUNTIME = ["Maria", "David", "Enzo"]
+# Approved visual-reference identities.  Keep the older Maria/David/Enzo source
+# assets intact for rollback, but assemble only these reviewed characters for the
+# current runtime pass.  The default wardrobe authored on each source is the
+# approved neutral white T-shirt and white shorts.
+RUNTIME = [
+    "MariaReference",
+    "MariaAge40Reference",
+    "DavidReference",
+    "GardenerReference",
+    "EnzoReference",
+]
 PHOTO = ["EnzoYoung", "MariaYoung"]
 ONLY = [n for n in os.environ.get("WG_MH_ONLY", "").split(",") if n]
 
@@ -68,7 +78,9 @@ def build(ch, name, cinematic):
         bp.pipeline_quality = unreal.MetaHumanQualityLevel.MEDIUM
         bp.absolute_build_path = "/Game/MetaHumans"
         bp.common_folder_path = "/Game/MetaHumans/Common"
-    bp.enable_wardrobe_item_validation = False
+    # Never assemble an incompatible wardrobe silently.  Earlier builds disabled
+    # this gate, which made later mobile failures much harder to diagnose.
+    bp.enable_wardrobe_item_validation = True
     sub.build_meta_human(character=ch, params=bp)
 
 

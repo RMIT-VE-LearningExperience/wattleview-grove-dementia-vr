@@ -14,6 +14,13 @@
 # The torso is therefore a parametric proxy built from the skeleton; weights for the missing
 # region are a procedural field. Where the body exists, weights come from the body via a Data
 # Transfer modifier (nearest face interpolated); the skirt blends both legs' body weights.
+#
+# NOTE: Maria's FACE mesh carries the neck plus a skirt of shoulder skin (out to ~13 cm from the
+# neck, up to z~1.29 m, flatter and higher than this proxy torso). It is not lifted over here:
+# her face skin material (Content/Wattleview/Characters/MetaHumanFix/M_skin_unified_baked_NeckHide)
+# sinks that skin 9 cm along its normal beyond 7.5 cm from the neck axis below z 129.5 cm
+# (parameters NeckHide*). So the cardigan + blouse must cover everything outside that radius,
+# or the sunk skin leaves a hole.
 
 import bpy, bmesh, math, os, sys, time
 from mathutils import Vector, Matrix
@@ -30,7 +37,10 @@ ROOT = r"D:\Unreal-Projects\WattleviewGrove-ue58\SourceArt\Characters"
 BODY_FBX = os.path.join(ROOT, "Bodies", "SKM_%s_BodyMesh.fbx" % NAME)
 OUT = os.path.join(ROOT, "Garments", NAME)
 PREV = os.path.join(OUT, "Previews")
-FBX_OUT = os.path.join(OUT, "SKM_%s_Outfit.fbx" % NAME)
+# Blender-authored intermediate.  The FBX SDK canonicalizer in tools/ replaces its
+# skeleton/bind records with the exact MetaHuman source records and writes the final
+# importer-facing SKM_Maria_Outfit.fbx.
+FBX_OUT = os.path.join(OUT, "SKM_%s_Outfit_Blender.fbx" % NAME)
 OUTFIT = "SKM_%s_Outfit" % NAME
 SLOTS = ["M_Cardigan", "M_Blouse", "M_Skirt", "M_Shoes"]
 M_CARD, M_BLOUSE, M_SKIRT, M_SHOES = range(4)
@@ -86,16 +96,43 @@ def setup_scene():
     arm.matrix_world = mw
     if emp is not None:
         bpy.data.objects.remove(emp, do_unlink=True)
-    # FBX arrives beneath a centimetre conversion node.  Bake that conversion into
-    # both data blocks so the exported armature has identity transforms.  Keeping a
-    # 0.01 object scale on the bind skeleton makes Unreal report an invalid bind pose.
+    # Unreal's FBX stores the MetaHuman root as a real skeleton node.  Blender's FBX
+    # importer collapses that node into the Armature object, leaving pelvis as the
+    # first edit bone.  Exporting that state makes a Null called "root" with no skin
+    # cluster; UE 5.8's Interchange validator rejects that as an invalid bind pose.
+    # Restore the lost topology: a dummy Armature wrapper (which Unreal deliberately
+    # ignores for Blender FBXs) and a real deform root bone above pelvis.
+    #
+    # Recreate that lost node while retaining the source FBX's 0.01 Armature object
+    # transform.  The body and skeleton data stay in centimetres, while Blender world
+    # space stays in metres.  FBX_SCALE_NONE then cancels Blender's 100x FBX unit
+    # conversion against that 0.01 wrapper and writes source-compatible skin matrices:
+    # centimetre translations with scale 1.  Baking the wrapper and exporting
+    # FBX_SCALE_ALL looks equivalent in Blender, but UE's ConvertSceneUnit scales the
+    # complete bind matrices to 100 and collapses the garment against MetaHuman's
+    # existing scale-1 reference skeleton.
+    arm.name = "Armature"
+    arm.data.name = "Armature"
+    bpy.ops.object.select_all(action='DESELECT')
+    arm.select_set(True)
+    bpy.context.view_layer.objects.active = arm
+    bpy.ops.object.mode_set(mode='EDIT')
+    tops = [eb for eb in arm.data.edit_bones if eb.parent is None]
+    assert tops and 'root' not in arm.data.edit_bones, ([b.name for b in tops], list(arm.data.edit_bones.keys()))
+    root = arm.data.edit_bones.new('root')
+    root.head = (0.0, 0.0, 0.0)
+    root.tail = (0.0, 1.0, 0.0)
+    root.roll = 0.0
+    for eb in tops:
+        eb.parent = root
+        eb.use_connect = False
+    bpy.ops.object.mode_set(mode='OBJECT')
+    arm.data.bones['root'].use_deform = True
     bpy.context.view_layer.update()
-    arm.data.transform(mw)
-    body.data.transform(mw)
-    arm.matrix_world = Matrix.Identity(4)
-    body.parent = arm
-    body.matrix_parent_inverse = Matrix.Identity(4)
-    body.matrix_basis = Matrix.Identity(4)
+
+    # `mw` is the source FBX's 0.01 centimetre-to-metre wrapper.  Keep it on the
+    # Armature; the imported body is already its child and remains world-aligned.
+    assert max(abs(s - 0.01) for s in arm.matrix_world.to_scale()) < 1e-6, arm.matrix_world
     body.name = "SKM_%s_BodyMesh" % NAME
     bpy.context.view_layer.update()
     return arm, body
@@ -575,7 +612,7 @@ SLIP_BVH = bvh_from_faces([f for f in slip.bm.faces])
 log("building skirt")
 sk = Part("Skirt", M_SKIRT)
 parts['skirt'] = sk
-N_SK = 36
+N_SK = 72
 TH_SK = [-math.pi / 2 + 2 * math.pi * j / N_SK for j in range(N_SK)]
 SK_TOP = 0.965
 SK_WB = 0.935
@@ -602,6 +639,14 @@ def skirt_point(z, th, folds=True):
     if folds:
         A = 0.019 * smoothstep(0.76, 0.30, z)
         A *= 0.72 + 0.28 * math.sin(3 * th + 1.0)
+        # The coarse 36-column ring otherwise samples a fold maximum exactly on each
+        # side silhouette, creating a pointed rear/right hem tail.  Fade only those
+        # two lower-side fold peaks; the connected one-piece skirt topology and the
+        # broader front/back drape remain unchanged.
+        hem_smooth = smoothstep(0.43, SK_HEM, z)
+        side_d = min(abs(wrap_pi(th)), abs(wrap_pi(th - math.pi)))
+        side_smooth = 1.0 - smoothstep(0.0, math.radians(30.0), side_d)
+        A *= 1.0 - hem_smooth * side_smooth
         f = math.cos(10 * th + 0.5)
         p = p + radial * (A * math.copysign(abs(f) ** 0.7, f))
     for ths, g in ((0.0, 0.0010), (math.pi, 0.0010), (math.pi / 2, 0.0008)):
@@ -913,7 +958,9 @@ for zb in (1.208, 1.163, 1.118):
 
 # ============================================================================= sleeves
 log("building sleeves")
-N_SL = 18
+# Twenty-four radial samples keep the moving shoulder silhouette round enough for the
+# close VR view while adding well under one thousand triangles to the full outfit.
+N_SL = 24
 
 
 def sleeve_style(sd, s, phi):
@@ -977,7 +1024,7 @@ for sd in 'lr':
             if abs(s - (S_C0 - 0.004)) < 1e-6: r += 0.0016
             row.append(c + (U * math.cos(phi) + V * math.sin(phi)) * r)
         rows.append(row)
-    for ri, tuck in ((0, 0.007), (1, 0.005)):
+    for ri, tuck in ((0, 0.007), (1, 0.005), (2, 0.002)):
         for j in range(N_SL):
             p = rows[ri][j]
             loc, n, _, _ = CARD_BVH.find_nearest(p, 0.2)
@@ -1017,11 +1064,14 @@ for sd in 'lr':
     SLEEVE_INFO[sd] = dict(faces=f_out, phi_in=phi_in)
     log("sleeve", sd, "S_E %.3f cuff %.3f..%.3f  phi_in %.2f" % (S_E, S_C0, S_C1, phi_in))
 
-# A thin cardigan-coloured safety cap follows the runtime body's own shoulder weights.
-# It normally sits beneath the outer cardigan, but prevents the optimized body's angular
-# cut boundary from becoming visible if the cardigan/sleeve seam opens in motion.
+# A cardigan-coloured under-yoke follows the runtime body's own shoulder weights.
+# The torso and sleeve are deliberately separate shells, so a narrow tube can still be
+# seen around from the rear when their weights diverge.  Run this yoke well underneath
+# both shells and close its proximal end: the visible seam can then reveal only cardigan
+# fabric, never an open tunnel into the character.
 log("building shoulder safety caps")
-CAP_S = [-0.025, 0.005, 0.035, 0.070, 0.105, 0.140]
+CAP_S = [-0.050, -0.025, 0.000, 0.025, 0.050, 0.080, 0.110, 0.140, 0.170]
+CAP_FAN_COUNT = 0
 for sd in 'lr':
     phis = [2 * math.pi * j / N_SL for j in range(N_SL)]
     cap_rows = []
@@ -1032,11 +1082,32 @@ for sd in 'lr':
             d = U * math.cos(phi) + V * math.sin(phi)
             hit = BODY_SIDE[sd].ray_cast(c, d, 0.13)
             rb = (hit[0] - c).length if hit[0] is not None else 0.050
-            # Outside the 5 mm blouse layer but still beneath the 11.5--16.5 mm
-            # cardigan shell, so the seam can only reveal cardigan fabric.
-            row.append(c + d * (rb + 0.0075))
+            # Keep this closure below both visible shells.  Its shorter, tapered root
+            # cannot rise into an upright shoulder pad when the arm drops, while the
+            # wider distal end still overlaps the moving sleeve seam.
+            clearance = lerp(0.0075, 0.0095, smoothstep(-0.020, 0.080, s))
+            row.append(c + d * (rb + clearance))
         cap_rows.append(row)
-    _, f_cap = card.grid(cap_rows, T_BL_CAP)
+    # Bury the torso-side rows just beneath the cardigan shoulder.  This preserves a
+    # generous overlap but prevents the safety surface from printing through at runtime.
+    for ri in range(3):
+        for j, p in enumerate(cap_rows[ri]):
+            loc, n, _, _ = CARD_BVH.find_nearest(p, 0.2)
+            if loc is not None and (p - loc).dot(n) > -0.003:
+                cap_rows[ri][j] = loc - n * 0.0035
+    Vcap, f_cap = card.grid(cap_rows, T_BL_CAP)
+
+    # Seal the inner end of the under-yoke.  This fan is buried inside the torso, but
+    # makes the closure topological rather than dependent on camera angle or overlap.
+    c0, T_cap, _, _ = arm_frame(sd, CAP_S[0])
+    vc = card.vert(c0, T_BL_CAP)
+    f_fan = []
+    for j in range(N_SL):
+        j2 = (j + 1) % N_SL
+        f = card.face([vc, Vcap[0][j2], Vcap[0][j]])
+        if f:
+            f_fan.append(f)
+    CAP_FAN_COUNT += len(f_fan)
 
     def cap_out(p, sd=sd):
         s, _ = arm_s(sd, p)
@@ -1044,6 +1115,9 @@ for sd in 'lr':
         d = p - c
         return d - T * d.dot(T)
     orient_faces(f_cap, cap_out)
+    orient_faces(f_fan, lambda p, T_cap=T_cap: -T_cap)
+
+assert CAP_FAN_COUNT == 2 * N_SL, CAP_FAN_COUNT
 
 # ============================================================================= collar (Peter Pan)
 log("collar")
@@ -1277,6 +1351,19 @@ for p in outfit.data.polygons:
     cnt[t] = cnt.get(t, 0) + 1
 log("outfit verts", len(outfit.data.vertices), "tris", TRIS, "per tag", sorted(cnt.items()))
 
+# Each shoulder under-yoke is closed at its torso end and intentionally open only at
+# its distal end beneath the sleeve.  Two N_SL-edge distal rings are therefore the only
+# boundary of the cap-tagged surface; a second boundary would reintroduce the tunnel.
+cap_edge_use = {}
+for p in outfit.data.polygons:
+    if all(tags[i] == T_BL_CAP for i in p.vertices):
+        for k in range(len(p.vertices)):
+            e = tuple(sorted((p.vertices[k], p.vertices[(k + 1) % len(p.vertices)])))
+            cap_edge_use[e] = cap_edge_use.get(e, 0) + 1
+cap_boundary = [e for e, n in cap_edge_use.items() if n == 1]
+assert len(cap_boundary) == 2 * N_SL, (len(cap_boundary), 2 * N_SL)
+log("shoulder under-yokes: proximal ends sealed; distal boundary edges", len(cap_boundary))
+
 # ============================================================================= skinning
 log("skinning")
 inv = arm.matrix_world.inverted()
@@ -1427,11 +1514,18 @@ def skirt_weights(p, tag):
 
     The same smooth field runs around front, sides and back: nothing is cut into
     separate flaps.  Above the knee it follows the thighs across the lap; below the
-    knee it follows the calves and falls vertically again.  A broad left/right blend
-    keeps the centre of the connected shell coherent without mobile cloth.
+    knee it follows the calves and falls vertically again.  The rear drape stays
+    biased toward the thighs instead of dropping behind them as a separate-looking
+    curtain when seated.  The broad angular blend remains on each character side;
+    it never mixes opposing leg transforms across the connected shell.
     """
     leg = smoothstep(0.945, 0.70, p.z)
     knee = smoothstep(0.64, 0.36, p.z)
+    # Front fabric can follow the bent calves over the knees; the back of a seated
+    # skirt remains caught beneath the wearer and follows the thighs instead of
+    # dropping as a visually separate vertical curtain.
+    rear = 0.45 * smoothstep(-0.12, 0.15, p.y)
+    knee *= 1.0 - rear
     wl = smoothstep(-0.13, 0.13, p.x)
     custom = {'pelvis': 1.0 - leg}
     for sd, share in (('l', wl), ('r', 1.0 - wl)):
@@ -1472,16 +1566,32 @@ for i, v in enumerate(outfit.data.vertices):
         sd = 'l' if p.x >= 0 else 'r'
         t, rad = arm_param(sd, p)
         # Follow the MetaHuman's upper-arm corrective bones from the visible shoulder
-        # onward; retain the procedural field only for the buried cardigan seam ring.
-        s_body = smoothstep(-0.08, 0.10, t)
+        # onward, but blend across the first three visible rings.  A normalized-t
+        # transition previously reached 100% corrective weights by s=24 mm, making an
+        # 18-sided dent where the torso-weighted root handed off to the moving sleeve.
+        s_arm = t * ARM[sd]['LU']
+        s_body = smoothstep(-0.015, 0.080, s_arm)
         dtc = clean_dt(DTW[i], p)
         if not dtc: s_body = 0.0
         if s_body > 0: mix(W, dtc, s_body)
         if s_body < 1: mix(W, proc_weights(p, tag), 1 - s_body)
     elif tag == T_BL_CAP:
-        W = clean_dt(DTW[i], p)
-        if not W:
-            W = proc_weights(p, T_BLOUSE)
+        # The concealed under-yoke spans from the torso into the moving sleeve.
+        # Nearest-body transfer alone assigns even its deeply buried root to upper-arm
+        # corrective bones, turning the closed cap into an upright shoulder pad when
+        # the arms drop.  Anchor the proximal part to cardigan torso/clavicle weights,
+        # then hand it smoothly to the live upper-arm field inside the sleeve.
+        sd = 'l' if p.x >= 0 else 'r'
+        t_arm, _ = arm_param(sd, p)
+        s_arm = t_arm * ARM[sd]['LU']
+        follow_arm = smoothstep(-0.035, 0.080, s_arm)
+        torso_w = proc_weights(ref_point(p), T_CARD)
+        arm_w = clean_dt(DTW[i], p)
+        if arm_w:
+            mix(W, torso_w, 1.0 - follow_arm)
+            mix(W, arm_w, follow_arm)
+        else:
+            W = torso_w
     elif tag == T_BL_IN:
         W = {'spine_05': 0.50, 'neck_01': 0.42, 'neck_02': 0.08}
     elif tag in {T_CARD, T_CARD_IN, T_CARD_DET, T_BLOUSE}:
@@ -1541,6 +1651,15 @@ bpy.context.view_layer.objects.active = outfit
 bpy.ops.object.vertex_group_normalize_all(lock_active=False)
 MAXI = max(len(v.groups) for v in outfit.data.vertices)
 log("weights written: groups", len(needed), "max influences", MAXI)
+
+# Export only bones that carry a real garment weight.  Blender's FBX exporter retains
+# all their ancestors (including the explicit root), but omits unrelated MetaHuman
+# branches whose empty clusters make Autodesk's bind-pose validator reject the file.
+weighted_bones = set(needed)
+for b in arm.data.bones:
+    b.use_deform = b.name in weighted_bones
+assert {b.name for b in arm.data.bones if b.use_deform} == weighted_bones
+log("deform-only export: weighted bones", len(weighted_bones))
 am = outfit.modifiers.new("Armature", 'ARMATURE')
 am.object = arm
 am.use_vertex_groups = True
@@ -1557,6 +1676,8 @@ def reset_pose():
 
 
 def rot_world(bn, axis, deg):
+    if bn not in arm.pose.bones:
+        return
     pb = arm.pose.bones[bn]
     bpy.context.view_layer.update()
     M = pb.matrix.copy(); h = M.to_translation()
@@ -1566,8 +1687,11 @@ def rot_world(bn, axis, deg):
 
 
 def aim(bn, child, target):
+    if bn not in arm.pose.bones:
+        return
     pb = arm.pose.bones[bn]; bpy.context.view_layer.update()
-    h = pb.head.copy(); c = arm.pose.bones[child].head.copy()
+    h = pb.head.copy()
+    c = arm.pose.bones[child].head.copy() if child in arm.pose.bones else pb.tail.copy()
     q = (c - h).normalized().rotation_difference(Vector(target).normalized())
     pb.matrix = Matrix.Translation(h) @ q.to_matrix().to_4x4() @ Matrix.Translation(-h) @ pb.matrix
     bpy.context.view_layer.update()
@@ -1815,13 +1939,16 @@ if DO_RENDER:
     PREVIEWS.append(render("06_closeup_right_cuff_wrist", (-0.33, -0.06, 0.95), 0.75, -45, 8, res=(1000, 900)))
     PREVIEWS.append(render("07_closeup_shoes", (0.0, -0.06, 0.07), 0.9, 35, 18, res=(1000, 700)))
     PREVIEWS.append(render("08_closeup_hem_pockets", (0.03, -0.08, 0.86), 0.85, 25, 6, res=(1000, 800)))
+    PREVIEWS.append(render("08b_skirt_hem_rear", (0.0, 0.02, 0.34), 0.85, 180, 1, res=(1000, 700)))
     relaxed_pose()
     PREVIEWS.append(render("09_relaxed_shoulders", (0.0, -0.01, 1.10), 1.15, 20, 6, res=(1000, 900)))
+    PREVIEWS.append(render("09b_relaxed_shoulders_back", (0.0, -0.01, 1.13), 1.05, 200, 8, res=(1000, 900)))
     seated_pose()
     PREVIEWS.append(render("10_seated_three_quarter", (0, -0.2, 0.72), 2.7, 40, 10))
     PREVIEWS.append(render("11_seated_side", (0, -0.2, 0.72), 2.7, 90, 5))
     PREVIEWS.append(render("12_seated_front", (0, -0.2, 0.72), 2.7, 0, 12))
-    PREVIEWS.append(render("13_seated_back", (0, -0.2, 0.72), 2.7, 200, 8))
+    PREVIEWS.append(render("13_seated_back", (0, -0.2, 0.72), 2.7, 180, 8))
+    PREVIEWS.append(render("13b_seated_shoulders_back", (0.0, -0.05, 1.12), 1.15, 200, 10, res=(1000, 900)))
     PREVIEWS.append(render("14_seated_low_front_knees", (0.0, -0.32, 0.55), 1.6, 15, -2, res=(1000, 900)))
     PREVIEWS.append(render("15_seated_closeup_lap_arms", (0.05, -0.30, 0.86), 1.3, 55, 28, res=(1000, 900)))
     reset_pose()
@@ -1836,6 +1963,10 @@ REF = [outfit.matrix_world @ v.co for v in outfit.data.vertices]
 arm.data.pose_position = 'POSE'
 seated_pose()
 REF_POSED, _ = mesh_world(outfit)
+# Capture the actual local pose deltas used for the reference deformation.  The
+# deform-only skeleton intentionally omits unweighted end bones such as `hand_l/r`,
+# so reconstructing this pose later via aim targets would not be the same test.
+REF_POSE_BASIS = {pb.name: pb.matrix_basis.copy() for pb in arm.pose.bones}
 reset_pose()
 arm.data.pose_position = 'REST'
 bpy.context.view_layer.update()
@@ -1848,7 +1979,7 @@ if DO_EXPORT:
     bpy.ops.export_scene.fbx(
         filepath=FBX_OUT, use_selection=True, object_types={'ARMATURE', 'MESH'},
         add_leaf_bones=False, primary_bone_axis='Y', secondary_bone_axis='X',
-        armature_nodetype='NULL', bake_anim=False, use_armature_deform_only=False,
+        armature_nodetype='NULL', bake_anim=False, use_armature_deform_only=True,
         apply_scale_options='FBX_SCALE_NONE', global_scale=1.0, apply_unit_scale=True,
         axis_forward='Y', axis_up='Z', mesh_smooth_type='FACE', use_mesh_modifiers=False,
         use_tspace=False, embed_textures=False, path_mode='AUTO')
@@ -1867,16 +1998,48 @@ if DO_EXPORT:
     assert len(g_mesh) == 1, g_mesh
     g_mesh = g_mesh[0]
     bpy.context.view_layer.update()
-    names_b = {b.name for b in b_arm.data.bones}; names_g = {b.name for b in g_arm.data.bones}
-    log("bones body %d garment %d  missing %s  extra %s" % (len(names_b), len(names_g), sorted(names_b - names_g)[:5], sorted(names_g - names_b)[:5]))
-    hier_ok = all((b.parent.name if b.parent else None) == (b_arm.data.bones[b.name].parent.name if b_arm.data.bones[b.name].parent else None)
-                  for b in g_arm.data.bones if b.name in names_b)
-    bone_off = 0.0
-    for b in g_arm.data.bones:
-        if b.name in b_arm.data.bones:
-            hb = b_arm.matrix_world @ b_arm.data.bones[b.name].head_local
-            hg = g_arm.matrix_world @ b.head_local
-            bone_off = max(bone_off, (hb - hg).length)
+    # The source FBX's real root is collapsed into b_arm by Blender, whereas our
+    # corrected export reimports with root as an actual bone.  Compare logical
+    # skeletons so this representation difference cannot hide a hierarchy error.
+    def logical_bones(a, synthesize_root=False):
+        names = {b.name for b in a.data.bones}
+        parents = {b.name: (b.parent.name if b.parent else None) for b in a.data.bones}
+        heads = {b.name: a.matrix_world @ b.head_local for b in a.data.bones}
+        if synthesize_root and 'root' not in names:
+            names.add('root')
+            parents['root'] = None
+            heads['root'] = a.matrix_world.translation.copy()
+            for b in a.data.bones:
+                if b.parent is None:
+                    parents[b.name] = 'root'
+        return names, parents, heads
+
+    names_b, parents_b, heads_b = logical_bones(b_arm, synthesize_root=True)
+    names_g, parents_g, heads_g = logical_bones(g_arm)
+    # Deform-only export deliberately emits just the weighted bones plus the complete
+    # ancestor chain needed to preserve their local transforms.  Validate that exact
+    # closure rather than treating unrelated facial/control branches as missing.
+    expected = set(weighted_bones)
+    pending = list(expected)
+    while pending:
+        n = pending.pop()
+        p = parents_b.get(n)
+        if p is not None and p not in expected:
+            expected.add(p)
+            pending.append(p)
+    missing = sorted(expected - names_g)
+    extra = sorted(names_g - expected)
+    log("logical bones body %d expected %d garment %d  missing %s  extra %s" %
+        (len(names_b), len(expected), len(names_g), missing[:5], extra[:5]))
+    hier_ok = names_g == expected and all(parents_g[n] == parents_b[n] for n in expected)
+    bone_off = max((heads_b[n] - heads_g[n]).length for n in expected)
+    assert g_arm.name.startswith('Armature'), g_arm.name
+    assert 'root' in g_arm.data.bones and g_arm.data.bones['root'].parent is None
+    assert g_arm.data.bones['pelvis'].parent == g_arm.data.bones['root']
+    assert weighted_bones <= names_g, sorted(weighted_bones - names_g)
+    assert not missing and not extra and hier_ok, (missing[:10], extra[:10], hier_ok)
+    root_local = g_arm.data.bones['root'].matrix_local
+    assert max(abs(root_local[r][c] - Matrix.Identity(4)[r][c]) for r in range(4) for c in range(4)) < 1e-5, root_local
     GV = [g_mesh.matrix_world @ v.co for v in g_mesh.data.vertices]
     if len(GV) == len(REF):
         v_off = max((a - b).length for a, b in zip(GV, REF))
@@ -1895,7 +2058,9 @@ if DO_EXPORT:
     slots = [m.name if m else None for m in g_mesh.data.materials]
     uvs = [u.name for u in g_mesh.data.uv_layers]
     arm = g_arm
-    seated_pose()
+    for pb in arm.pose.bones:
+        pb.matrix_basis = REF_POSE_BASIS.get(pb.name, Matrix.Identity(4))
+    bpy.context.view_layer.update()
     GVp, _ = mesh_world(g_mesh)
     posed_off = max((a - b).length for a, b in zip(GVp, REF_POSED)) if len(GVp) == len(REF_POSED) else -1
     reset_pose()

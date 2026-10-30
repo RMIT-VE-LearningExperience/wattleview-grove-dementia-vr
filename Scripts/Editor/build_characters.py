@@ -2,12 +2,13 @@
 
 1. Retarget the placeholder animations (idle, in-place walk, sit; UE5 mannequin skeleton) onto
    each MetaHuman body with an IK Retargeter (auto-generated IK rigs, fuzzy chain mapping).
-   Maria has her own set; David and Enzo share one because they share a body.
+   Each approved reference has its own set so its reviewed proportions are preserved.
    Output: /Game/Wattleview/Animations/MH/<Body>/<Anim>_<Body>
-2. Replace Maria_StandIn and David_StandIn with BP_Maria / BP_David at the same transform.
+2. Replace Maria_StandIn, David_StandIn and Gardener_StandIn with the approved reference
+   MetaHumans at the same transform.
    The actors KEEP the *_StandIn labels so the sequence, director and perception scripts keep
    finding them; they carry the actor tag "MetaHuman". The gardener stays a mannequin (far away,
-   cheap). BP_Enzo is placed on David (label Enzo_Overlay), hidden until the cross-fade is built.
+   BP_EnzoReference is placed on David (label Enzo_Overlay), hidden until the cross-fade is built.
 3. build_story_sequence.py detects MetaHuman actors and puts their animation on the Body
    component using the retargeted clips.
 
@@ -22,12 +23,25 @@ OUT_DIR = "/Game/Wattleview/Animations/MH"
 ANIMS = ["/Game/Characters/Mannequins/Anims/Unarmed/MM_Idle",
          "/Game/Wattleview/Animations/AS_Placeholder_Walk",
          "/Game/Wattleview/Animations/AS_Placeholder_Sit"]
-BODIES = {"Maria": "/Game/MetaHumans/Maria/Body/SKM_Maria_BodyMesh",
-          "David": "/Game/MetaHumans/David/Body/SKM_David_BodyMesh"}
-CHARACTERS = [("Maria_StandIn", "/Game/MetaHumans/Maria/BP_Maria"),
-              ("David_StandIn", "/Game/MetaHumans/David/BP_David")]
-ENZO_BP = "/Game/MetaHumans/Enzo/BP_Enzo"
+BODIES = {
+    "MariaReference": "/Game/MetaHumans/MariaReference/Body/SKM_MariaReference_BodyMesh",
+    "DavidReference": "/Game/MetaHumans/DavidReference/Body/SKM_DavidReference_BodyMesh",
+    "EnzoReference": "/Game/MetaHumans/EnzoReference/Body/SKM_EnzoReference_BodyMesh",
+    "GardenerReference": "/Game/MetaHumans/GardenerReference/Body/SKM_GardenerReference_BodyMesh",
+}
+CHARACTERS = [
+    ("Maria_StandIn", "/Game/MetaHumans/MariaReference/BP_MariaReference"),
+    ("David_StandIn", "/Game/MetaHumans/DavidReference/BP_DavidReference"),
+    ("Gardener_StandIn", "/Game/MetaHumans/GardenerReference/BP_GardenerReference"),
+]
+ENZO_BP = "/Game/MetaHumans/EnzoReference/BP_EnzoReference"
 MAP_PATH = "/Game/Wattleview/Maps/L_ResidentRoom"
+GENERATED_OUTFITS = {
+    "Maria_StandIn": "/Game/MetaHumans/MariaReference/Clothing/MariaReference_Outfits",
+    "David_StandIn": "/Game/MetaHumans/DavidReference/Clothing/DavidReference_Outfits",
+    "Gardener_StandIn": "/Game/MetaHumans/GardenerReference/Clothing/GardenerReference_Outfits",
+    "Enzo_Overlay": "/Game/MetaHumans/EnzoReference/Clothing/EnzoReference_Outfits",
+}
 FORCE_RETARGET = globals().get("FORCE_RETARGET", False)
 
 eas = unreal.EditorAssetLibrary
@@ -105,6 +119,34 @@ def find(label):
     return next((a for a in acts.get_all_level_actors() if a.get_actor_label() == label), None)
 
 
+def configure_cinematic_mobile_character(actor):
+    """Keep the assembled body and wardrobe on one proven Pico deformation tier."""
+    comps = actor.get_components_by_class(unreal.ActorComponent)
+    lod_sync = next((c for c in comps if c.get_name() == "LODSync"), None)
+    body = next((c for c in comps if c.get_name() == "Body"), None)
+    outfit = next((c for c in comps if c.get_name() == "SkeletalMesh"), None)
+    if lod_sync is None or body is None or outfit is None:
+        log(f"{actor.get_actor_label()}: cinematic mobile settings skipped; components missing")
+        return
+    generated_path = GENERATED_OUTFITS.get(actor.get_actor_label())
+    if generated_path and eas.does_asset_exist(generated_path):
+        generated_outfit = unreal.load_asset(generated_path)
+        outfit.set_skinned_asset_and_update(generated_outfit)
+        # Android Leader Pose can corrupt generated MetaHuman clothes.  The story
+        # sequence drives Body and wardrobe with matching baked animation tracks.
+        outfit.set_leader_pose_component(None, True, True)
+        log(f"{actor.get_actor_label()}: assigned generated outfit with independent pose")
+    lod_sync.set_editor_property("forced_lod", 0)
+    lod_sync.set_editor_property("min_lod", 0)
+    outfit.set_editor_property("disable_cloth_simulation", True)
+    outfit.set_editor_property("allow_cloth_actors", False)
+    outfit.set_editor_property(
+        "visibility_based_anim_tick_option",
+        unreal.VisibilityBasedAnimTickOption.ALWAYS_TICK_POSE_AND_REFRESH_BONES)
+    outfit.set_editor_property("enable_update_rate_optimizations", False)
+    body.set_editor_property("enable_update_rate_optimizations", False)
+
+
 def place():
     world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
     if world is None or world.get_path_name().split(".")[0] != MAP_PATH:
@@ -123,6 +165,7 @@ def place():
         a.set_actor_label(label)
         a.set_folder_path(folder)
         a.set_editor_property("tags", [unreal.Name("MetaHuman")])
+        configure_cinematic_mobile_character(a)
         placed[label] = a
     old = find("Enzo_Overlay")
     if old:
@@ -134,6 +177,7 @@ def place():
         e.set_actor_label("Enzo_Overlay")
         e.set_folder_path("Characters")
         e.set_editor_property("tags", [unreal.Name("MetaHuman")])
+        configure_cinematic_mobile_character(e)
         e.set_actor_hidden_in_game(True)
         e.attach_to_actor(david, "", unreal.AttachmentRule.KEEP_WORLD, unreal.AttachmentRule.KEEP_WORLD,
                           unreal.AttachmentRule.KEEP_WORLD, False)

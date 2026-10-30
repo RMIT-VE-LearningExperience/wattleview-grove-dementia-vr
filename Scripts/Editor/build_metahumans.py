@@ -3,10 +3,9 @@
 Characters (MetaHumanCharacter source assets in /Game/MetaHumans/Src):
   Maria      82, Italian, Alzheimer's (moderate). Elderly face, olive skin, short grey curls.
   David      support worker, early 30s. Short dark hair, light stubble.
-  Enzo       Maria's late husband as she sees him: elderly, grey hair, moustache. Shares
-             David's body measurements so the two can cross-fade on the same animation.
-  EnzoYoung  Enzo in the wall photograph (younger, dark hair). Desktop-only, rendered to a
-             texture, never shipped as a character.
+  MariaAge40 Additional Maria reference at about 40, based on the wall photograph.
+  Enzo       Maria's Italian husband at about 40, matching the wall photograph: dark hair,
+             clean-shaven. Shares David's body measurements for the perception cross-fade.
 
 What runs locally (no sign-in): preset blending via face-model coefficients, body
 measurements, skin tone and aged face texture (texture synthesis), teeth/eyelash/eye settings,
@@ -48,7 +47,7 @@ CHARACTERS = {
     ),
     "David": dict(
         blend={"Orlando": 0.6, "Mateo": 0.4},
-        skin=dict(u=0.52, v=0.60, face_texture_index=72, roughness=1.0),
+        skin=dict(u=0.39, v=0.44, face_texture_index=72, roughness=1.02),
         body=SHARED_MALE_BODY,
         teeth=dict(variation=0.2),
         sclera_tint=None,
@@ -58,29 +57,31 @@ CHARACTERS = {
         hair_colour={"Melanin": 0.85, "Whiteness": 0.0},
     ),
     "Enzo": dict(
-        blend={"Lorenzo": 0.7, "Walter": 0.3},
-        skin=dict(u=0.48, v=0.52, face_texture_index=11, roughness=1.08),
+        blend={"Lorenzo": 0.45, "Mateo": 0.35, "Jorge": 0.15, "Walter": 0.05},
+        skin=dict(u=0.50, v=0.55, face_texture_index=137, roughness=1.04),
         body=SHARED_MALE_BODY,
-        teeth=dict(worn_down=0.6, plaque_amount=0.35, receding_gums=0.45, variation=0.5),
-        sclera_tint=(1.0, 0.96, 0.90),
+        teeth=dict(variation=0.3),
+        sclera_tint=None,
         iris_from="Mateo",
-        grooms={"Hair": "Hair/WI_Hair_S_RecedeMessy", "Mustache": "Mustaches/WI_Mustache_S_Full",
-                "Eyebrows": "Eyebrows/WI_Eyebrows_L_Scraggly", "Eyelashes": "Eyelashes/WI_Eyelashes_S_Fine",
+        grooms={"Hair": "Hair/WI_Hair_S_SlickBack",
+                "Eyebrows": "Eyebrows/WI_Eyebrows_M_Thick", "Eyelashes": "Eyelashes/WI_Eyelashes_S_Fine",
                 "Peachfuzz": "Peachfuzz/WI_Peachfuzz_M_Thin"},
-        hair_colour={"Melanin": 0.3, "Whiteness": 0.85, "Lightness": 0.55},
+        hair_colour={"Melanin": 0.9, "Whiteness": 0.0, "Lightness": 0.18},
         body_from="David",
     ),
     "MariaYoung": dict(
-        # Maria in the wall photograph (younger, dark hair). Desktop-only like EnzoYoung.
-        blend={"Vivian": 0.45, "Jelena": 0.35, "Grace": 0.20},
-        skin=dict(u=0.46, v=0.60, face_texture_index=58, roughness=1.0),
+        # Maria at about 40 is the master identity for the later elderly pass.
+        # Vivian-led geometry gives the reference's longer oval face, narrower jaw
+        # and more refined nose; Grace is retained only for mature structure.
+        blend={"Vivian": 0.55, "Grace": 0.25, "Jelena": 0.20},
+        skin=dict(u=0.41, v=0.64, face_texture_index=56, roughness=1.04),
         body={"Height": 157.0, "Fat": 0.3, "Muscularity": -1.2, "Masculine/Feminine": 1.3},
         teeth=dict(variation=0.2),
         sclera_tint=None,
         iris_from="Mateo",
-        grooms={"Hair": "Hair/WI_Hair_M_BobCurly", "Eyebrows": "Eyebrows/WI_Eyebrows_M_Thin",
+        grooms={"Hair": "Hair/WI_Hair_M_Layered", "Eyebrows": "Eyebrows/WI_Eyebrows_M_Natural",
                 "Eyelashes": "Eyelashes/WI_Eyelashes_S_Fine", "Peachfuzz": "Peachfuzz/WI_Peachfuzz_M_Thin"},
-        hair_colour={"Melanin": 0.85, "Whiteness": 0.0},
+        hair_colour={"Melanin": 0.90, "Whiteness": 0.0, "Lightness": 0.18},
     ),
     "EnzoYoung": dict(
         blend={"Lorenzo": 0.35, "Mateo": 0.4, "Jorge": 0.25},
@@ -297,22 +298,74 @@ ST = {"queue": [], "i": -1, "t": 0.0, "ch": None, "actor": None, "rt": None, "bu
       "ticks": 0, "staged": False}
 
 
+def review_backdrop_material():
+    """Return a flat, colour-managed grey used by every character-sheet render."""
+    path = "/Game/MetaHumans/Review/M_CharacterSheetGrey"
+    mat = unreal.load_asset(path)
+    if mat:
+        return mat
+    tools = unreal.AssetToolsHelpers.get_asset_tools()
+    mat = tools.create_asset("M_CharacterSheetGrey", "/Game/MetaHumans/Review", unreal.Material,
+                             unreal.MaterialFactoryNew())
+    mat.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+    colour = unreal.MaterialEditingLibrary.create_material_expression(
+        mat, unreal.MaterialExpressionConstant3Vector, -250, 0)
+    # 0.22 linear encodes to a medium editor-style grey in sRGB output.
+    colour.set_editor_property("constant", unreal.LinearColor(0.22, 0.22, 0.22, 1.0))
+    unreal.MaterialEditingLibrary.connect_material_property(
+        colour, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    unreal.MaterialEditingLibrary.recompile_material(mat)
+    eas.save_loaded_asset(mat, False)
+    return mat
+
+
 def stage():
     les = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
     les.new_level("/Temp/L_MHPortrait_%d" % int(time.time()))
     sun = actors.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 400), unreal.Rotator(roll=0, pitch=-30, yaw=-115))
     sun.light_component.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
-    sun.light_component.set_editor_property("intensity", 4.0)
+    # Neutral review lighting: preserve skin colour and pore detail without the clipped
+    # forehead/cheek highlights produced by the earlier 4.0 + 300 intensity rig.
+    sun.light_component.set_editor_property("intensity", 1.2)
+    sun.light_component.set_editor_property("light_source_angle", 10.0)
     fill = actors.spawn_actor_from_class(unreal.PointLight, unreal.Vector(-120, 160, 175), unreal.Rotator())
     fill.point_light_component.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
-    fill.point_light_component.set_editor_property("intensity", 300.0)
+    fill.point_light_component.set_editor_property("intensity", 65.0)
+    fill.point_light_component.set_editor_property("attenuation_radius", 700.0)
+    fill.point_light_component.set_editor_property("source_radius", 60.0)
+    rim = actors.spawn_actor_from_class(unreal.PointLight, unreal.Vector(170, -190, 190), unreal.Rotator())
+    rim.point_light_component.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
+    rim.point_light_component.set_editor_property("intensity", 15.0)
+    rim.point_light_component.set_editor_property("attenuation_radius", 650.0)
+    rim.point_light_component.set_editor_property("source_radius", 45.0)
     sky = actors.spawn_actor_from_class(unreal.SkyLight, unreal.Vector(0, 0, 300), unreal.Rotator())
     sc = sky.light_component
     sc.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
     sc.set_editor_property("source_type", unreal.SkyLightSourceType.SLS_SPECIFIED_CUBEMAP)
     sc.set_editor_property("cubemap", unreal.load_asset("/Engine/MapTemplates/Sky/DaylightAmbientCubemap.DaylightAmbientCubemap"))
+    sc.set_editor_property("intensity", 0.55)
+    sc.recapture_sky()
+    # A real backdrop is required: SceneCapture2D clears to black even when the render
+    # target's clear colour is grey. The wall spans every head and full-body camera ray.
+    wall = actors.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(0, -400, 200), unreal.Rotator())
+    wall.set_actor_scale3d(unreal.Vector(12.0, 0.2, 8.0))
+    wall_comp = wall.static_mesh_component
+    wall_comp.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Cube.Cube"))
+    wall_comp.set_material(0, review_backdrop_material())
+    wall_comp.set_editor_property("cast_shadow", False)
+    # Continue the same neutral surface below the character so the downward-looking
+    # full-body camera never exposes the level's black clear colour.
+    floor = actors.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(0, 0, -7), unreal.Rotator())
+    floor.set_actor_scale3d(unreal.Vector(12.0, 12.0, 0.1))
+    floor_comp = floor.static_mesh_component
+    floor_comp.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Cube.Cube"))
+    floor_comp.set_material(0, review_backdrop_material())
+    floor_comp.set_editor_property("cast_shadow", False)
     world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
     ST["rt"] = unreal.RenderingLibrary.create_render_target2d(world, 768, 960, unreal.TextureRenderTargetFormat.RTF_RGBA8_SRGB)
+    # Match the MetaHuman editor's neutral review environment. 0.22 linear is a
+    # medium grey after sRGB encoding and keeps pale hair/clothing silhouettes visible.
+    ST["rt"].set_editor_property("clear_color", unreal.LinearColor(0.22, 0.22, 0.22, 1.0))
 
 
 def head_point(a):
@@ -347,7 +400,7 @@ def capture(name):
         pp.set_editor_property("override_auto_exposure_apply_physical_camera_exposure", True)
         pp.set_editor_property("auto_exposure_apply_physical_camera_exposure", False)
         pp.set_editor_property("override_auto_exposure_bias", True)
-        pp.set_editor_property("auto_exposure_bias", -1.3)
+        pp.set_editor_property("auto_exposure_bias", -1.0)
         cc.set_editor_property("post_process_settings", pp)
         flush_rendering()
         cc.capture_scene()

@@ -3,6 +3,13 @@
 	"EngineAssociation": "5.8",
 	"Category": "",
 	"Description": "SC&H - Wattleview Grove - Dementia VR Experience",
+	"Modules": [
+		{
+			"Name": "WattleviewGrove",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
 	"Plugins": [
 		{
 			"Name": "OpenXR",

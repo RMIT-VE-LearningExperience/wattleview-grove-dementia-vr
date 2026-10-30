@@ -1,0 +1,45 @@
+{
+  "MariaReference": {
+    "base": "Maria",
+    "blend": {
+      "Grace": 0.5,
+      "Vivian": 0.3,
+      "Jelena": 0.2
+    },
+    "skin": {
+      "u": 0.46,
+      "v": 0.6,
+      "face_texture_index": 121,
+      "roughness": 1.1
+    },
+    "body": {
+      "Height": 154.0,
+      "Fat": 0.75,
+      "Muscularity": -1.5,
+      "Masculine/Feminine": 1.15
+    },
+    "teeth": {
+      "worn_down": 0.55,
+      "plaque_amount": 0.3,
+      "receding_gums": 0.5,
+      "variation": 0.4
+    },
+    "sclera_tint": [
+      1.0,
+      0.96,
+      0.9
+    ],
+    "iris_from": "Mateo",
+    "grooms": {
+      "Hair": "Hair/WI_Hair_S_SweptUp",
+      "Eyebrows": "Eyebrows/WI_Eyebrows_M_Thin",
+      "Eyelashes": "Eyelashes/WI_Eyelashes_S_Fine",
+      "Peachfuzz": "Peachfuzz/WI_Peachfuzz_M_Thin"
+    },
+    "hair_colour": {
+      "Melanin": 0.25,
+      "Whiteness": 0.85,
+      "Lightness": 0.6
+    }
+  }
+}
